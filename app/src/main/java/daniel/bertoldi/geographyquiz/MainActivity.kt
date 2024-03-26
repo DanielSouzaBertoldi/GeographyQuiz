@@ -211,7 +211,7 @@ private fun ContinentCard(
 }
 
 @Composable
-private fun WeDoingThisComponent(countries: List<String>) {
+private fun WeDoingThisComponent(countries: List<BaseCountryDataResponse>) {
     val selectedFlags = countries.shuffled().take(5)
     val currentFlag by remember { mutableIntStateOf(0) }
 
@@ -219,14 +219,22 @@ private fun WeDoingThisComponent(countries: List<String>) {
         modifier = Modifier.fillMaxSize(),
     ) {
         AsyncImage(
-            model = "https://flagcdn.com/w640/${selectedFlags[currentFlag]::class.simpleName?.lowercase()}.png",
+            model = selectedFlags[currentFlag].flags.png,
             contentDescription = null,
         )
         Text(text = "What's this flag?")
-        Text(text = selectedFlags.random())
-        Text(text = selectedFlags.random())
-        Text(text = selectedFlags.random())
-        Text(text = selectedFlags[currentFlag])
+        Button(onClick = { /*TODO*/ }) {
+            Text(text = countries.random().name.common)
+        }
+        Button(onClick = { /*TODO*/ }) {
+            Text(text = countries.random().name.common)
+        }
+        Button(onClick = { /*TODO*/ }) {
+            Text(text = countries.random().name.common)
+        }
+        Button(onClick = { /*TODO*/ }) {
+            Text(text = selectedFlags[currentFlag].name.common)
+        }
     }
 }
 

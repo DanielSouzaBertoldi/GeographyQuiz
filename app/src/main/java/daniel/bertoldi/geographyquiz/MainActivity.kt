@@ -16,19 +16,21 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -63,15 +65,14 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    val screenState = viewModel.state.collectAsState()
+                    val screenState = viewModel.screenState.collectAsState()
                     when (screenState.value) {
                         is ScreenState.Loading -> LoadingComponent()
                         is ScreenState.Success -> BeginGameComponent(viewModel::startGame)
                         is ScreenState.Failed -> ErrorComponent()
                         is ScreenState.SelectContinent -> SelectContinentComponent(viewModel::startActualGame)
                         is ScreenState.StartGame -> WeDoingThisComponent(
-                            countries = viewModel.countries.collectAsState().value,
-                            isAnswerCorrect = viewModel.isAnswerCorrect.collectAsState().value,
+                            gameState = viewModel.gameState.collectAsState().value,
                             optionClick = viewModel::optionClick,
                             drawAgain = viewModel::drawAgain,
                         )
@@ -221,61 +222,61 @@ private fun ContinentCard(
 
 @Composable
 private fun WeDoingThisComponent(
-    countries: List<BaseCountryDataResponse>,
-    isAnswerCorrect: Boolean?,
-    optionClick: (answer: BaseCountryDataResponse, clickedOption: BaseCountryDataResponse) -> Unit,
-    drawAgain: (BaseCountryDataResponse) -> Unit,
+    gameState: GameState?,
+    optionClick: (BaseCountryDataResponse) -> Unit,
+    drawAgain: () -> Unit,
 ) {
-    val selectedFlags = countries.shuffled().take(5).toMutableList()
-    val drawnFlag = selectedFlags.random()
-    var loadingFlag by remember { mutableStateOf(true) }
+    var loadingFlag by remember { mutableStateOf(gameState?.step == GameStep.CHOOSING_OPTION) }
 
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center,
-    ) {
-        Column(
+    gameState?.let {
+        Box(
             modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center,
         ) {
-            AsyncImage(
-                model = drawnFlag.flags.png,
-                contentDescription = null,
-                onSuccess = { loadingFlag = false }
-            )
-            if (loadingFlag) {
-                CircularProgressIndicator(
-                    modifier = Modifier.size(64.dp),
-                    color = MaterialTheme.colorScheme.onSurface,
-                    trackColor = Color.Black,
+            Column(
+                modifier = Modifier.fillMaxSize(),
+            ) {
+                AsyncImage(
+                    model = gameState.availableOptions.find { it.isTheCorrectAnswer }?.countryData?.flags?.png,
+                    contentDescription = null,
+                    onSuccess = { loadingFlag = false }
                 )
-            } else {
-                Text(text = "What's this flag?")
-                if (isAnswerCorrect == null) {
-                    for (i in 1..5) {
-                        val randomNumber = Random.nextInt(from = 0, until = selectedFlags.size)
-                        val randomPosition = randomNumber % countries.size
-                        val randomFlag = selectedFlags[randomPosition]
-                        val backgroundColor by animateColorAsState(
-                            targetValue = if (randomFlag.countryCode == drawnFlag.countryCode) {
-                                Color.Green
-                            } else {
-                                Color.Red
-                            }
-                        )
-
-                        Button(
-                            modifier = Modifier.background(color = backgroundColor),
-                            onClick = { optionClick(drawnFlag, randomFlag) },
-                        ) {
-                            Text(text = randomFlag.name.common)
-                        }
-                        selectedFlags.removeAt(randomPosition)
-                    }
+                if (loadingFlag) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(64.dp),
+                        color = MaterialTheme.colorScheme.onSurface,
+                        trackColor = Color.Black,
+                    )
                 } else {
-                    Button(
-                        onClick = { drawAgain(drawnFlag) }
-                    ) {
-                        Text(text = "Sortear novamente")
+                    Text(text = "What's this flag?")
+                    LazyColumn {
+                        items(gameState.availableOptions) {
+                            val backgroundColor by animateColorAsState(
+                                targetValue = if (gameState.step == GameStep.OPTION_SELECTED && it.isTheCorrectAnswer) {
+                                    Color.Green
+                                } else if (gameState.step == GameStep.OPTION_SELECTED){
+                                    Color.Red
+                                } else {
+                                    Color.Black
+                                }
+                            )
+
+                            Button(
+                                onClick = { optionClick(it.countryData) },
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = backgroundColor,
+                                )
+                            ) {
+                                Text(text = it.countryData.name.common)
+                            }
+                        }
+                    }
+                    if (gameState.step == GameStep.OPTION_SELECTED) {
+                        Button(
+                            onClick = { drawAgain() }
+                        ) {
+                            Text(text = "Sortear novamente")
+                        }
                     }
                 }
             }

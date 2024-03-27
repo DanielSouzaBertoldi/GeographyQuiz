@@ -17,33 +17,32 @@ import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.GET
 import javax.inject.Inject
+import kotlin.random.Random
 
 sealed class ScreenState {
     data object Loading : ScreenState()
     data object Success : ScreenState()
     data object Failed : ScreenState()
     data object SelectContinent : ScreenState()
-
-    data class StartGame(val chosenContinent: Continent) : ScreenState()
+    data object StartGame : ScreenState()
 }
 
-enum class Continent {
-    NORTH_AMERICA,
-    SOUTH_AMERICA,
-    EUROPE,
-    AFRICA,
-    ASIA,
-    OCEANIA
+enum class Continent(val simpleName: String) {
+    NORTH_AMERICA("Americas"),
+    SOUTH_AMERICA("Americas"),
+    EUROPE("Europe"),
+    AFRICA("Africa"),
+    ASIA("Asia"),
+    OCEANIA("Oceania")
 }
 
 @HiltViewModel
 class MainActivityViewModel @Inject constructor() : ViewModel() {
-    private val _countries = MutableStateFlow<List<BaseCountryDataResponse>>(emptyList())
-    val countries: StateFlow<List<BaseCountryDataResponse>> = _countries.asStateFlow()
-    private val _state = MutableStateFlow<ScreenState>(ScreenState.Loading)
-    val state: StateFlow<ScreenState> = _state.asStateFlow()
-    private val _isAnswerCorrect = MutableStateFlow<Boolean?>(null)
-    val isAnswerCorrect = _isAnswerCorrect.asStateFlow()
+    private val countries = MutableStateFlow<List<BaseCountryDataResponse>>(emptyList())
+    private val _screenState = MutableStateFlow<ScreenState>(ScreenState.Loading)
+    val screenState: StateFlow<ScreenState> = _screenState.asStateFlow()
+    private val _gameState = MutableStateFlow<GameState?>(null)
+    val gameState = _gameState.asStateFlow()
 
     fun init() {
         val moshi = Moshi.Builder()
@@ -63,17 +62,17 @@ class MainActivityViewModel @Inject constructor() : ViewModel() {
                 ) {
                     if (p1.isSuccessful) {
                         p1.body()?.let {
-                            _countries.value = it
-                            _state.value = ScreenState.Success
+                            countries.value = it
+                            _screenState.value = ScreenState.Success
                         }
                     } else {
-                        _state.value = ScreenState.Failed
+                        _screenState.value = ScreenState.Failed
                     }
                 }
 
                 override fun onFailure(p0: Call<List<BaseCountryDataResponse>>, p1: Throwable) {
                     Log.d("FAILED!", p1.stackTraceToString())
-                    _state.value = ScreenState.Failed
+                    _screenState.value = ScreenState.Failed
                 }
             }
         )
@@ -85,26 +84,74 @@ class MainActivityViewModel @Inject constructor() : ViewModel() {
     }
 
     fun startGame() {
-        _state.value = ScreenState.SelectContinent
+        _screenState.value = ScreenState.SelectContinent
     }
 
     fun startActualGame(continent: Continent) {
-        _state.value = ScreenState.StartGame(continent)
+        val filteredCountries = countries.value.filter { it.region == continent.simpleName }
+        val drawnCountries = filteredCountries.shuffled().take(5).toMutableList()
+
+        _gameState.value = GameState(
+            availableOptions = drawFlagOptions(drawnCountries),
+            chosenContinent = continent,
+        )
+        _screenState.value = ScreenState.StartGame
     }
 
-    fun optionClick(answer: BaseCountryDataResponse, clickedOption: BaseCountryDataResponse) {
-        if (answer.countryCode == clickedOption.countryCode) {
-            _isAnswerCorrect.value = true
-        } else {
-            _isAnswerCorrect.value = false
+    fun optionClick(clickedOption: BaseCountryDataResponse) {
+        _gameState.value = _gameState.value?.copy(
+            step = GameStep.OPTION_SELECTED,
+        )
+    }
+
+    fun drawAgain() {
+        val filteredCountries = countries.value
+            .filterNot { it.countryCode == gameState.value?.availableOptions?.find { it.isTheCorrectAnswer }?.countryData?.countryCode }
+            .filter { it.region == gameState.value?.chosenContinent?.simpleName }
+        val drawnCountries = filteredCountries.shuffled().take(5).toMutableList()
+
+        _gameState.value = _gameState.value?.copy(
+            step = GameStep.CHOOSING_OPTION,
+            availableOptions = drawFlagOptions(drawnCountries),
+        )
+        _screenState.value = ScreenState.StartGame
+    }
+
+    private fun drawFlagOptions(countries: MutableList<BaseCountryDataResponse>): List<FlagOption> {
+        val flagOptions = mutableListOf<FlagOption>()
+        val drawnAnswer = countries.random()
+
+        for (i in 1..5) {
+            val randomNumber = Random.nextInt(from = 0, until = countries.size)
+            val randomPosition = randomNumber % countries.size
+            val randomCountry = countries[randomPosition]
+
+            flagOptions.add(
+                FlagOption(
+                    isTheCorrectAnswer = randomCountry.countryCode == drawnAnswer.countryCode,
+                    countryData = randomCountry,
+                )
+            )
+            countries.removeAt(randomPosition)
         }
+        return flagOptions
     }
+}
 
-    fun drawAgain(answer: BaseCountryDataResponse) {
-        _isAnswerCorrect.value = null
-        _countries.value = _countries.value.filterNot { it.countryCode == answer.countryCode }
-        startActualGame(Continent.SOUTH_AMERICA)
-    }
+data class GameState(
+    val step: GameStep = GameStep.CHOOSING_OPTION,
+    val availableOptions: List<FlagOption>,
+    val chosenContinent: Continent,
+)
+
+data class FlagOption(
+    val isTheCorrectAnswer: Boolean = false,
+    val countryData: BaseCountryDataResponse,
+)
+
+enum class GameStep {
+    CHOOSING_OPTION,
+    OPTION_SELECTED,
 }
 
 @JsonClass(generateAdapter = true)

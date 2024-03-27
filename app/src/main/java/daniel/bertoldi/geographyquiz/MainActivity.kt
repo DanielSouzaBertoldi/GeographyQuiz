@@ -21,7 +21,6 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
@@ -42,40 +41,55 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import dagger.hilt.android.AndroidEntryPoint
 import daniel.bertoldi.geographyquiz.ui.theme.BrunswickGreen
 import daniel.bertoldi.geographyquiz.ui.theme.GeographyQuizTheme
 import daniel.bertoldi.geographyquiz.ui.theme.OffWhite
 import daniel.bertoldi.geographyquiz.ui.theme.Typography
-import kotlin.random.Random
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-    private val viewModel: MainActivityViewModel by viewModels()
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel.init()
 
         setContent {
             GeographyQuizTheme {
+                val navigationController = rememberNavController()
+
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    val screenState = viewModel.screenState.collectAsState()
-                    when (screenState.value) {
-                        is ScreenState.Loading -> LoadingComponent()
-                        is ScreenState.Success -> BeginGameComponent(viewModel::startGame)
-                        is ScreenState.Failed -> ErrorComponent()
-                        is ScreenState.SelectContinent -> SelectContinentComponent(viewModel::startActualGame)
-                        is ScreenState.StartGame -> WeDoingThisComponent(
-                            gameState = viewModel.gameState.collectAsState().value,
-                            optionClick = viewModel::optionClick,
-                            drawAgain = viewModel::drawAgain,
-                        )
+                    NavHost(navController = navigationController, startDestination = "home") {
+                        composable("home") {
+                            val viewModel = hiltViewModel<MainActivityViewModel>()
+                            val screenState = viewModel.screenState.collectAsState()
+
+                            when (screenState.value) {
+                                is ScreenState.Loading -> LoadingComponent()
+                                is ScreenState.Success -> BeginGameComponent(viewModel::startGame, { navigationController.navigate("flag") })
+                                is ScreenState.Failed -> ErrorComponent()
+                                is ScreenState.SelectContinent -> SelectContinentComponent(viewModel::startActualGame)
+                                is ScreenState.StartGame -> WeDoingThisComponent(
+                                    gameState = viewModel.gameState.collectAsState().value,
+                                    optionClick = viewModel::optionClick,
+                                    drawAgain = viewModel::drawAgain,
+                                )
+                            }
+                        }
+                        composable("flag") {
+                            Text(
+                                modifier = Modifier.fillMaxSize(),
+                                textAlign = TextAlign.Center,
+                                text = "This is the flag game screen.",
+                            )
+                        }
                     }
                 }
             }
@@ -100,11 +114,12 @@ private fun LoadingComponent() {
 @Composable
 private fun BeginGameComponent(
     startGame: () -> Unit,
+    navigateToGameScreen: () -> Unit,
 ) {
     Column {
         Text(text = "Welcome to Geography Quiz!")
         Button(
-            onClick = { startGame() }
+            onClick = { navigateToGameScreen() }
         ) {
             Text(text = "Let's begin!")
         }
@@ -297,7 +312,7 @@ private fun LoadingComponentPreview() {
 @Preview(showBackground = true)
 @Composable
 private fun BeginGameComponentPreview() {
-    BeginGameComponent(startGame = {})
+    BeginGameComponent(startGame = {}, {})
 }
 
 @Preview(showBackground = true)

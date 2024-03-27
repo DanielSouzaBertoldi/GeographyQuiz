@@ -44,7 +44,11 @@ class MainActivityViewModel @Inject constructor() : ViewModel() {
     private val _gameState = MutableStateFlow<GameState?>(null)
     val gameState = _gameState.asStateFlow()
 
-    fun init() {
+    init {
+        init()
+    }
+
+    private fun init() {
         val moshi = Moshi.Builder()
             .addLast(KotlinJsonAdapterFactory())
             .build()

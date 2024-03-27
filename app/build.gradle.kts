@@ -67,6 +67,8 @@ dependencies {
     implementation(libs.retrofit.moshi.converter)
     implementation(libs.moshi)
     implementation(libs.moshi.kotlin)
+    implementation(libs.compose.navigation)
+    implementation(libs.hilt.compose.navigation)
     ksp(libs.hilt.compiler)
     ksp(libs.moshi.codegen)
 

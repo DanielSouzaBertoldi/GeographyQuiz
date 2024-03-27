@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.annotation.DrawableRes
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -24,12 +25,16 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
@@ -41,6 +46,7 @@ import daniel.bertoldi.geographyquiz.ui.theme.BrunswickGreen
 import daniel.bertoldi.geographyquiz.ui.theme.GeographyQuizTheme
 import daniel.bertoldi.geographyquiz.ui.theme.OffWhite
 import daniel.bertoldi.geographyquiz.ui.theme.Typography
+import kotlin.random.Random
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -64,7 +70,10 @@ class MainActivity : ComponentActivity() {
                         is ScreenState.Failed -> ErrorComponent()
                         is ScreenState.SelectContinent -> SelectContinentComponent(viewModel::startActualGame)
                         is ScreenState.StartGame -> WeDoingThisComponent(
-                            countries = viewModel.countries.collectAsState().value
+                            countries = viewModel.countries.collectAsState().value,
+                            isAnswerCorrect = viewModel.isAnswerCorrect.collectAsState().value,
+                            optionClick = viewModel::optionClick,
+                            drawAgain = viewModel::drawAgain,
                         )
                     }
                 }
@@ -211,29 +220,65 @@ private fun ContinentCard(
 }
 
 @Composable
-private fun WeDoingThisComponent(countries: List<BaseCountryDataResponse>) {
-    val selectedFlags = countries.shuffled().take(5)
-    val currentFlag by remember { mutableIntStateOf(0) }
+private fun WeDoingThisComponent(
+    countries: List<BaseCountryDataResponse>,
+    isAnswerCorrect: Boolean?,
+    optionClick: (answer: BaseCountryDataResponse, clickedOption: BaseCountryDataResponse) -> Unit,
+    drawAgain: (BaseCountryDataResponse) -> Unit,
+) {
+    val selectedFlags = countries.shuffled().take(5).toMutableList()
+    val drawnFlag = selectedFlags.random()
+    var loadingFlag by remember { mutableStateOf(true) }
 
-    Column(
+    Box(
         modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center,
     ) {
-        AsyncImage(
-            model = selectedFlags[currentFlag].flags.png,
-            contentDescription = null,
-        )
-        Text(text = "What's this flag?")
-        Button(onClick = { /*TODO*/ }) {
-            Text(text = countries.random().name.common)
-        }
-        Button(onClick = { /*TODO*/ }) {
-            Text(text = countries.random().name.common)
-        }
-        Button(onClick = { /*TODO*/ }) {
-            Text(text = countries.random().name.common)
-        }
-        Button(onClick = { /*TODO*/ }) {
-            Text(text = selectedFlags[currentFlag].name.common)
+        Column(
+            modifier = Modifier.fillMaxSize(),
+        ) {
+            AsyncImage(
+                model = drawnFlag.flags.png,
+                contentDescription = null,
+                onSuccess = { loadingFlag = false }
+            )
+            if (loadingFlag) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(64.dp),
+                    color = MaterialTheme.colorScheme.onSurface,
+                    trackColor = Color.Black,
+                )
+            } else {
+                Text(text = "What's this flag?")
+                if (isAnswerCorrect == null) {
+                    for (i in 1..5) {
+                        val randomNumber = Random.nextInt(from = 0, until = selectedFlags.size)
+                        val randomPosition = randomNumber % countries.size
+                        val randomFlag = selectedFlags[randomPosition]
+                        val backgroundColor by animateColorAsState(
+                            targetValue = if (randomFlag.countryCode == drawnFlag.countryCode) {
+                                Color.Green
+                            } else {
+                                Color.Red
+                            }
+                        )
+
+                        Button(
+                            modifier = Modifier.background(color = backgroundColor),
+                            onClick = { optionClick(drawnFlag, randomFlag) },
+                        ) {
+                            Text(text = randomFlag.name.common)
+                        }
+                        selectedFlags.removeAt(randomPosition)
+                    }
+                } else {
+                    Button(
+                        onClick = { drawAgain(drawnFlag) }
+                    ) {
+                        Text(text = "Sortear novamente")
+                    }
+                }
+            }
         }
     }
 }

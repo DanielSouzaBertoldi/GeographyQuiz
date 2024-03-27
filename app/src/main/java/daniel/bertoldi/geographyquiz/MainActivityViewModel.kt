@@ -42,6 +42,8 @@ class MainActivityViewModel @Inject constructor() : ViewModel() {
     val countries: StateFlow<List<BaseCountryDataResponse>> = _countries.asStateFlow()
     private val _state = MutableStateFlow<ScreenState>(ScreenState.Loading)
     val state: StateFlow<ScreenState> = _state.asStateFlow()
+    private val _isAnswerCorrect = MutableStateFlow<Boolean?>(null)
+    val isAnswerCorrect = _isAnswerCorrect.asStateFlow()
 
     fun init() {
         val moshi = Moshi.Builder()
@@ -88,6 +90,20 @@ class MainActivityViewModel @Inject constructor() : ViewModel() {
 
     fun startActualGame(continent: Continent) {
         _state.value = ScreenState.StartGame(continent)
+    }
+
+    fun optionClick(answer: BaseCountryDataResponse, clickedOption: BaseCountryDataResponse) {
+        if (answer.countryCode == clickedOption.countryCode) {
+            _isAnswerCorrect.value = true
+        } else {
+            _isAnswerCorrect.value = false
+        }
+    }
+
+    fun drawAgain(answer: BaseCountryDataResponse) {
+        _isAnswerCorrect.value = null
+        _countries.value = _countries.value.filterNot { it.countryCode == answer.countryCode }
+        startActualGame(Continent.SOUTH_AMERICA)
     }
 }
 

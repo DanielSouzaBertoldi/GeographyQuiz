@@ -236,6 +236,8 @@ private fun WeDoingThisComponent(
             Column(
                 modifier = Modifier.fillMaxSize(),
             ) {
+                Text(text = "Score: ${gameState.score}")
+
                 AsyncImage(
                     model = gameState.availableOptions.find { it.isTheCorrectAnswer }?.countryData?.flags?.png,
                     contentDescription = null,
@@ -254,18 +256,20 @@ private fun WeDoingThisComponent(
                             val backgroundColor by animateColorAsState(
                                 targetValue = if (gameState.step == GameStep.OPTION_SELECTED && it.isTheCorrectAnswer) {
                                     Color.Green
-                                } else if (gameState.step == GameStep.OPTION_SELECTED){
+                                } else if (gameState.step == GameStep.OPTION_SELECTED && it.countryData.countryCode == gameState.clickedOption?.countryCode){
                                     Color.Red
                                 } else {
-                                    Color.Black
+                                    Color.Gray
                                 }
                             )
 
                             Button(
                                 onClick = { optionClick(it.countryData) },
                                 colors = ButtonDefaults.buttonColors(
-                                    containerColor = backgroundColor,
-                                )
+                                    containerColor = Color.Black,
+                                    disabledContainerColor = backgroundColor,
+                                ),
+                                enabled = gameState.step == GameStep.CHOOSING_OPTION,
                             ) {
                                 Text(text = it.countryData.name.common)
                             }

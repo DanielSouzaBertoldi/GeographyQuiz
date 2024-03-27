@@ -99,8 +99,17 @@ class MainActivityViewModel @Inject constructor() : ViewModel() {
     }
 
     fun optionClick(clickedOption: BaseCountryDataResponse) {
+        var pointsToAdd = _gameState.value?.score ?: 0
+        if (clickedOption.countryCode == gameState.value?.availableOptions?.find { it.isTheCorrectAnswer }?.countryData?.countryCode) {
+            pointsToAdd += 20
+        } else {
+            pointsToAdd -= 20
+        }
+
         _gameState.value = _gameState.value?.copy(
             step = GameStep.OPTION_SELECTED,
+            clickedOption = clickedOption,
+            score = pointsToAdd,
         )
     }
 
@@ -142,6 +151,8 @@ data class GameState(
     val step: GameStep = GameStep.CHOOSING_OPTION,
     val availableOptions: List<FlagOption>,
     val chosenContinent: Continent,
+    val clickedOption: BaseCountryDataResponse? = null,
+    val score: Int = 0,
 )
 
 data class FlagOption(

@@ -3,7 +3,6 @@ package daniel.bertoldi.geographyquiz
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.viewModels
 import androidx.annotation.DrawableRes
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.Image
@@ -69,26 +68,27 @@ class MainActivity : ComponentActivity() {
                     NavHost(navController = navigationController, startDestination = "home") {
                         composable("home") {
                             val viewModel = hiltViewModel<MainActivityViewModel>()
-                            val screenState = viewModel.screenState.collectAsState()
+                            val screenState = viewModel.mainScreenState.collectAsState()
 
                             when (screenState.value) {
-                                is ScreenState.Loading -> LoadingComponent()
-                                is ScreenState.Success -> BeginGameComponent(viewModel::startGame, { navigationController.navigate("flag") })
-                                is ScreenState.Failed -> ErrorComponent()
-                                is ScreenState.SelectContinent -> SelectContinentComponent(viewModel::startActualGame)
-                                is ScreenState.StartGame -> WeDoingThisComponent(
+                                is MainScreenState.Loading -> LoadingComponent()
+                                is MainScreenState.Success -> BeginGameComponent(
+                                    navigateToGameScreen = {
+                                        navigationController.navigate("continent")
+                                    }
+                                )
+                                is MainScreenState.Failed -> ErrorComponent()
+                                is MainScreenState.SelectContinent -> SelectContinentComponent(viewModel::startActualGame)
+                                is MainScreenState.StartGame -> WeDoingThisComponent(
                                     gameState = viewModel.gameState.collectAsState().value,
                                     optionClick = viewModel::optionClick,
                                     drawAgain = viewModel::drawAgain,
                                 )
                             }
                         }
-                        composable("flag") {
-                            Text(
-                                modifier = Modifier.fillMaxSize(),
-                                textAlign = TextAlign.Center,
-                                text = "This is the flag game screen.",
-                            )
+                        composable("continent") {
+                            val viewModel = hiltViewModel<ContinentScreenViewModel>()
+//                            SelectContinentComponent(viewModel::startFlagGame)
                         }
                     }
                 }
@@ -113,7 +113,6 @@ private fun LoadingComponent() {
 
 @Composable
 private fun BeginGameComponent(
-    startGame: () -> Unit,
     navigateToGameScreen: () -> Unit,
 ) {
     Column {

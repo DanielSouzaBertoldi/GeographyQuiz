@@ -19,28 +19,19 @@ import retrofit2.http.GET
 import javax.inject.Inject
 import kotlin.random.Random
 
-sealed class ScreenState {
-    data object Loading : ScreenState()
-    data object Success : ScreenState()
-    data object Failed : ScreenState()
-    data object SelectContinent : ScreenState()
-    data object StartGame : ScreenState()
-}
-
-enum class Continent(val simpleName: String) {
-    NORTH_AMERICA("Americas"),
-    SOUTH_AMERICA("Americas"),
-    EUROPE("Europe"),
-    AFRICA("Africa"),
-    ASIA("Asia"),
-    OCEANIA("Oceania")
+sealed class MainScreenState {
+    data object Loading : MainScreenState()
+    data object Success : MainScreenState()
+    data object Failed : MainScreenState()
+    data object SelectContinent : MainScreenState()
+    data object StartGame : MainScreenState()
 }
 
 @HiltViewModel
 class MainActivityViewModel @Inject constructor() : ViewModel() {
     private val countries = MutableStateFlow<List<BaseCountryDataResponse>>(emptyList())
-    private val _screenState = MutableStateFlow<ScreenState>(ScreenState.Loading)
-    val screenState: StateFlow<ScreenState> = _screenState.asStateFlow()
+    private val _mainScreenState = MutableStateFlow<MainScreenState>(MainScreenState.Loading)
+    val mainScreenState: StateFlow<MainScreenState> = _mainScreenState.asStateFlow()
     private val _gameState = MutableStateFlow<GameState?>(null)
     val gameState = _gameState.asStateFlow()
 
@@ -67,16 +58,16 @@ class MainActivityViewModel @Inject constructor() : ViewModel() {
                     if (p1.isSuccessful) {
                         p1.body()?.let {
                             countries.value = it
-                            _screenState.value = ScreenState.Success
+                            _mainScreenState.value = MainScreenState.Success
                         }
                     } else {
-                        _screenState.value = ScreenState.Failed
+                        _mainScreenState.value = MainScreenState.Failed
                     }
                 }
 
                 override fun onFailure(p0: Call<List<BaseCountryDataResponse>>, p1: Throwable) {
                     Log.d("FAILED!", p1.stackTraceToString())
-                    _screenState.value = ScreenState.Failed
+                    _mainScreenState.value = MainScreenState.Failed
                 }
             }
         )
@@ -85,21 +76,6 @@ class MainActivityViewModel @Inject constructor() : ViewModel() {
     interface APIInterface {
         @GET("all")
         fun getCountries(): Call<List<BaseCountryDataResponse>>
-    }
-
-    fun startGame() {
-        _screenState.value = ScreenState.SelectContinent
-    }
-
-    fun startActualGame(continent: Continent) {
-        val filteredCountries = countries.value.filter { it.region == continent.simpleName }
-        val drawnCountries = filteredCountries.shuffled().take(5).toMutableList()
-
-        _gameState.value = GameState(
-            availableOptions = drawFlagOptions(drawnCountries),
-            chosenContinent = continent,
-        )
-        _screenState.value = ScreenState.StartGame
     }
 
     fun optionClick(clickedOption: BaseCountryDataResponse) {
@@ -127,7 +103,7 @@ class MainActivityViewModel @Inject constructor() : ViewModel() {
             step = GameStep.CHOOSING_OPTION,
             availableOptions = drawFlagOptions(drawnCountries),
         )
-        _screenState.value = ScreenState.StartGame
+        _mainScreenState.value = MainScreenState.StartGame
     }
 
     private fun drawFlagOptions(countries: MutableList<BaseCountryDataResponse>): List<FlagOption> {

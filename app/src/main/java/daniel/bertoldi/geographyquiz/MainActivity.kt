@@ -78,7 +78,7 @@ class MainActivity : ComponentActivity() {
                                     }
                                 )
                                 is MainScreenState.Failed -> ErrorComponent()
-                                is MainScreenState.SelectContinent -> SelectContinentComponent(viewModel::startActualGame)
+                                is MainScreenState.SelectContinent -> SelectContinentComponent({})
                                 is MainScreenState.StartGame -> WeDoingThisComponent(
                                     gameState = viewModel.gameState.collectAsState().value,
                                     optionClick = viewModel::optionClick,
@@ -311,7 +311,7 @@ private fun LoadingComponentPreview() {
 @Preview(showBackground = true)
 @Composable
 private fun BeginGameComponentPreview() {
-    BeginGameComponent(startGame = {}, {})
+    BeginGameComponent(navigateToGameScreen = {})
 }
 
 @Preview(showBackground = true)

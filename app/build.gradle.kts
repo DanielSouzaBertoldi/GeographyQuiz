@@ -42,7 +42,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.1"
+        kotlinCompilerExtensionVersion = "1.5.7"
     }
     packaging {
         resources {
@@ -52,7 +52,7 @@ android {
 }
 
 dependencies {
-
+    // external modules
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -69,6 +69,10 @@ dependencies {
     implementation(libs.moshi.kotlin)
     implementation(libs.compose.navigation)
     implementation(libs.hilt.compose.navigation)
+
+    // internal modules
+    implementation(project(":database"))
+
     ksp(libs.hilt.compiler)
     ksp(libs.moshi.codegen)
 

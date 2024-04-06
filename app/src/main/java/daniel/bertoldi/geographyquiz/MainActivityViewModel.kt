@@ -2,14 +2,19 @@ package daniel.bertoldi.geographyquiz
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.hilt.android.lifecycle.HiltViewModel
+import daniel.bertoldi.database.DatabaseInterface
+import daniel.bertoldi.database.DatabaseStuff
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -28,7 +33,9 @@ sealed class MainScreenState {
 }
 
 @HiltViewModel
-class MainActivityViewModel @Inject constructor() : ViewModel() {
+class MainActivityViewModel @Inject constructor(
+    val databaseStuff: DatabaseInterface,
+) : ViewModel() {
     private val countries = MutableStateFlow<List<BaseCountryDataResponse>>(emptyList())
     private val _mainScreenState = MutableStateFlow<MainScreenState>(MainScreenState.Loading)
     val mainScreenState: StateFlow<MainScreenState> = _mainScreenState.asStateFlow()
@@ -37,6 +44,11 @@ class MainActivityViewModel @Inject constructor() : ViewModel() {
 
     init {
         init()
+        viewModelScope.launch(
+            context = Dispatchers.IO,
+        ) {
+            println(databaseStuff.getDb())
+        }
     }
 
     private fun init() {

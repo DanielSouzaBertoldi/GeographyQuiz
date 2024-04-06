@@ -21,4 +21,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "Geography Quiz"
 include(":app")
- 
+include(":database")

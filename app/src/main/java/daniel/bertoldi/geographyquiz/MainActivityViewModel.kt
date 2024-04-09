@@ -3,13 +3,9 @@ package daniel.bertoldi.geographyquiz
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.squareup.moshi.Json
-import com.squareup.moshi.JsonClass
-import com.squareup.moshi.Moshi
-import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.hilt.android.lifecycle.HiltViewModel
 import daniel.bertoldi.database.DatabaseInterface
-import daniel.bertoldi.database.DatabaseStuff
+import daniel.bertoldi.network.BaseCountryDataResponse
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -19,7 +15,6 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
-import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.GET
 import javax.inject.Inject
 import kotlin.random.Random
@@ -35,6 +30,7 @@ sealed class MainScreenState {
 @HiltViewModel
 class MainActivityViewModel @Inject constructor(
     val databaseStuff: DatabaseInterface,
+    val retrofit: Retrofit,
 ) : ViewModel() {
     private val countries = MutableStateFlow<List<BaseCountryDataResponse>>(emptyList())
     private val _mainScreenState = MutableStateFlow<MainScreenState>(MainScreenState.Loading)
@@ -52,14 +48,7 @@ class MainActivityViewModel @Inject constructor(
     }
 
     private fun init() {
-        val moshi = Moshi.Builder()
-            .addLast(KotlinJsonAdapterFactory())
-            .build()
-        val retrofit = Retrofit.Builder()
-            .baseUrl("https://restcountries.com/v3.1/")
-            .addConverterFactory(MoshiConverterFactory.create(moshi))
-            .build()
-            .create(APIInterface::class.java)
+        val retrofit = retrofit.create(RestCountriesApiInterface::class.java)
 
         retrofit.getCountries().enqueue(
             object : Callback<List<BaseCountryDataResponse>> {
@@ -69,6 +58,7 @@ class MainActivityViewModel @Inject constructor(
                 ) {
                     if (p1.isSuccessful) {
                         p1.body()?.let {
+                            println(it)
                             countries.value = it
                             _mainScreenState.value = MainScreenState.Success
                         }
@@ -85,7 +75,7 @@ class MainActivityViewModel @Inject constructor(
         )
     }
 
-    interface APIInterface {
+    interface RestCountriesApiInterface {
         @GET("all")
         fun getCountries(): Call<List<BaseCountryDataResponse>>
     }
@@ -156,74 +146,3 @@ enum class GameStep {
     CHOOSING_OPTION,
     OPTION_SELECTED,
 }
-
-@JsonClass(generateAdapter = true)
-data class BaseCountryDataResponse(
-    val name: CountryNameDataResponse,
-    @Json(name = "tld") val topLevelDomains: List<String>?,
-    @Json(name = "cca2") val countryCode: String,
-    val independent: Boolean?,
-    val status: String,
-    val unMember: Boolean,
-    val idd: InternationalDialResponse,
-    val capital: List<String>?,
-    @Json(name = "altSpellings") val alternativeSpellings: List<String>,
-    val region: String,
-    @Json(name = "subregion") val subRegion: String?,
-    val languages: Map<String, String>?,
-    val translations: SupportedLanguagesResponse,
-    val landlocked: Boolean,
-    val area: Float,
-    @Json(name = "flag") val emojiFlag: String,
-    val population: Int,
-    val car: CarResponse,
-    val timezones: List<String>,
-    val continents: List<String>,
-    val flags: FlagsResponse,
-    val coatOfArms: CoatOfArmsResponse,
-    val startOfWeek: String,
-)
-
-@JsonClass(generateAdapter = true)
-data class CountryNameDataResponse(
-    val common: String,
-    val official: String,
-    val nativeName: Map<String, Yeah>?,
-)
-
-@JsonClass(generateAdapter = true)
-data class Yeah(
-    val common: String,
-    val official: String,
-)
-
-@JsonClass(generateAdapter = true)
-data class InternationalDialResponse(
-    val root: String?,
-    val suffixes: List<String>?,
-)
-
-@JsonClass(generateAdapter = true)
-data class SupportedLanguagesResponse(
-    val fra: CountryNameDataResponse,
-    val ita: CountryNameDataResponse,
-    val por: CountryNameDataResponse,
-    val spa: CountryNameDataResponse,
-)
-
-@JsonClass(generateAdapter = true)
-data class CarResponse(
-    val signs: List<String>?,
-    val side: String,
-)
-
-@JsonClass(generateAdapter = true)
-data class FlagsResponse(
-    val png: String,
-    val alt: String?,
-)
-
-@JsonClass(generateAdapter = true)
-data class CoatOfArmsResponse(
-    val png: String?,
-)

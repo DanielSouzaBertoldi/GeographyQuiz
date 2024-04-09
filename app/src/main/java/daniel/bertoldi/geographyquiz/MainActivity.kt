@@ -46,12 +46,12 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import dagger.hilt.android.AndroidEntryPoint
-import daniel.bertoldi.database.DatabaseStuff
+import dagger.hilt.android.EntryPointAccessors
 import daniel.bertoldi.geographyquiz.ui.theme.BrunswickGreen
 import daniel.bertoldi.geographyquiz.ui.theme.GeographyQuizTheme
 import daniel.bertoldi.geographyquiz.ui.theme.OffWhite
 import daniel.bertoldi.geographyquiz.ui.theme.Typography
-import javax.inject.Inject
+import daniel.bertoldi.network.BaseCountryDataResponse
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {

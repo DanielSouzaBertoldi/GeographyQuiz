@@ -51,7 +51,6 @@ dependencies {
     implementation(libs.room.runtime)
     implementation(libs.dagger.hilt)
     ksp(libs.room.compiler)
-    ksp(libs.dagger.compiler)
     ksp(libs.hilt.compiler)
 
     testImplementation(libs.junit)

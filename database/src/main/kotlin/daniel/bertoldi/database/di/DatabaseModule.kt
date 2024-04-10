@@ -2,16 +2,17 @@ package daniel.bertoldi.database.di
 
 import android.content.Context
 import androidx.room.Room
-import dagger.Binds
+import com.squareup.moshi.Moshi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import daniel.bertoldi.database.CountriesDao
 import daniel.bertoldi.database.DatabaseInterface
 import daniel.bertoldi.database.DatabaseStuff
-import daniel.bertoldi.database.TestDao
-import daniel.bertoldi.database.TestDatabase
+import daniel.bertoldi.database.typeconverters.InternationalDialTypeConverter
+import daniel.bertoldi.database.CountriesDatabase
 import javax.inject.Singleton
 
 private const val DATABASE_NAME = "GeographyQuizDatabase"
@@ -21,17 +22,21 @@ private const val DATABASE_NAME = "GeographyQuizDatabase"
 class DatabaseModule {
     @Provides
     @Singleton
-    fun provideAppDatabase(@ApplicationContext appContext: Context): TestDatabase {
+    fun provideAppDatabase(
+        @ApplicationContext appContext: Context,
+        moshi: Moshi
+    ): CountriesDatabase {
+        // val international = InternationalDialTypeConverter(moshi)
         return Room.databaseBuilder(
             appContext,
-            TestDatabase::class.java,
+            CountriesDatabase::class.java,
             DATABASE_NAME,
-        ).build()
+        ).addTypeConverter(InternationalDialTypeConverter(moshi)).build()
     }
 
     @Provides
-    fun provideTestDao(appDatabase: TestDatabase): TestDao {
-        return appDatabase.testDao()
+    fun provideCountriesDao(appDatabase: CountriesDatabase): CountriesDao {
+        return appDatabase.countriesDao()
     }
 
     @Provides

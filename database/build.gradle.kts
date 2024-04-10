@@ -50,6 +50,9 @@ dependencies {
     implementation(libs.room.ktx)
     implementation(libs.room.runtime)
     implementation(libs.dagger.hilt)
+    implementation(libs.moshi.kotlin)
+
+    implementation(project(":network"))
     ksp(libs.room.compiler)
     ksp(libs.hilt.compiler)
 

@@ -18,7 +18,6 @@ enum class Continent(val simpleName: String) {
 @HiltViewModel
 class ContinentScreenViewModel @Inject constructor() : ViewModel() {
 
-//    I'll have to use Jetpack Room... It's best to not pass complex data with navigation.
 //    fun startActualGame(continent: Continent) {
 //        val filteredCountries = countries.value.filter { it.region == continent.simpleName }
 //        val drawnCountries = filteredCountries.shuffled().take(5).toMutableList()

@@ -2,35 +2,77 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "8624313a4e0982ebaabb94c2df640ae7",
+    "identityHash": "5e88f46b1777ced2ccf36f4e6e8e139f",
     "entities": [
       {
-        "tableName": "Test",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uuid` INTEGER NOT NULL, `country_name` TEXT NOT NULL, `population` TEXT NOT NULL, PRIMARY KEY(`uuid`))",
+        "tableName": "countries",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`contry_code` TEXT NOT NULL, `top_level_domains` TEXT, `independent` INTEGER NOT NULL, `un_member` INTEGER NOT NULL, `international_dial_response` TEXT NOT NULL, `capital` TEXT, `alternative_spellings` TEXT NOT NULL, `region` TEXT NOT NULL, `subRegion` TEXT, `languages` TEXT, PRIMARY KEY(`contry_code`))",
         "fields": [
           {
-            "fieldPath": "uuid",
-            "columnName": "uuid",
+            "fieldPath": "countryCode",
+            "columnName": "contry_code",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tld",
+            "columnName": "top_level_domains",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "independent",
+            "columnName": "independent",
             "affinity": "INTEGER",
             "notNull": true
           },
           {
-            "fieldPath": "countryName",
-            "columnName": "country_name",
+            "fieldPath": "unMember",
+            "columnName": "un_member",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "idd",
+            "columnName": "international_dial_response",
             "affinity": "TEXT",
             "notNull": true
           },
           {
-            "fieldPath": "population",
-            "columnName": "population",
+            "fieldPath": "capital",
+            "columnName": "capital",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "altSpellings",
+            "columnName": "alternative_spellings",
             "affinity": "TEXT",
             "notNull": true
+          },
+          {
+            "fieldPath": "region",
+            "columnName": "region",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "subRegion",
+            "columnName": "subRegion",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "languages",
+            "columnName": "languages",
+            "affinity": "TEXT",
+            "notNull": false
           }
         ],
         "primaryKey": {
           "autoGenerate": false,
           "columnNames": [
-            "uuid"
+            "contry_code"
           ]
         },
         "indices": [],
@@ -40,7 +82,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '8624313a4e0982ebaabb94c2df640ae7')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '5e88f46b1777ced2ccf36f4e6e8e139f')"
     ]
   }
 }

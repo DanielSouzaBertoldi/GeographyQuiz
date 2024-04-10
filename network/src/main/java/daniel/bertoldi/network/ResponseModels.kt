@@ -9,7 +9,6 @@ data class BaseCountryDataResponse(
     @Json(name = "tld") val topLevelDomains: List<String>?,
     @Json(name = "cca2") val countryCode: String,
     val independent: Boolean?,
-    val status: String,
     val unMember: Boolean,
     val idd: InternationalDialResponse,
     val capital: List<String>?,
@@ -17,7 +16,7 @@ data class BaseCountryDataResponse(
     val region: String,
     @Json(name = "subregion") val subRegion: String?,
     val languages: Map<String, String>?,
-    val translations: SupportedLanguagesResponse,
+    val translations: SupportedLanguagesResponse, // TODO: not sure if this is needed
     val landlocked: Boolean,
     val area: Float,
     @Json(name = "flag") val emojiFlag: String,

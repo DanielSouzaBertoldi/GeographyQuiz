@@ -29,8 +29,8 @@ sealed class MainScreenState {
 
 @HiltViewModel
 class MainActivityViewModel @Inject constructor(
-    val databaseStuff: DatabaseInterface,
-    val retrofit: Retrofit,
+    private val databaseStuff: DatabaseInterface,
+    private val retrofit: Retrofit,
 ) : ViewModel() {
     private val countries = MutableStateFlow<List<BaseCountryDataResponse>>(emptyList())
     private val _mainScreenState = MutableStateFlow<MainScreenState>(MainScreenState.Loading)
@@ -38,14 +38,7 @@ class MainActivityViewModel @Inject constructor(
     private val _gameState = MutableStateFlow<GameState?>(null)
     val gameState = _gameState.asStateFlow()
 
-    init {
-        init()
-        viewModelScope.launch(
-            context = Dispatchers.IO,
-        ) {
-            println(databaseStuff.getDb())
-        }
-    }
+    init { init() }
 
     private fun init() {
         val retrofit = retrofit.create(RestCountriesApiInterface::class.java)
@@ -58,7 +51,11 @@ class MainActivityViewModel @Inject constructor(
                 ) {
                     if (p1.isSuccessful) {
                         p1.body()?.let {
-                            println(it)
+                            viewModelScope.launch(
+                                Dispatchers.IO
+                            ) {
+                                databaseStuff.saveCountries(it)
+                            }
                             countries.value = it
                             _mainScreenState.value = MainScreenState.Success
                         }

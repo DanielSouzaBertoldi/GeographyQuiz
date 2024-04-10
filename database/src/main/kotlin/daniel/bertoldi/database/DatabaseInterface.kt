@@ -1,8 +1,11 @@
 package daniel.bertoldi.database
 
+import daniel.bertoldi.network.BaseCountryDataResponse
+
 interface DatabaseInterface {
 
-    fun getDb(): List<Test>
+    fun getDb(): List<CountryEntity>
 
-    fun saveToDb(flags: List<String>) // TODO: Change this to the model in the
+    fun saveCountry(country: BaseCountryDataResponse)
+    fun saveCountries(countries: List<BaseCountryDataResponse>)
 }

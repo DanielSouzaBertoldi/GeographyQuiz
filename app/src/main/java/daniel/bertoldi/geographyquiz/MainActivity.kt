@@ -46,7 +46,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import dagger.hilt.android.AndroidEntryPoint
-import dagger.hilt.android.EntryPointAccessors
+import daniel.bertoldi.database.CountryEntity
 import daniel.bertoldi.geographyquiz.ui.theme.BrunswickGreen
 import daniel.bertoldi.geographyquiz.ui.theme.GeographyQuizTheme
 import daniel.bertoldi.geographyquiz.ui.theme.OffWhite
@@ -76,21 +76,22 @@ class MainActivity : ComponentActivity() {
                                 is MainScreenState.Loading -> LoadingComponent()
                                 is MainScreenState.Success -> BeginGameComponent(
                                     navigateToGameScreen = {
-                                        navigationController.navigate("continent")
+                                        navigationController.navigate("continentSelection")
                                     }
                                 )
                                 is MainScreenState.Failed -> ErrorComponent()
-                                is MainScreenState.SelectContinent -> SelectContinentComponent({})
-                                is MainScreenState.StartGame -> WeDoingThisComponent(
-                                    gameState = viewModel.gameState.collectAsState().value,
-                                    optionClick = viewModel::optionClick,
-                                    drawAgain = viewModel::drawAgain,
-                                )
                             }
                         }
-                        composable("continent") {
+                        composable("continentSelection") {
                             val viewModel = hiltViewModel<ContinentScreenViewModel>()
-//                            SelectContinentComponent(viewModel::startFlagGame)
+                            when (viewModel.gameScreenState.collectAsState().value) {
+                                is GameScreenState.SelectContinent -> SelectContinentComponent(viewModel::startFlagGame)
+                                is GameScreenState.StartGame -> WeDoingThisComponent(
+                                    gameState = viewModel.gameState.collectAsState().value,
+                                    optionClick = { viewModel.optionClick(it) },
+                                    drawAgain = { viewModel.drawAgain() },
+                                )
+                            }
                         }
                     }
                 }
@@ -239,7 +240,7 @@ private fun ContinentCard(
 @Composable
 private fun WeDoingThisComponent(
     gameState: GameState?,
-    optionClick: (BaseCountryDataResponse) -> Unit,
+    optionClick: (CountryEntity) -> Unit,
     drawAgain: () -> Unit,
 ) {
     var loadingFlag by remember { mutableStateOf(gameState?.step == GameStep.CHOOSING_OPTION) }
@@ -255,7 +256,7 @@ private fun WeDoingThisComponent(
                 Text(text = "Score: ${gameState.score}")
 
                 AsyncImage(
-                    model = gameState.availableOptions.find { it.isTheCorrectAnswer }?.countryData?.flags?.png,
+                    model = gameState.availableOptions.find { it.isTheCorrectAnswer }?.countryData?.flagPng,
                     contentDescription = null,
                     onSuccess = { loadingFlag = false }
                 )

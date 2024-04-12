@@ -9,40 +9,14 @@ class DatabaseStuff @Inject constructor(
 
     override fun getDb() = countriesDao.getAll()
 
-    // TODO: Maybe I don't need this insert at all.
-    override fun saveCountry(country: BaseCountryDataResponse) {
-        countriesDao.insertCountry(
-            country = CountryEntity(
-                countryCode = country.countryCode,
-                tld = country.topLevelDomains,
-                independent = country.independent ?: false,
-                unMember = country.unMember,
-                idd = country.idd,
-                capital = country.capital,
-                altSpellings = country.alternativeSpellings,
-                region = country.region,
-                subRegion = country.subRegion,
-                languages = country.languages,
-                landlocked = country.landlocked,
-                area = country.area,
-                emojiFlag = country.emojiFlag,
-                population = country.population,
-                carSigns = country.car.signs,
-                carSide = country.car.side, // TODO: this could be an enum. Left/Right.
-                timezones = country.timezones,
-                continents = country.continents,
-                flagPng = country.flags.png,
-                coatOfArms = country.coatOfArms.png,
-                startOfWeek = country.startOfWeek,
-            )
-        )
-    }
+    override fun fetchCountriesCount() = countriesDao.fetchCountriesCount()
 
     override fun saveCountries(countries: List<BaseCountryDataResponse>) {
         countriesDao.insertCountries(
             countries.map {
                 CountryEntity(
                     countryCode = it.countryCode,
+                    name = it.name,
                     tld = it.topLevelDomains,
                     independent = it.independent ?: false,
                     unMember = it.unMember,
@@ -67,4 +41,7 @@ class DatabaseStuff @Inject constructor(
             }
         )
     }
+
+    override fun fetchCountriesInContinent(continent: String) =
+        countriesDao.fetchCountriesInContinent(continent)
 }

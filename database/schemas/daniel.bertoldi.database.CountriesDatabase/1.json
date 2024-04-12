@@ -2,15 +2,21 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "b6e3872a134c64020f077dd115cfefb4",
+    "identityHash": "c927346d35a362ca0ea926eb0e5b4e12",
     "entities": [
       {
         "tableName": "countries",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`contry_code` TEXT NOT NULL, `top_level_domains` TEXT, `independent` INTEGER NOT NULL, `un_member` INTEGER NOT NULL, `international_dial_response` TEXT NOT NULL, `capital` TEXT, `alternative_spellings` TEXT NOT NULL, `region` TEXT NOT NULL, `subRegion` TEXT, `languages` TEXT, `landlocked` INTEGER NOT NULL, `area` REAL NOT NULL, `emoji_flag` TEXT NOT NULL, `population` INTEGER NOT NULL, `car_signs` TEXT, `car_side` TEXT NOT NULL, `timezones` TEXT NOT NULL, `continents` TEXT NOT NULL, `flagPng` TEXT NOT NULL, `coatOfArms` TEXT, `startOfWeek` TEXT NOT NULL, PRIMARY KEY(`contry_code`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`contry_code` TEXT NOT NULL, `name` TEXT NOT NULL, `top_level_domains` TEXT, `independent` INTEGER NOT NULL, `un_member` INTEGER NOT NULL, `international_dial_response` TEXT NOT NULL, `capital` TEXT, `alternative_spellings` TEXT NOT NULL, `region` TEXT NOT NULL, `subRegion` TEXT, `languages` TEXT, `landlocked` INTEGER NOT NULL, `area` REAL NOT NULL, `emoji_flag` TEXT NOT NULL, `population` INTEGER NOT NULL, `car_signs` TEXT, `car_side` TEXT NOT NULL, `timezones` TEXT NOT NULL, `continents` TEXT NOT NULL, `flagPng` TEXT NOT NULL, `coatOfArms` TEXT, `startOfWeek` TEXT NOT NULL, PRIMARY KEY(`contry_code`))",
         "fields": [
           {
             "fieldPath": "countryCode",
             "columnName": "contry_code",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
             "affinity": "TEXT",
             "notNull": true
           },
@@ -148,7 +154,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'b6e3872a134c64020f077dd115cfefb4')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'c927346d35a362ca0ea926eb0e5b4e12')"
     ]
   }
 }

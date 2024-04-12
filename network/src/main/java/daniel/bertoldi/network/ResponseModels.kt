@@ -5,7 +5,7 @@ import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
 data class BaseCountryDataResponse(
-    val name: CountryNameDataResponse,
+    val name: NameDataResponse,
     @Json(name = "tld") val topLevelDomains: List<String>?,
     @Json(name = "cca2") val countryCode: String,
     val independent: Boolean?,
@@ -30,16 +30,10 @@ data class BaseCountryDataResponse(
 )
 
 @JsonClass(generateAdapter = true)
-data class CountryNameDataResponse(
+data class NameDataResponse(
     val common: String,
     val official: String,
-    val nativeName: Map<String, Yeah>?,
-)
-
-@JsonClass(generateAdapter = true)
-data class Yeah(
-    val common: String,
-    val official: String,
+    // val nativeName: Map<String, Yeah>?, TODO: check if it's worth it to store the nativeName
 )
 
 @JsonClass(generateAdapter = true)
@@ -49,11 +43,11 @@ data class InternationalDialResponse(
 )
 
 @JsonClass(generateAdapter = true)
-data class SupportedLanguagesResponse(
-    val fra: CountryNameDataResponse,
-    val ita: CountryNameDataResponse,
-    val por: CountryNameDataResponse,
-    val spa: CountryNameDataResponse,
+data class SupportedLanguagesResponse( // TODO: maybe this doesn't make sense. Idk.
+    val fra: NameDataResponse,
+    val ita: NameDataResponse,
+    val por: NameDataResponse,
+    val spa: NameDataResponse,
 )
 
 @JsonClass(generateAdapter = true)

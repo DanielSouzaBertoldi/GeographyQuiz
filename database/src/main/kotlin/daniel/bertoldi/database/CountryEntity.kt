@@ -3,12 +3,13 @@ package daniel.bertoldi.database
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import daniel.bertoldi.network.CarResponse
+import daniel.bertoldi.network.NameDataResponse
 import daniel.bertoldi.network.InternationalDialResponse
 
 @Entity(tableName = "countries")
 data class CountryEntity(
     @PrimaryKey @ColumnInfo(name = "contry_code") val countryCode: String,
+    val name: NameDataResponse,
     @ColumnInfo(name = "top_level_domains") val tld: List<String>?,
     val independent: Boolean,
     @ColumnInfo(name = "un_member") val unMember: Boolean,

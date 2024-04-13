@@ -8,8 +8,8 @@ class MapStringStringTypeConverter {
     @TypeConverter
     fun fromStringMap(value: Map<String, String>?): String? {
         return value?.let {
-            val sortedMap = value?.let { TreeMap(it) }
-            sortedMap?.keys?.joinToString(",").plus("<div>").plus(sortedMap?.values?.joinToString(","))
+            val sortedMap = TreeMap(value)
+            sortedMap.keys.joinToString(",").plus("<div>").plus(sortedMap.values.joinToString(","))
         }
     }
 

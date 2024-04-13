@@ -7,7 +7,7 @@ class DatabaseStuff @Inject constructor(
     private val countriesDao: CountriesDao,
 ) : DatabaseInterface {
 
-    override fun getDb() = countriesDao.getAll()
+    override fun getAllCountries() = countriesDao.getAll()
 
     override fun fetchCountriesCount() = countriesDao.fetchCountriesCount()
 

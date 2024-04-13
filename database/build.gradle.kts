@@ -26,6 +26,12 @@ android {
         }
     }
 
+    packaging {
+        resources {
+            excludes += "/META-INF/*"
+        }
+    }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
@@ -45,7 +51,6 @@ ksp {
 }
 
 dependencies {
-    annotationProcessor(libs.room.compiler)
     implementation(libs.androidx.core.ktx)
     implementation(libs.room.ktx)
     implementation(libs.room.runtime)
@@ -56,6 +61,11 @@ dependencies {
     ksp(libs.room.compiler)
     ksp(libs.hilt.compiler)
 
-    testImplementation(libs.jupiter.api)
+    testImplementation(libs.junit)
     testImplementation(libs.room.testing)
+    androidTestImplementation(libs.mockk.android)
+    androidTestImplementation(libs.mockk.agent)
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation(project(":network"))
 }

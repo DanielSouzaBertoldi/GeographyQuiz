@@ -105,8 +105,9 @@ class MainActivity : ComponentActivity() {
                             )
                         ) {
                             val viewModel = hiltViewModel<FlagGameViewModel>()
-                            LaunchedEffect(it.arguments?.getString("continent")) {
-                                viewModel.startFlagGame(it.arguments?.getString("continent").orEmpty())
+                            val chosenContinent = it.arguments?.getString("continent").orEmpty()
+                            LaunchedEffect(chosenContinent) {
+                                viewModel.startFlagGame(chosenContinent)
                             }
 
                             FlagGameComponent(

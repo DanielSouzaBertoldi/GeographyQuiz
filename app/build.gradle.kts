@@ -51,6 +51,10 @@ android {
     }
 }
 
+tasks.withType<Test> {
+    useJUnitPlatform()
+}
+
 dependencies {
     // external modules
     implementation(libs.androidx.core.ktx)
@@ -78,6 +82,12 @@ dependencies {
     ksp(libs.moshi.codegen)
 
     testImplementation(libs.junit)
+    testImplementation(libs.jupiter.api)
+    testImplementation(libs.mockk)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testRuntimeOnly(libs.jupiter.engine)
+    testRuntimeOnly(libs.jupiter.vintage)
+
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))

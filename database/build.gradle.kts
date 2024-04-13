@@ -56,6 +56,6 @@ dependencies {
     ksp(libs.room.compiler)
     ksp(libs.hilt.compiler)
 
-    testImplementation(libs.junit)
+    testImplementation(libs.jupiter.api)
     testImplementation(libs.room.testing)
 }

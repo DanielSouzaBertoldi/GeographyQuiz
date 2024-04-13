@@ -27,6 +27,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -41,9 +42,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import coil.compose.AsyncImage
 import dagger.hilt.android.AndroidEntryPoint
 import daniel.bertoldi.database.CountryEntity
@@ -51,7 +54,6 @@ import daniel.bertoldi.geographyquiz.ui.theme.BrunswickGreen
 import daniel.bertoldi.geographyquiz.ui.theme.GeographyQuizTheme
 import daniel.bertoldi.geographyquiz.ui.theme.OffWhite
 import daniel.bertoldi.geographyquiz.ui.theme.Typography
-import daniel.bertoldi.network.BaseCountryDataResponse
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -79,19 +81,36 @@ class MainActivity : ComponentActivity() {
                                         navigationController.navigate("continentSelection")
                                     }
                                 )
+
                                 is MainScreenState.Failed -> ErrorComponent()
                             }
                         }
                         composable("continentSelection") {
-                            val viewModel = hiltViewModel<ContinentScreenViewModel>()
-                            when (viewModel.gameScreenState.collectAsState().value) {
-                                is GameScreenState.SelectContinent -> SelectContinentComponent(viewModel::startFlagGame)
-                                is GameScreenState.StartGame -> WeDoingThisComponent(
-                                    gameState = viewModel.gameState.collectAsState().value,
-                                    optionClick = { viewModel.optionClick(it) },
-                                    drawAgain = { viewModel.drawAgain() },
-                                )
+                            SelectContinentComponent {
+                                navigationController.navigate("flagGame/${it.simpleName}")
                             }
+                        }
+                        composable(
+                            route = "flagGame/{continent}",
+                            arguments = listOf(
+                                navArgument("continent") {
+                                    type = NavType.StringType
+                                    defaultValue = ""
+                                },
+                            )
+                        ) {
+                            val viewModel = hiltViewModel<FlagGameViewModel>()
+                            LaunchedEffect(it.arguments?.getString("continent")) {
+                                viewModel.startFlagGame(it.arguments?.getString("continent").orEmpty())
+                            }
+
+                            FlagGameComponent(
+                                gameState = viewModel.gameState.collectAsState().value,
+                                optionClick = {
+                                    clickedOption -> viewModel.optionClick(clickedOption)
+                                },
+                                drawAgain = { viewModel.drawAgain() }
+                            )
                         }
                     }
                 }
@@ -238,7 +257,7 @@ private fun ContinentCard(
 }
 
 @Composable
-private fun WeDoingThisComponent(
+private fun FlagGameComponent(
     gameState: GameState?,
     optionClick: (CountryEntity) -> Unit,
     drawAgain: () -> Unit,
@@ -273,7 +292,7 @@ private fun WeDoingThisComponent(
                             val backgroundColor by animateColorAsState(
                                 targetValue = if (gameState.step == GameStep.OPTION_SELECTED && it.isTheCorrectAnswer) {
                                     Color.Green
-                                } else if (gameState.step == GameStep.OPTION_SELECTED && it.countryData.countryCode == gameState.clickedOption?.countryCode){
+                                } else if (gameState.step == GameStep.OPTION_SELECTED && it.countryData.countryCode == gameState.clickedOption?.countryCode) {
                                     Color.Red
                                 } else {
                                     Color.Gray

@@ -7,47 +7,28 @@ import daniel.bertoldi.database.CountryEntity
 import daniel.bertoldi.database.DatabaseInterface
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.random.Random
 
-
-enum class Continent(val simpleName: String) {
-    NORTH_AMERICA("North America"),
-    SOUTH_AMERICA("South America"),
-    EUROPE("Europe"),
-    AFRICA("Africa"),
-    ASIA("Asia"),
-    OCEANIA("Oceania")
-}
-
-sealed class GameScreenState {
-    data object SelectContinent : GameScreenState()
-    data object StartGame : GameScreenState()
-}
-
 @HiltViewModel
-class ContinentScreenViewModel @Inject constructor(
+class FlagGameViewModel @Inject constructor(
     private val databaseInterface: DatabaseInterface,
 ) : ViewModel() {
     private val countries = MutableStateFlow<List<CountryEntity>>(emptyList())
-    private val _gameScreenState = MutableStateFlow<GameScreenState>(GameScreenState.SelectContinent)
-    val gameScreenState: StateFlow<GameScreenState> = _gameScreenState.asStateFlow()
     private val _gameState = MutableStateFlow<GameState?>(null)
     val gameState = _gameState.asStateFlow()
 
-    fun startFlagGame(continent: Continent) {
+    fun startFlagGame(continent: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            countries.value = databaseInterface.fetchCountriesInContinent(continent.simpleName)
+            countries.value = databaseInterface.fetchCountriesInContinent(continent)
             val drawnCountries = countries.value.shuffled().take(5).toMutableList()
 
             _gameState.value = GameState(
                 availableOptions = drawFlagOptions(drawnCountries),
                 chosenContinent = continent,
             )
-            _gameScreenState.value = GameScreenState.StartGame
         }
     }
 
@@ -80,7 +61,6 @@ class ContinentScreenViewModel @Inject constructor(
             step = GameStep.CHOOSING_OPTION,
             availableOptions = drawFlagOptions(drawnCountries),
         )
-        _gameScreenState.value = GameScreenState.StartGame
     }
 
     fun optionClick(clickedOption: CountryEntity) {
@@ -102,7 +82,7 @@ class ContinentScreenViewModel @Inject constructor(
 data class GameState(
     val step: GameStep = GameStep.CHOOSING_OPTION,
     val availableOptions: List<FlagOption>,
-    val chosenContinent: Continent,
+    val chosenContinent: String,
     val clickedOption: CountryEntity? = null,
     val score: Int = 0,
 )

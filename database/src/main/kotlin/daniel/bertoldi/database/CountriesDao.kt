@@ -15,7 +15,7 @@ interface CountriesDao {
     @Query("SELECT COUNT(*) FROM countries")
     fun fetchCountriesCount(): Int
 
-    @Query("SELECT * FROM countries WHERE continents LIKE :continent")
+    @Query("SELECT * FROM countries WHERE continents LIKE '%' || :continent || '%'")
     fun fetchCountriesInContinent(continent: String): List<CountryEntity>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)

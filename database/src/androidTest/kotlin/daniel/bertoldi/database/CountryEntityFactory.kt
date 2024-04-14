@@ -2,12 +2,13 @@ package daniel.bertoldi.database
 
 import daniel.bertoldi.network.InternationalDialResponse
 import daniel.bertoldi.network.NameDataResponse
+import java.util.UUID
 
 object CountryEntityFactory {
 
     // TODO: create a test-utils module and put TestUtils in there so I can use its methods here
     fun make(
-        countryCode: String = "BR",
+        countryCode: String = UUID.randomUUID().toString(),
         name: NameDataResponse = NameDataResponse("Brasil", "República do Brasil"),
         tld: List<String>? = null,
         independent: Boolean = true,

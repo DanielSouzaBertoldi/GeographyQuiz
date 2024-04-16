@@ -2,10 +2,25 @@
 <project version="4">
   <component name="deploymentTargetDropDown">
     <value>
+      <entry key="CountryDatabaseTest">
+        <State />
+      </entry>
       <entry key="app">
         <State />
       </entry>
       <entry key="database">
+        <State />
+      </entry>
+      <entry key="onDeleteCountry_assertCorrectNumberOfCountriesInDatabase()">
+        <State />
+      </entry>
+      <entry key="onFetchCountriesInContinent_assertCorrectListOfCountriesInSpecifiedContinent()">
+        <State />
+      </entry>
+      <entry key="onFetchCountriesInContinent_withInvalidContinent_assertNoCountriesReturned()">
+        <State />
+      </entry>
+      <entry key="onInsertCountries_assertAllDataCorrect()">
         <State />
       </entry>
     </value>

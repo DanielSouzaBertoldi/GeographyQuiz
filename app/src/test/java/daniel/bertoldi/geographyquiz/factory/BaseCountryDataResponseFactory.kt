@@ -1,12 +1,12 @@
 package daniel.bertoldi.geographyquiz.factory
 
 import daniel.bertoldi.geographyquiz.Continent
-import daniel.bertoldi.geographyquiz.DayOfWeek
-import daniel.bertoldi.geographyquiz.randomBoolean
-import daniel.bertoldi.geographyquiz.randomEnumValue
-import daniel.bertoldi.geographyquiz.randomList
-import daniel.bertoldi.geographyquiz.randomString
-import daniel.bertoldi.geographyquiz.randomUrl
+import daniel.bertoldi.test.utils.DayOfWeek
+import daniel.bertoldi.test.utils.randomBoolean
+import daniel.bertoldi.test.utils.randomEnumValue
+import daniel.bertoldi.test.utils.randomList
+import daniel.bertoldi.test.utils.randomString
+import daniel.bertoldi.test.utils.randomUrl
 import daniel.bertoldi.network.BaseCountryDataResponse
 import daniel.bertoldi.network.CarResponse
 import daniel.bertoldi.network.CoatOfArmsResponse

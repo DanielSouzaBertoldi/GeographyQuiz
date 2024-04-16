@@ -15,6 +15,7 @@ dependencies {
     implementation(libs.moshi)
     implementation(libs.moshi.kotlin)
     implementation(libs.hilt.core)
+    testImplementation(project(":test-utils"))
 
     ksp(libs.hilt.compiler)
     ksp(libs.moshi.codegen)

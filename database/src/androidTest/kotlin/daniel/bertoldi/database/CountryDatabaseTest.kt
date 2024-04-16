@@ -5,8 +5,11 @@ import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.squareup.moshi.Moshi
+import daniel.bertoldi.database.CountryEntityFactory.makeInternationalDialResponse
 import daniel.bertoldi.database.typeconverters.InternationalDialTypeConverter
 import daniel.bertoldi.network.InternationalDialResponse
+import daniel.bertoldi.test.utils.randomList
+import daniel.bertoldi.test.utils.randomString
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.After
@@ -24,7 +27,6 @@ class CountryDatabaseTest {
     private lateinit var countriesDao: CountriesDao
     private lateinit var database: CountriesDatabase
 
-    //TODO: Honestly wtf is this??? I've no idea what I'm doing!!!
     @Before
     fun createDb() {
         prepareScenario()
@@ -45,7 +47,16 @@ class CountryDatabaseTest {
     @Test
     @Throws(Exception::class)
     fun onInsertCountries_assertAllDataCorrect() {
-        val country = CountryEntityFactory.make(languages = null)
+        val internationalDialResponse = makeInternationalDialResponse(
+            root = randomString(),
+            suffixes = randomList<String>()
+        )
+        val country = CountryEntityFactory.make(
+            languages = null,
+            idd = internationalDialResponse,
+        )
+        prepareScenario(fromJsonMock = internationalDialResponse)
+
         countriesDao.insertCountries(listOf(country))
         val fetchCountry = countriesDao.getAll().first()
         Assert.assertEquals(country.toString(), fetchCountry.toString())
@@ -124,14 +135,14 @@ class CountryDatabaseTest {
     }
 
     private fun prepareScenario(
-        toJsonMock: String = "yeah", // TODO: update to use TestUtils
-        fromJsonMock: InternationalDialResponse = InternationalDialResponse("+5", listOf("5")),
+        toJsonMock: String = randomString(),
+        fromJsonMock: InternationalDialResponse = makeInternationalDialResponse(),
     ) {
         every {
             moshi.adapter(InternationalDialResponse::class.java).toJson(any())
         } returns toJsonMock
         every {
-            moshi.adapter(InternationalDialResponse::class.java).fromJson("yeah")
+            moshi.adapter(InternationalDialResponse::class.java).fromJson(toJsonMock)
         } returns fromJsonMock
     }
 }

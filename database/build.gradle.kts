@@ -57,7 +57,9 @@ dependencies {
     implementation(libs.dagger.hilt)
     implementation(libs.moshi.kotlin)
 
-    implementation(project(":network"))
+    implementation(project(":network")) // TODO: this really shouldn't be here!
+    androidTestImplementation(project(":test-utils"))
+
     ksp(libs.room.compiler)
     ksp(libs.hilt.compiler)
 

@@ -77,6 +77,7 @@ dependencies {
     // internal modules
     implementation(project(":database"))
     implementation(project(":network"))
+    testImplementation(project(":test-utils"))
 
     ksp(libs.hilt.compiler)
     ksp(libs.moshi.codegen)

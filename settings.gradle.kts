@@ -23,3 +23,4 @@ rootProject.name = "Geography Quiz"
 include(":app")
 include(":database")
 include(":network")
+include(":test-utils")

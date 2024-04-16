@@ -1,9 +1,12 @@
-package daniel.bertoldi.geographyquiz
+package daniel.bertoldi.test.utils
 
 import java.lang.IllegalArgumentException
+import java.util.UUID
 import kotlin.random.Random
 
 val alphabet: List<Char> = ('a'..'z') + ('A'..'Z') + ('0'..'9')
+
+fun randomUUID() = UUID.randomUUID().toString()
 
 fun randomString(minSize: Int = 1, maxSize: Int = 5) = (minSize..maxSize).map {
     alphabet.random()
@@ -24,6 +27,9 @@ inline fun <reified T> randomList(numOfItems: Int = 3): List<T> {
 }
 
 fun randomBoolean() = Random.nextBoolean()
+
+fun randomInt(min: Int = 3, max: Int = 5) = Random.nextInt(from = min, until = max)
+fun randomFloat() = Random.nextFloat()
 
 fun randomUrl(
     scheme: String = listOf("http", "https").random(),

@@ -14,9 +14,6 @@
       <entry key="onDeleteCountry_assertCorrectNumberOfCountriesInDatabase()">
         <State />
       </entry>
-      <entry key="onFetchCountriesInContinent_assertCorrectListOfCountriesInSpecifiedContinent()">
-        <State />
-      </entry>
       <entry key="onFetchCountriesInContinent_withInvalidContinent_assertNoCountriesReturned()">
         <State />
       </entry>

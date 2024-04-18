@@ -21,6 +21,7 @@ dagger = "2.50"
 jetbrainsKotlinJvm = "1.9.21"
 mockk = "1.13.10"
 kotlinxCoroutinesTest = "1.8.1-Beta"
+datastore = "1.0.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -59,6 +60,7 @@ mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
 mockk-android = { group = "io.mockk", name = "mockk-android", version.ref = "mockk" }
 mockk-agent = { group = "io.mockk", name = "mockk-agent", version.ref = "mockk" }
 kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlinxCoroutinesTest" }
+datastore-prefs = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore" }
 
 
 [plugins]

@@ -2,10 +2,8 @@ package daniel.bertoldi.network
 
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import dagger.Component
 import dagger.Module
 import dagger.Provides
-import dagger.hilt.EntryPoint
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import retrofit2.Retrofit

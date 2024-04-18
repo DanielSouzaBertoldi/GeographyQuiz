@@ -73,6 +73,7 @@ dependencies {
     implementation(libs.moshi.kotlin)
     implementation(libs.compose.navigation)
     implementation(libs.hilt.compose.navigation)
+    implementation(libs.datastore.prefs)
 
     // internal modules
     implementation(project(":database"))

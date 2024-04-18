@@ -1,8 +1,8 @@
 package daniel.bertoldi.geographyquiz.datasource
 
-import daniel.bertoldi.network.BaseCountryDataResponse
+import daniel.bertoldi.geographyquiz.domain.model.CountryModel
 
 interface CountriesRemoteDataSource {
 
-    suspend fun fetchCountriesApi(): List<BaseCountryDataResponse>?
+    suspend fun fetchCountriesApi(): List<CountryModel>?
 }

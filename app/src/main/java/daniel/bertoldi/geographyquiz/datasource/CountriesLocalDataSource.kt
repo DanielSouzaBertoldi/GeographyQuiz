@@ -1,8 +1,8 @@
 package daniel.bertoldi.geographyquiz.datasource
 
-import daniel.bertoldi.database.CountryEntity
+import daniel.bertoldi.geographyquiz.domain.model.CountryModel
 
 interface CountriesLocalDataSource {
 
-    suspend fun fetchCountriesDb(): List<CountryEntity>
+    suspend fun fetchCountriesDb(): List<CountryModel>
 }

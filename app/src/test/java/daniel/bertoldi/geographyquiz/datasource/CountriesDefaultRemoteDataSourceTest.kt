@@ -1,5 +1,8 @@
 package daniel.bertoldi.geographyquiz.datasource
 
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import daniel.bertoldi.geographyquiz.domain.mapper.BaseCountryDataResponseToModelMapper
 import daniel.bertoldi.geographyquiz.factory.BaseCountryDataResponseFactory
 import daniel.bertoldi.network.BaseCountryDataResponse
 import io.mockk.coEvery
@@ -15,7 +18,14 @@ class CountriesDefaultRemoteDataSourceTest {
 
     private val retrofit: Retrofit = mockk()
     private val countriesApi: CountriesApi = mockk()
-    private val remoteDataSource = CountriesDefaultRemoteDataSource(retrofit, countriesApi)
+    private val dataStore: DataStore<Preferences> = mockk()
+    private val responseToModelMapper: BaseCountryDataResponseToModelMapper = mockk()
+    private val remoteDataSource = CountriesDefaultRemoteDataSource(
+        retrofit = retrofit,
+        countriesApi = countriesApi,
+        dataStore = dataStore, // TODO: fix tests to actually mock this funny guy
+        responseToModelMapper = responseToModelMapper,
+    )
 
     @Test
     fun fetchCountries_successResponse_checkCorrectListOfResponseReturned() = runTest {

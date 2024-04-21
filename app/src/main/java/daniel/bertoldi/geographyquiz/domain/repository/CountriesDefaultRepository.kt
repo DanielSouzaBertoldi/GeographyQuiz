@@ -5,6 +5,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.longPreferencesKey
 import daniel.bertoldi.geographyquiz.datasource.CountriesLocalDataSource
 import daniel.bertoldi.geographyquiz.datasource.CountriesRemoteDataSource
+import daniel.bertoldi.geographyquiz.domain.model.CountryModel
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import java.time.Duration
@@ -19,9 +20,10 @@ class CountriesDefaultRepository @Inject constructor(
 ) : CountriesRepository {
     override suspend fun getCountries(
         // TODO: pass coroutines scope
-    ) {
-        if (checkCache()) {
+    ): List<CountryModel> {
+        return if (checkCache()) {
             val countries = remoteDataSource.fetchCountriesApi()
+            countries
             // localDateSource.saveCountries(countries)
         } else {
             localDataSource.fetchCountriesDb()

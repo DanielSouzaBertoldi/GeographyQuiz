@@ -12,21 +12,18 @@ import javax.inject.Inject
 private const val COUNTRIES_REQUEST_FETCH_TIME = "countries_request_fetch_time"
 
 class CountriesDefaultRemoteDataSource @Inject constructor(
-    private val retrofit: Retrofit,
-    private val countriesApi: CountriesApi, // TODO: how to only use countriesApi directly?
+    private val countriesApi: CountriesApi,
     private val dataStore: DataStore<Preferences>,
     private val responseToModelMapper: BaseCountryDataResponseToModelMapper,
 ) : CountriesRemoteDataSource {
 
     // TODO: return Flow
-    override suspend fun fetchCountriesApi(): List<CountryModel>? {
-        // TODO: so I won't have to do this?
-        val countriesRetrofit = retrofit.create(CountriesApi::class.java)
+    override suspend fun fetchCountriesApi(): List<CountryModel> {
         // TODO: Maybe this should be inside its own UseCase
         dataStore.edit { settings ->
             val fetchTime = longPreferencesKey(COUNTRIES_REQUEST_FETCH_TIME)
             settings[fetchTime] = System.currentTimeMillis()
         }
-        return responseToModelMapper.mapFrom(countriesRetrofit.getCountries().body())
+        return responseToModelMapper.mapFrom(countriesApi.getCountries().body()) ?: emptyList()
     }
 }

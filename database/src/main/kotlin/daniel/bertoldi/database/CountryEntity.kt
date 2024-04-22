@@ -12,7 +12,7 @@ data class CountryEntity(
     @PrimaryKey @ColumnInfo(name = "country_code") val countryCode: String,
     val name: NameDataResponse,
     @ColumnInfo(name = "top_level_domains") val tld: List<String>?,
-    val independent: Boolean,
+    val independent: Boolean?,
     @ColumnInfo(name = "un_member") val unMember: Boolean,
     @ColumnInfo(name = "international_dial_response") val idd: InternationalDialResponse,
     val capital: List<String>?,

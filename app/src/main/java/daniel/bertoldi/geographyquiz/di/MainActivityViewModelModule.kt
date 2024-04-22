@@ -14,6 +14,8 @@ import daniel.bertoldi.geographyquiz.domain.mapper.CountryEntityToModelDefaultMa
 import daniel.bertoldi.geographyquiz.domain.mapper.CountryEntityToModelMapper
 import daniel.bertoldi.geographyquiz.domain.repository.CountriesDefaultRepository
 import daniel.bertoldi.geographyquiz.domain.repository.CountriesRepository
+import daniel.bertoldi.geographyquiz.domain.repository.CountryModelToEntityDefaultMapper
+import daniel.bertoldi.geographyquiz.domain.repository.CountryModelToEntityMapper
 import daniel.bertoldi.geographyquiz.domain.usecase.GetCountriesData
 import daniel.bertoldi.geographyquiz.domain.usecase.GetCountriesDataUseCase
 
@@ -48,4 +50,9 @@ interface MainActivityViewModelModule {
     fun bindBaseCountryDataResponseToModelMapper(
         countryDataResponseToModelDefaultMapper: BaseCountryDataResponseToModelDefaultMapper,
     ): BaseCountryDataResponseToModelMapper
+
+    @Binds
+    fun bindCountryModelToEntityMapper(
+        countryModelToEntityDefaultMapper: CountryModelToEntityDefaultMapper,
+    ): CountryModelToEntityMapper
 }

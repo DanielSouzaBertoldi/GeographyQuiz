@@ -6,6 +6,6 @@ interface DatabaseInterface {
 
     fun getAllCountries(): List<CountryEntity>
     fun fetchCountriesCount(): Int
-    fun saveCountries(countries: List<BaseCountryDataResponse>)
+    fun saveCountries(countries: List<CountryEntity>)
     fun fetchCountriesInContinent(continent: String): List<CountryEntity>
 }

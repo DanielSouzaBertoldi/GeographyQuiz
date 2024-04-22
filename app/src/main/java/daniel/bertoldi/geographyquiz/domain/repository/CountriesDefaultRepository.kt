@@ -23,8 +23,8 @@ class CountriesDefaultRepository @Inject constructor(
     ): List<CountryModel> {
         return if (checkCache()) {
             val countries = remoteDataSource.fetchCountriesApi()
+            localDataSource.saveCountriesInDb(countries)
             countries
-            // localDateSource.saveCountries(countries)
         } else {
             localDataSource.fetchCountriesDb()
         }

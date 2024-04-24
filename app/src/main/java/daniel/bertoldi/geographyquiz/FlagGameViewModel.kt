@@ -22,13 +22,16 @@ class FlagGameViewModel @Inject constructor(
 
     fun startFlagGame(continent: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            countries.value = databaseInterface.fetchCountriesInContinent(continent)
-            val drawnCountries = countries.value.shuffled().take(5).toMutableList()
+            databaseInterface.fetchCountriesInContinent(continent).collect {
+                countries.value = it
 
-            _gameState.value = GameState(
-                availableOptions = drawFlagOptions(drawnCountries),
-                chosenContinent = continent,
-            )
+                val drawnCountries = countries.value.shuffled().take(5).toMutableList()
+
+                _gameState.value = GameState(
+                    availableOptions = drawFlagOptions(drawnCountries),
+                    chosenContinent = continent,
+                )
+            }
         }
     }
 

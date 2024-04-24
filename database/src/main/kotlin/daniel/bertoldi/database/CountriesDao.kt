@@ -6,21 +6,22 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.TypeConverters
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface CountriesDao {
     @Query("SELECT * FROM countries")
-    fun getAll(): List<CountryEntity>
+    fun getAll(): Flow<List<CountryEntity>>
 
     @Query("SELECT COUNT(*) FROM countries")
-    fun fetchCountriesCount(): Int
+    fun fetchCountriesCount(): Flow<Int>
 
     @Query("SELECT * FROM countries WHERE continents LIKE '%' || :continent || '%'")
-    fun fetchCountriesInContinent(continent: String): List<CountryEntity>
+    fun fetchCountriesInContinent(continent: String): Flow<List<CountryEntity>>
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insertCountries(countries: List<CountryEntity>)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertCountries(countries: List<CountryEntity>)
 
     @Delete
-    fun deleteCountry(country: CountryEntity)
+    suspend fun deleteCountry(country: CountryEntity)
 }

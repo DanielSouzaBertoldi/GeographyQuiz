@@ -4,6 +4,7 @@ import daniel.bertoldi.database.DatabaseStuff
 import daniel.bertoldi.geographyquiz.domain.mapper.CountryEntityToModelMapper
 import daniel.bertoldi.geographyquiz.domain.model.CountryModel
 import daniel.bertoldi.geographyquiz.domain.repository.CountryModelToEntityMapper
+import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 
 class CountriesDefaultLocalDataSource @Inject constructor(
@@ -13,7 +14,7 @@ class CountriesDefaultLocalDataSource @Inject constructor(
 ) : CountriesLocalDataSource {
     // TODO: Change to a flow
     override suspend fun fetchCountriesDb(): List<CountryModel> {
-        return entityToModelMapper.mapFrom(databaseStuff.getAllCountries())
+        return entityToModelMapper.mapFrom(databaseStuff.getAllCountries().first())
     }
 
     override suspend fun saveCountriesInDb(countries: List<CountryModel>) {

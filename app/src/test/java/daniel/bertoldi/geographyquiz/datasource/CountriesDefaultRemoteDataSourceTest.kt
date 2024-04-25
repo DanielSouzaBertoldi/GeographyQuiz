@@ -1,65 +1,114 @@
 package daniel.bertoldi.geographyquiz.datasource
 
-import androidx.datastore.core.DataStore
-import androidx.datastore.core.DataStoreFactory
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.edit
+import daniel.bertoldi.geographyquiz.datastore.CountriesDataStore
 import daniel.bertoldi.geographyquiz.domain.mapper.BaseCountryDataResponseToModelMapper
+import daniel.bertoldi.geographyquiz.domain.model.CountryModel
 import daniel.bertoldi.geographyquiz.factory.BaseCountryDataResponseFactory
+import daniel.bertoldi.geographyquiz.factory.CountryModelFactory
 import daniel.bertoldi.network.BaseCountryDataResponse
 import io.mockk.coEvery
+import io.mockk.coVerify
+import io.mockk.just
 import io.mockk.mockk
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flowOf
+import io.mockk.runs
+import io.mockk.verify
 import kotlinx.coroutines.test.runTest
 import okhttp3.ResponseBody.Companion.toResponseBody
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import retrofit2.Response
-import retrofit2.Retrofit
 
 class CountriesDefaultRemoteDataSourceTest {
 
     private val countriesApi: CountriesApi = mockk()
-    private val dataStore: DataStore<Preferences> = mockk()
+    private val countriesDataStore: CountriesDataStore = mockk()
     private val responseToModelMapper: BaseCountryDataResponseToModelMapper = mockk()
     private val remoteDataSource = CountriesDefaultRemoteDataSource(
         countriesApi = countriesApi,
-        dataStore = dataStore, // TODO: fix tests to actually mock this funny guy
+        countriesDataStore = countriesDataStore,
         responseToModelMapper = responseToModelMapper,
     )
 
     @Test
     fun fetchCountries_successResponse_checkCorrectListOfResponseReturned() = runTest {
-        val responseList = listOf(
-            BaseCountryDataResponseFactory.make(),
-            BaseCountryDataResponseFactory.make(),
-            BaseCountryDataResponseFactory.make(),
+        val countryModels = listOf(
+            CountryModelFactory.make(),
+            CountryModelFactory.make(),
+            CountryModelFactory.make(),
         )
         prepareScenario(
-            getCountriesResponse = Response.success(responseList)
+            getCountriesResponse = Response.success(
+                listOf(BaseCountryDataResponseFactory.make())
+            ),
+            mapperResult = countryModels,
         )
 
         val actual = remoteDataSource.fetchCountriesApi()
 
-        Assertions.assertEquals(responseList, actual)
+        Assertions.assertEquals(countryModels, actual)
     }
 
     @Test
-    fun fetchCountries_errorResponse_checkResponseIsNull() = runTest {
+    fun fetchCountries_successResponseBodyNull_assertEmptyReturn() = runTest {
+        prepareScenario(
+            getCountriesResponse = Response.success(emptyList()),
+            mapperResult = emptyList(),
+        )
+
+        val actual = remoteDataSource.fetchCountriesApi()
+
+        Assertions.assertEquals(emptyList<CountryModel>(), actual)
+    }
+
+    @Test
+    fun fetchCountries_successResponse_verifyDataStoreCalled() = runTest {
+        prepareScenario(
+            getCountriesResponse = Response.success(
+                listOf(BaseCountryDataResponseFactory.make())
+            ),
+            mapperResult = listOf(CountryModelFactory.make()),
+        )
+
+        remoteDataSource.fetchCountriesApi()
+
+        coVerify(exactly = 1) {
+            countriesDataStore.saveFetchTime(any())
+        }
+    }
+
+    @Test
+    fun fetchCountries_errorResponse_checkResponseIsEmpty() = runTest {
         prepareScenario(
             getCountriesResponse = Response.error(503, "error".toResponseBody())
         )
 
         val actual = remoteDataSource.fetchCountriesApi()
 
-        Assertions.assertNull(actual)
+        Assertions.assertTrue(actual == emptyList<CountryModel>())
+    }
+
+    @Test
+    fun fetchCountries_errorResponse_verifyDataStoreCalled() = runTest {
+        prepareScenario(
+            getCountriesResponse = Response.error(503, "error".toResponseBody()),
+            mapperResult = listOf(CountryModelFactory.make()),
+        )
+
+        remoteDataSource.fetchCountriesApi()
+
+        coVerify(exactly = 0) {
+            countriesDataStore.saveFetchTime(any())
+        }
     }
 
     private fun prepareScenario(
-        getCountriesResponse: Response<List<BaseCountryDataResponse>> = Response.success(emptyList())
+        getCountriesResponse: Response<List<BaseCountryDataResponse>> =
+            Response.success(listOf(BaseCountryDataResponseFactory.make())),
+        mapperResult: List<CountryModel>? = listOf(CountryModelFactory.make()),
     ) {
         coEvery { countriesApi.getCountries() } returns getCountriesResponse
-        // coEvery { dataStore.updateData(transform = any()) } returns
+        coEvery { responseToModelMapper.mapFrom(any()) } returns mapperResult
+
+        coEvery { countriesDataStore.saveFetchTime(any()) } just runs
     }
 }

@@ -1,4 +1,4 @@
-package daniel.bertoldi.geographyquiz.domain.repository
+package daniel.bertoldi.geographyquiz.domain.mapper
 
 import daniel.bertoldi.database.CountryEntity
 import daniel.bertoldi.geographyquiz.domain.model.CountryModel
@@ -25,7 +25,7 @@ class CountryModelToEntityDefaultMapper @Inject constructor() : CountryModelToEn
                 capital = it.capital,
                 altSpellings = it.altSpellings,
                 region = it.region,
-                subRegion = it.region,
+                subRegion = it.subRegion,
                 languages = it.languages,
                 landlocked = it.landlocked,
                 area = it.area,

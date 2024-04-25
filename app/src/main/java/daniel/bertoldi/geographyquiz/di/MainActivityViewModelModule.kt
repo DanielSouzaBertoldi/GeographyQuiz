@@ -8,14 +8,16 @@ import daniel.bertoldi.geographyquiz.datasource.CountriesDefaultLocalDataSource
 import daniel.bertoldi.geographyquiz.datasource.CountriesDefaultRemoteDataSource
 import daniel.bertoldi.geographyquiz.datasource.CountriesLocalDataSource
 import daniel.bertoldi.geographyquiz.datasource.CountriesRemoteDataSource
+import daniel.bertoldi.geographyquiz.datastore.CountriesDataStore
+import daniel.bertoldi.geographyquiz.datastore.CountriesDefaultDataStore
 import daniel.bertoldi.geographyquiz.domain.mapper.BaseCountryDataResponseToModelDefaultMapper
 import daniel.bertoldi.geographyquiz.domain.mapper.BaseCountryDataResponseToModelMapper
 import daniel.bertoldi.geographyquiz.domain.mapper.CountryEntityToModelDefaultMapper
 import daniel.bertoldi.geographyquiz.domain.mapper.CountryEntityToModelMapper
 import daniel.bertoldi.geographyquiz.domain.repository.CountriesDefaultRepository
 import daniel.bertoldi.geographyquiz.domain.repository.CountriesRepository
-import daniel.bertoldi.geographyquiz.domain.repository.CountryModelToEntityDefaultMapper
-import daniel.bertoldi.geographyquiz.domain.repository.CountryModelToEntityMapper
+import daniel.bertoldi.geographyquiz.domain.mapper.CountryModelToEntityDefaultMapper
+import daniel.bertoldi.geographyquiz.domain.mapper.CountryModelToEntityMapper
 import daniel.bertoldi.geographyquiz.domain.usecase.GetCountriesData
 import daniel.bertoldi.geographyquiz.domain.usecase.GetCountriesDataUseCase
 
@@ -55,4 +57,9 @@ interface MainActivityViewModelModule {
     fun bindCountryModelToEntityMapper(
         countryModelToEntityDefaultMapper: CountryModelToEntityDefaultMapper,
     ): CountryModelToEntityMapper
+
+    @Binds
+    fun bindCountriesDataStore(
+        countriesDefaultDataStore: CountriesDefaultDataStore,
+    ): CountriesDataStore
 }

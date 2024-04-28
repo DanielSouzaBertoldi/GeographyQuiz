@@ -46,7 +46,7 @@ internal fun LoadingComponent() {
 }
 
 @Composable
-internal fun BeginGameComponent(
+internal fun HomeComponent(
     navigateToGameScreen: () -> Unit,
 ) {
     Column(
@@ -102,7 +102,7 @@ private fun LoadingComponentPreview() {
 @Preview(showBackground = true)
 @Composable
 private fun BeginGameComponentPreview() {
-    BeginGameComponent(navigateToGameScreen = {})
+    HomeComponent(navigateToGameScreen = {})
 }
 
 @Preview(showBackground = true)

@@ -113,7 +113,7 @@ private fun FlagGameComponentPreview() {
             //        countryData = CountryEntity()
             //    )
             // ),
-            chosenContinent = Continent.SOUTH_AMERICA.simpleName,
+            chosenContinent = Continent.AMERICAS.simpleName,
             clickedOption = null,
             score = 40,
         ),

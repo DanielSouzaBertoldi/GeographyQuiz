@@ -1,4 +1,9 @@
 <resources>
     <string name="app_name">Geography Quiz</string>
     <string name="start_game">Play</string>
+    <string name="africa">Africa</string>
+    <string name="americas">Americas</string>
+    <string name="asia">Asia</string>
+    <string name="europe">Europe</string>
+    <string name="oceania">Oceania</string>
 </resources>

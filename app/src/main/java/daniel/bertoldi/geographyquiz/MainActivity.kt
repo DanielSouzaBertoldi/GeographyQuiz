@@ -16,13 +16,12 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import dagger.hilt.android.AndroidEntryPoint
-import daniel.bertoldi.geographyquiz.ui.components.BeginGameComponent
+import daniel.bertoldi.geographyquiz.ui.components.HomeComponent
 import daniel.bertoldi.geographyquiz.ui.components.ErrorComponent
 import daniel.bertoldi.geographyquiz.ui.components.FlagGameComponent
 import daniel.bertoldi.geographyquiz.ui.components.LoadingComponent
 import daniel.bertoldi.geographyquiz.ui.components.SelectContinentComponent
 import daniel.bertoldi.geographyquiz.ui.theme.GeographyQuizTheme
-import daniel.bertoldi.geographyquiz.ui.theme.Typography
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -45,7 +44,7 @@ class MainActivity : ComponentActivity() {
 
                             when (screenState.value) {
                                 is MainScreenState.Loading -> LoadingComponent()
-                                is MainScreenState.Success -> BeginGameComponent(
+                                is MainScreenState.Success -> HomeComponent(
                                     navigateToGameScreen = {
                                         navigationController.navigate("continentSelection")
                                     }

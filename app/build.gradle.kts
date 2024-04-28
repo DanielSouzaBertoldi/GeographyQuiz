@@ -74,6 +74,7 @@ dependencies {
     implementation(libs.compose.navigation)
     implementation(libs.hilt.compose.navigation)
     implementation(libs.datastore.prefs)
+    implementation(libs.lottie)
 
     // internal modules
     implementation(project(":database"))

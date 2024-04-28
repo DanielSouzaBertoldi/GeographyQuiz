@@ -66,6 +66,7 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation(libs.coil.compose)
+    implementation(libs.coil.gif)
     implementation(libs.dagger.hilt)
     implementation(libs.retrofit)
     implementation(libs.retrofit.moshi.converter)
@@ -74,7 +75,7 @@ dependencies {
     implementation(libs.compose.navigation)
     implementation(libs.hilt.compose.navigation)
     implementation(libs.datastore.prefs)
-    implementation(libs.lottie)
+    implementation(libs.lottie) // TODO: won't be able to use lottie files unfortunately..
 
     // internal modules
     implementation(project(":database"))

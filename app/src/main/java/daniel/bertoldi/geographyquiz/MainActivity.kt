@@ -16,9 +16,10 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import dagger.hilt.android.AndroidEntryPoint
-import daniel.bertoldi.geographyquiz.ui.components.HomeComponent
+import daniel.bertoldi.geographyquiz.ui.components.ChooseRegionComponent
 import daniel.bertoldi.geographyquiz.ui.components.ErrorComponent
 import daniel.bertoldi.geographyquiz.ui.components.FlagGameComponent
+import daniel.bertoldi.geographyquiz.ui.components.HomeComponent
 import daniel.bertoldi.geographyquiz.ui.components.LoadingComponent
 import daniel.bertoldi.geographyquiz.ui.components.SelectContinentComponent
 import daniel.bertoldi.geographyquiz.ui.theme.GeographyQuizTheme
@@ -55,8 +56,19 @@ class MainActivity : ComponentActivity() {
                         }
                         composable("continentSelection") {
                             SelectContinentComponent {
-                                navigationController.navigate("flagGame/${it.simpleName}")
+                                navigationController.navigate("selectRegion/${it.simpleName}")
                             }
+                        }
+                        composable(
+                            route = "selectRegion/{continent}",
+                            arguments = listOf(
+                                navArgument("continent") {
+                                    type = NavType.StringType
+                                    nullable = false
+                                }
+                            )
+                        ) {
+                            ChooseRegionComponent(clickableStuff = {})
                         }
                         composable(
                             route = "flagGame/{continent}",

@@ -1,9 +1,20 @@
 <resources>
     <string name="app_name">Geography Quiz</string>
     <string name="start_game">Play</string>
+
+    <string name="choose_continent">Choose the Continent</string>
+    <string name="choose_region">Choose the Region</string>
+
     <string name="africa">Africa</string>
     <string name="americas">Americas</string>
     <string name="asia">Asia</string>
     <string name="europe">Europe</string>
     <string name="oceania">Oceania</string>
+
+    <string name="central_area">Central</string>
+    <string name="south_area">South</string>
+    <string name="north_area">North</string>
+    <string name="east_area">East</string>
+    <string name="west_area">West</string>
+    <string name="all_area">All</string>
 </resources>

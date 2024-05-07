@@ -1,6 +1,6 @@
 package daniel.bertoldi.geographyquiz.factory
 
-import daniel.bertoldi.geographyquiz.Continent
+import daniel.bertoldi.geographyquiz.Region
 import daniel.bertoldi.test.utils.DayOfWeek
 import daniel.bertoldi.test.utils.randomBoolean
 import daniel.bertoldi.test.utils.randomEnumValue
@@ -37,7 +37,7 @@ object BaseCountryDataResponseFactory {
         population: Int = Random.nextInt(),
         car: CarResponse = makeCarResponse(),
         timezones: List<String> = randomList(),
-        continents: List<String> = Continent.entries.map { it.simpleName },
+        continents: List<String> = Region.entries.map { it.simpleName },
         flags: FlagsResponse = makeFlagsResponse(),
         coatOfArms: CoatOfArmsResponse = makeCoatOfArmsResponse(),
         startOfWeek: String = randomEnumValue<DayOfWeek>().name,

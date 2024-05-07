@@ -9,8 +9,8 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import daniel.bertoldi.database.CountriesDao
-import daniel.bertoldi.database.DatabaseInterface
-import daniel.bertoldi.database.DatabaseStuff
+import daniel.bertoldi.database.CountriesDatabaseInterface
+import daniel.bertoldi.database.CountriesDatabaseStuff
 import daniel.bertoldi.database.typeconverters.InternationalDialTypeConverter
 import daniel.bertoldi.database.CountriesDatabase
 import javax.inject.Singleton
@@ -40,7 +40,7 @@ class DatabaseModule {
     }
 
     @Provides
-    fun provideDatabaseInterface(databaseStuff: DatabaseStuff): DatabaseInterface {
+    fun provideDatabaseInterface(databaseStuff: CountriesDatabaseStuff): CountriesDatabaseInterface {
         return databaseStuff
     }
 

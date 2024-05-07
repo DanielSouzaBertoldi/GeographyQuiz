@@ -24,7 +24,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import daniel.bertoldi.database.CountryEntity
-import daniel.bertoldi.geographyquiz.Continent
+import daniel.bertoldi.geographyquiz.Region
 import daniel.bertoldi.geographyquiz.GameState
 import daniel.bertoldi.geographyquiz.GameStep
 
@@ -113,7 +113,7 @@ private fun FlagGameComponentPreview() {
             //        countryData = CountryEntity()
             //    )
             // ),
-            chosenContinent = Continent.AMERICAS.simpleName,
+            chosenContinent = Region.AMERICAS.simpleName,
             clickedOption = null,
             score = 40,
         ),

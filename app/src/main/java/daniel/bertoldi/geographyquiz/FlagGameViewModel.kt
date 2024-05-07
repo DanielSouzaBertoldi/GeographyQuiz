@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import daniel.bertoldi.database.CountryEntity
-import daniel.bertoldi.database.DatabaseInterface
+import daniel.bertoldi.database.CountriesDatabaseInterface
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -14,7 +14,7 @@ import kotlin.random.Random
 
 @HiltViewModel
 class FlagGameViewModel @Inject constructor(
-    private val databaseInterface: DatabaseInterface,
+    private val countriesDatabaseInterface: CountriesDatabaseInterface,
 ) : ViewModel() {
     private val countries = MutableStateFlow<List<CountryEntity>>(emptyList())
     private val _gameState = MutableStateFlow<GameState?>(null)
@@ -22,7 +22,7 @@ class FlagGameViewModel @Inject constructor(
 
     fun startFlagGame(continent: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            databaseInterface.fetchCountriesInContinent(continent).collect {
+            countriesDatabaseInterface.fetchCountriesInContinent(continent).collect {
                 countries.value = it
 
                 val drawnCountries = countries.value.shuffled().take(5).toMutableList()

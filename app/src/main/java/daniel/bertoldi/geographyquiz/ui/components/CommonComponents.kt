@@ -27,7 +27,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import daniel.bertoldi.geographyquiz.Continent
+import daniel.bertoldi.geographyquiz.Region
 import daniel.bertoldi.geographyquiz.R
 import daniel.bertoldi.geographyquiz.ui.theme.AliceBlue
 import daniel.bertoldi.geographyquiz.ui.theme.CambridgeBlue
@@ -112,8 +112,8 @@ fun Step(
 @Composable
 private fun ContinentCardPreview() {
     GameOptionCard(
-        icon = Continent.AFRICA.countryIcon,
-        stringRes = Continent.AFRICA.countryString,
+        icon = Region.AFRICA.regionIcon,
+        stringRes = Region.AFRICA.regionString,
         nextStep = {},
     )
 }
@@ -121,5 +121,5 @@ private fun ContinentCardPreview() {
 @Preview(showBackground = true)
 @Composable
 private fun StepPreview() {
-    Step(R.string.choose_continent)
+    Step(R.string.choose_region)
 }

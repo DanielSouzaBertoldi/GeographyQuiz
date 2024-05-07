@@ -4,6 +4,7 @@ import daniel.bertoldi.geographyquiz.datasource.CountriesLocalDataSource
 import daniel.bertoldi.geographyquiz.datasource.CountriesRemoteDataSource
 import daniel.bertoldi.geographyquiz.datastore.CountriesDataStore
 import daniel.bertoldi.geographyquiz.domain.model.CountryModel
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 
@@ -22,6 +23,10 @@ class CountriesDefaultRepository @Inject constructor(
         } else {
             localDataSource.fetchCountriesDb()
         }
+    }
+
+    override suspend fun getAreasInRegion(region: String): Flow<List<String>> {
+        return localDataSource.fetchAreasInRegion(region)
     }
 
     private suspend fun checkCache(): Boolean {

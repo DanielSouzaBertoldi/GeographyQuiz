@@ -2,9 +2,9 @@ package daniel.bertoldi.database
 
 import javax.inject.Inject
 
-class DatabaseStuff @Inject constructor(
+class CountriesDatabaseStuff @Inject constructor(
     private val countriesDao: CountriesDao,
-) : DatabaseInterface {
+) : CountriesDatabaseInterface {
 
     override suspend fun getAllCountries() = countriesDao.getAll()
 
@@ -15,4 +15,7 @@ class DatabaseStuff @Inject constructor(
 
     override suspend fun fetchCountriesInContinent(continent: String) =
         countriesDao.fetchCountriesInContinent(continent)
+
+    override suspend fun fetchAreasInRegion(region: String) =
+        countriesDao.fetchAreasInRegion(region)
 }

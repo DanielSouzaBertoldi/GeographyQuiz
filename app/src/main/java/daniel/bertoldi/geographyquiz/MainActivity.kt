@@ -16,12 +16,13 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import dagger.hilt.android.AndroidEntryPoint
-import daniel.bertoldi.geographyquiz.ui.components.ChooseRegionComponent
+import daniel.bertoldi.geographyquiz.presentation.viewmodel.AreaViewModel
+import daniel.bertoldi.geographyquiz.ui.components.ChooseAreaComponent
 import daniel.bertoldi.geographyquiz.ui.components.ErrorComponent
 import daniel.bertoldi.geographyquiz.ui.components.FlagGameComponent
 import daniel.bertoldi.geographyquiz.ui.components.HomeComponent
 import daniel.bertoldi.geographyquiz.ui.components.LoadingComponent
-import daniel.bertoldi.geographyquiz.ui.components.SelectContinentComponent
+import daniel.bertoldi.geographyquiz.ui.components.SelectRegionComponent
 import daniel.bertoldi.geographyquiz.ui.theme.GeographyQuizTheme
 
 @AndroidEntryPoint
@@ -47,28 +48,38 @@ class MainActivity : ComponentActivity() {
                                 is MainScreenState.Loading -> LoadingComponent()
                                 is MainScreenState.Success -> HomeComponent(
                                     navigateToGameScreen = {
-                                        navigationController.navigate("continentSelection")
+                                        navigationController.navigate("regionSelection")
                                     }
                                 )
 
                                 is MainScreenState.Failed -> ErrorComponent()
                             }
                         }
-                        composable("continentSelection") {
-                            SelectContinentComponent {
-                                navigationController.navigate("selectRegion/${it.simpleName}")
+                        composable("regionSelection") {
+                            SelectRegionComponent {
+                                navigationController.navigate("selectArea/${it.simpleName}")
                             }
                         }
                         composable(
-                            route = "selectRegion/{continent}",
+                            route = "selectArea/{region}",
                             arguments = listOf(
-                                navArgument("continent") {
+                                navArgument("region") {
                                     type = NavType.StringType
                                     nullable = false
                                 }
                             )
                         ) {
-                            ChooseRegionComponent(clickableStuff = {})
+                            val viewModel = hiltViewModel<AreaViewModel>()
+                            val region = it.arguments?.getString("region").orEmpty()
+
+                            LaunchedEffect(key1 = region) {
+                                viewModel.fetchSubRegions(region)
+                            }
+
+                            ChooseAreaComponent(
+                                clickableStuff = {},
+                                screenState = viewModel.screenState.collectAsState().value,
+                            )
                         }
                         composable(
                             route = "flagGame/{continent}",
@@ -81,6 +92,7 @@ class MainActivity : ComponentActivity() {
                         ) {
                             val viewModel = hiltViewModel<FlagGameViewModel>()
                             val chosenContinent = it.arguments?.getString("continent").orEmpty()
+
                             LaunchedEffect(chosenContinent) {
                                 viewModel.startFlagGame(chosenContinent)
                             }

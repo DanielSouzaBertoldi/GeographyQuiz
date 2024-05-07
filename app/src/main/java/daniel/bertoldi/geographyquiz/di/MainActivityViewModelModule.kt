@@ -18,8 +18,12 @@ import daniel.bertoldi.geographyquiz.domain.repository.CountriesDefaultRepositor
 import daniel.bertoldi.geographyquiz.domain.repository.CountriesRepository
 import daniel.bertoldi.geographyquiz.domain.mapper.CountryModelToEntityDefaultMapper
 import daniel.bertoldi.geographyquiz.domain.mapper.CountryModelToEntityMapper
+import daniel.bertoldi.geographyquiz.domain.usecase.GetAreasInRegion
+import daniel.bertoldi.geographyquiz.domain.usecase.GetAreasInRegionUseCase
 import daniel.bertoldi.geographyquiz.domain.usecase.GetCountriesData
 import daniel.bertoldi.geographyquiz.domain.usecase.GetCountriesDataUseCase
+import daniel.bertoldi.geographyquiz.presentation.mapper.RegionNameToRegionUiModelDefaultMapper
+import daniel.bertoldi.geographyquiz.presentation.mapper.RegionNameToRegionUiModelMapper
 
 private const val USER_PREFS = "user_preferences"
 
@@ -29,6 +33,9 @@ interface MainActivityViewModelModule {
 
     @Binds
     fun bindGetCountriesDataUseCase(getCountriesData: GetCountriesData): GetCountriesDataUseCase
+
+    @Binds
+    fun bindGetAreasInRegionUseCase(getAreasInRegion: GetAreasInRegion): GetAreasInRegionUseCase
 
     @Binds
     fun bindCountryRepository(countriesRepository: CountriesDefaultRepository): CountriesRepository
@@ -62,4 +69,9 @@ interface MainActivityViewModelModule {
     fun bindCountriesDataStore(
         countriesDefaultDataStore: CountriesDefaultDataStore,
     ): CountriesDataStore
+
+    @Binds
+    fun bindRegionNameToRegionUiModelMapper(
+        regionNameToRegionUiModelDefaultMapper: RegionNameToRegionUiModelDefaultMapper,
+    ): RegionNameToRegionUiModelMapper
 }

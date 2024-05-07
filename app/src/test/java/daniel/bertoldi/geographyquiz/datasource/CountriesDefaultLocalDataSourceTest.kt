@@ -1,7 +1,7 @@
 package daniel.bertoldi.geographyquiz.datasource
 
 import daniel.bertoldi.database.CountryEntity
-import daniel.bertoldi.database.DatabaseStuff
+import daniel.bertoldi.database.CountriesDatabaseStuff
 import daniel.bertoldi.geographyquiz.domain.mapper.CountryEntityFactory
 import daniel.bertoldi.geographyquiz.domain.mapper.CountryEntityToModelMapper
 import daniel.bertoldi.geographyquiz.domain.model.CountryModel
@@ -19,11 +19,11 @@ import org.junit.jupiter.api.Test
 
 class CountriesDefaultLocalDataSourceTest {
 
-    private val databaseStuff: DatabaseStuff = mockk()
+    private val databaseStuff: CountriesDatabaseStuff = mockk()
     private val entityToModelMapper: CountryEntityToModelMapper = mockk()
     private val modelToEntityMapper: CountryModelToEntityMapper = mockk()
     private val dataSource = CountriesDefaultLocalDataSource(
-        databaseStuff = databaseStuff,
+        countriesDatabase = databaseStuff,
         entityToModelMapper = entityToModelMapper,
         modelToEntityMapper = modelToEntityMapper,
     )

@@ -24,8 +24,4 @@ class CountriesDefaultLocalDataSource @Inject constructor(
         val countriesEntities = modelToEntityMapper.mapFrom(countries)
         countriesDatabase.saveCountries(countriesEntities)
     }
-
-    override suspend fun fetchAreasInRegion(region: String): Flow<List<String>> {
-        return countriesDatabase.fetchAreasInRegion(region)
-    }
 }

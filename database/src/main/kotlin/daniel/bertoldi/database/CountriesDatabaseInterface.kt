@@ -8,5 +8,4 @@ interface CountriesDatabaseInterface {
     suspend fun fetchCountriesCount(): Flow<Int>
     suspend fun saveCountries(countries: List<CountryEntity>)
     suspend fun fetchCountriesInContinent(continent: String): Flow<List<CountryEntity>>
-    suspend fun fetchAreasInRegion(region: String): Flow<List<String>>
 }

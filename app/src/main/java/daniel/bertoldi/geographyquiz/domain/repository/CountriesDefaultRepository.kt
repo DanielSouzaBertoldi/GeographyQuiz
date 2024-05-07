@@ -25,10 +25,6 @@ class CountriesDefaultRepository @Inject constructor(
         }
     }
 
-    override suspend fun getAreasInRegion(region: String): Flow<List<String>> {
-        return localDataSource.fetchAreasInRegion(region)
-    }
-
     private suspend fun checkCache(): Boolean {
         return countriesDataStore.checkCacheGreaterThanSevenDays()
     }

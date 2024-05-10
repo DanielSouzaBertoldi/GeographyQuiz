@@ -2,6 +2,9 @@ package daniel.bertoldi.geographyquiz.ui.components
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.animateIntOffsetAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -13,6 +16,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -21,16 +25,24 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import daniel.bertoldi.geographyquiz.R
+import daniel.bertoldi.geographyquiz.Region
 import daniel.bertoldi.geographyquiz.presentation.viewmodel.AreaScreenState
 import daniel.bertoldi.geographyquiz.ui.theme.AliceBlue
 import daniel.bertoldi.geographyquiz.ui.theme.BrunswickGreen
@@ -38,6 +50,7 @@ import daniel.bertoldi.geographyquiz.ui.theme.CambridgeBlue
 import daniel.bertoldi.geographyquiz.ui.theme.Celadon
 import daniel.bertoldi.geographyquiz.ui.theme.LightGray
 import daniel.bertoldi.geographyquiz.ui.theme.RichBlack
+import kotlin.math.roundToInt
 
 @Composable
 internal fun ChooseAreaComponent(
@@ -53,8 +66,9 @@ internal fun ChooseAreaComponent(
         ) {
             Step(stringRes = R.string.choose_area)
             GameRulesComponent(
-                screenState.regionData.regionString,
-                screenState.regionData.regionIcon,
+                regionName = screenState.regionData.regionString,
+                regionIcon = screenState.regionData.regionIcon,
+                shouldAnimateHeader = false,
             )
             LazyVerticalGrid(
                 modifier = Modifier
@@ -88,6 +102,7 @@ internal fun ChooseAreaComponent(
 private fun GameRulesComponent(
     @StringRes regionName: Int,
     @DrawableRes regionIcon: Int,
+    shouldAnimateHeader: Boolean = false,
 ) {
     Column(
         modifier = Modifier
@@ -95,25 +110,7 @@ private fun GameRulesComponent(
             .padding(horizontal = 24.dp)
             .padding(top = 24.dp),
     ) {
-        Text(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(55.dp)
-                .background(
-                    color = CambridgeBlue,
-                    shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
-                )
-                .border(
-                    width = 2.dp,
-                    color = BrunswickGreen,
-                    shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
-                )
-                .padding(bottom = 16.dp, top = 10.dp),
-            text = "Game Rules",
-            fontSize = 24.sp,
-            color = AliceBlue,
-            textAlign = TextAlign.Center,
-        )
+        GameRuleHeaderComponent(shouldAnimateHeader)
         LazyVerticalGrid(
             modifier = Modifier
                 .fillMaxWidth()
@@ -129,6 +126,56 @@ private fun GameRulesComponent(
             }
         }
     }
+}
+
+@Composable
+private fun GameRuleHeaderComponent(
+    shouldAnimateHeader: Boolean = false,
+) {
+    var animateHeader by remember { mutableStateOf(false) }
+    val finalHeaderYOffset = with(LocalDensity.current) {
+        -40.dp.toPx().roundToInt()
+    }
+    val animatedOffset by animateIntOffsetAsState(
+        targetValue = if (animateHeader) IntOffset(0, finalHeaderYOffset) else IntOffset(0, 0),
+        animationSpec = tween(
+            easing = FastOutSlowInEasing,
+            durationMillis = 800,
+            delayMillis = 200,
+        ),
+        label = "header animation"
+    )
+    val offsetModifier = if (shouldAnimateHeader) {
+        Modifier
+            .offset(y = 50.dp)
+            .offset { animatedOffset }
+    } else {
+        Modifier.offset(y = 10.dp)
+    }
+    LaunchedEffect(key1 = Unit) {
+        animateHeader = shouldAnimateHeader
+    }
+
+    Text(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(55.dp)
+            .then(offsetModifier)
+            .background(
+                color = CambridgeBlue,
+                shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
+            )
+            .border(
+                width = 2.dp,
+                color = BrunswickGreen,
+                shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
+            )
+            .padding(bottom = 16.dp, top = 10.dp),
+        text = stringResource(id = R.string.game_rules),
+        fontSize = 24.sp,
+        color = AliceBlue,
+        textAlign = TextAlign.Center,
+    )
 }
 
 @Composable
@@ -195,13 +242,19 @@ private fun GameRuleValueComponent(
 @Preview(showBackground = true)
 @Composable
 private fun ChooseAreaComponentPreview() {
-    ChooseAreaComponent(clickableStuff = {}, screenState = AreaScreenState.Loading)
+    ChooseAreaComponent(clickableStuff = {}, screenState = AreaScreenState.Success(Region.ASIA))
 }
 
 @Preview(showBackground = true)
 @Composable
 private fun GameRulesComponentPreview() {
     GameRulesComponent(regionName = R.string.africa, regionIcon = R.drawable.africa)
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun GameRulesHeaderComponentPreview() {
+    GameRuleHeaderComponent(shouldAnimateHeader = false)
 }
 
 @Preview(showBackground = true, widthDp = 165)

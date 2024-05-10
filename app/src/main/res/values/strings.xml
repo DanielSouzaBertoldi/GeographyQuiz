@@ -4,6 +4,7 @@
 
     <string name="choose_region">Choose the Region</string>
     <string name="choose_area">Choose the Area</string>
+    <string name="game_rules">Game Rules</string>
 
     <!-- Region -->
     <string name="africa">Africa</string>

@@ -54,7 +54,7 @@ import kotlin.math.roundToInt
 
 @Composable
 internal fun ChooseAreaComponent(
-    clickableStuff: () -> Unit,
+    nextStep: (String) -> Unit,
     screenState: AreaScreenState,
 ) {
     if (screenState is AreaScreenState.Success) {
@@ -66,9 +66,16 @@ internal fun ChooseAreaComponent(
         ) {
             Step(stringRes = R.string.choose_area)
             GameRulesComponent(
-                regionName = screenState.regionData.regionString,
-                regionIcon = screenState.regionData.regionIcon,
-                shouldAnimateHeader = false,
+                shouldAnimateHeader = true,
+                rules = listOf(
+                    { GameRuleKeyComponent(keyName = R.string.choose_region) },
+                    {
+                        GameRuleValueComponent(
+                            valueName = screenState.regionData.regionString,
+                            valueIcon = screenState.regionData.regionIcon
+                        )
+                    }
+                )
             )
             LazyVerticalGrid(
                 modifier = Modifier
@@ -83,7 +90,7 @@ internal fun ChooseAreaComponent(
                     GameOptionCard(
                         icon = it.subRegionIcon,
                         stringRes = it.subRegionName,
-                        nextStep = { clickableStuff() },
+                        nextStep = { nextStep(it.name) },
                     )
                 }
             }
@@ -99,37 +106,7 @@ internal fun ChooseAreaComponent(
 }
 
 @Composable
-private fun GameRulesComponent(
-    @StringRes regionName: Int,
-    @DrawableRes regionIcon: Int,
-    shouldAnimateHeader: Boolean = false,
-) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 24.dp)
-            .padding(top = 24.dp),
-    ) {
-        GameRuleHeaderComponent(shouldAnimateHeader)
-        LazyVerticalGrid(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(color = LightGray, shape = RoundedCornerShape(14.dp))
-                .border(width = 2.dp, color = BrunswickGreen, shape = RoundedCornerShape(14.dp)),
-            columns = GridCells.Fixed(2),
-        ) {
-            item {
-                GameRuleKeyComponent(keyName = "Chosen Continent:")
-            }
-            item {
-                GameRuleValueComponent(valueName = regionName, valueIcon = regionIcon)
-            }
-        }
-    }
-}
-
-@Composable
-private fun GameRuleHeaderComponent(
+fun GameRuleHeaderComponent(
     shouldAnimateHeader: Boolean = false,
 ) {
     var animateHeader by remember { mutableStateOf(false) }
@@ -178,93 +155,11 @@ private fun GameRuleHeaderComponent(
     )
 }
 
-@Composable
-private fun GameRuleKeyComponent(
-    keyName: String,
-) {
-    Text(
-        modifier = Modifier
-            .height(55.dp)
-            .background(
-                color = RichBlack,
-                shape = RoundedCornerShape(bottomStart = 14.dp, topStart = 14.dp),
-            )
-            .border(
-                width = 2.dp,
-                color = BrunswickGreen,
-                shape = RoundedCornerShape(bottomStart = 14.dp, topStart = 14.dp)
-            )
-            .padding(horizontal = 30.dp, vertical = 4.dp),
-        text = keyName,
-        color = Celadon,
-        fontWeight = FontWeight.Bold,
-        fontSize = 20.sp,
-        textAlign = TextAlign.Center,
-    )
-}
-
-@Composable
-private fun GameRuleValueComponent(
-    @StringRes valueName: Int,
-    @DrawableRes valueIcon: Int,
-) {
-    Row(
-        modifier = Modifier
-            .height(55.dp)
-            .background(
-                color = Celadon,
-                shape = RoundedCornerShape(bottomEnd = 14.dp, topEnd = 14.dp),
-            )
-            .border(
-                width = 2.dp,
-                color = BrunswickGreen,
-                shape = RoundedCornerShape(bottomEnd = 14.dp, topEnd = 14.dp),
-            ),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Center,
-    ) {
-        Text(
-            text = stringResource(id = valueName),
-            color = RichBlack,
-            fontWeight = FontWeight.Bold,
-            fontSize = 20.sp,
-            textAlign = TextAlign.Center,
-        )
-        Image(
-            modifier = Modifier
-                .size(36.dp),
-            painter = painterResource(id = valueIcon),
-            contentDescription = null,
-        )
-    }
-}
-
 @Preview(showBackground = true)
 @Composable
 private fun ChooseAreaComponentPreview() {
-    ChooseAreaComponent(clickableStuff = {}, screenState = AreaScreenState.Success(Region.ASIA))
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun GameRulesComponentPreview() {
-    GameRulesComponent(regionName = R.string.africa, regionIcon = R.drawable.africa)
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun GameRulesHeaderComponentPreview() {
-    GameRuleHeaderComponent(shouldAnimateHeader = false)
-}
-
-@Preview(showBackground = true, widthDp = 165)
-@Composable
-private fun GameRuleKeyComponentPreview() {
-    GameRuleKeyComponent("Chosen Continent:")
-}
-
-@Preview(showBackground = true, widthDp = 165)
-@Composable
-private fun GameRuleValueComponentPreview() {
-    GameRuleValueComponent(valueName = R.string.africa, valueIcon = R.drawable.africa)
+    ChooseAreaComponent(
+        nextStep = {},
+        screenState = AreaScreenState.Success(Region.ASIA)
+    )
 }

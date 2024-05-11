@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
@@ -77,9 +78,30 @@ class MainActivity : ComponentActivity() {
                             }
 
                             ChooseAreaComponent(
-                                clickableStuff = {},
+                                nextStep = { subRegion ->
+                                    navigationController.navigate(
+                                        route = "gameMode/$region/$subRegion",
+                                    )
+                                },
                                 screenState = viewModel.screenState.collectAsState().value,
                             )
+                        }
+                        composable(
+                            route = "gameMode/{region}/{subregion}",
+                            arguments = listOf(
+                                navArgument("region") {
+                                    type = NavType.StringType
+                                    nullable = false
+                                },
+                                navArgument("subregion") {
+                                    type = NavType.StringType
+                                    nullable = false
+                                }
+                            ),
+                        ) {
+                            val region = it.arguments?.getString("region")
+                            val subRegion = it.arguments?.getString("subregion")
+                            Text(text = "Region $region / SubRegion: $subRegion")
                         }
                         composable(
                             route = "flagGame/{continent}",

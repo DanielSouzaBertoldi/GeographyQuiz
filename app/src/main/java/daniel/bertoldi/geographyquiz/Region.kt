@@ -117,5 +117,9 @@ enum class SubRegion(
     MICRONESIA(R.string.micronesia, R.drawable.blank_space),
     POLYNESIA(R.string.polynesia, R.drawable.blank_space),
     MELANESIA(R.string.melanesia, R.drawable.blank_space),
-    AUS_NEW(R.string.aus_new, R.drawable.blank_space),
+    AUS_NEW(R.string.aus_new, R.drawable.blank_space);
+
+    companion object {
+        fun getSubRegion(name: String) = entries.first { it.name.equals(name, ignoreCase = true) }
+    }
 }

@@ -1,24 +1,19 @@
 package daniel.bertoldi.geographyquiz.ui.components
 
-import androidx.annotation.DrawableRes
-import androidx.annotation.StringRes
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateIntOffsetAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -33,9 +28,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
@@ -47,9 +40,6 @@ import daniel.bertoldi.geographyquiz.presentation.viewmodel.AreaScreenState
 import daniel.bertoldi.geographyquiz.ui.theme.AliceBlue
 import daniel.bertoldi.geographyquiz.ui.theme.BrunswickGreen
 import daniel.bertoldi.geographyquiz.ui.theme.CambridgeBlue
-import daniel.bertoldi.geographyquiz.ui.theme.Celadon
-import daniel.bertoldi.geographyquiz.ui.theme.LightGray
-import daniel.bertoldi.geographyquiz.ui.theme.RichBlack
 import kotlin.math.roundToInt
 
 @Composable
@@ -68,11 +58,17 @@ internal fun ChooseAreaComponent(
             GameRulesComponent(
                 shouldAnimateHeader = true,
                 rules = listOf(
-                    { GameRuleKeyComponent(keyName = R.string.choose_region) },
+                    {
+                        GameRuleKeyComponent(
+                            keyName = R.string.chosen_region,
+                            cornerShape = RoundedCornerShape(bottomStart = 14.dp, topStart = 14.dp),
+                        )
+                    },
                     {
                         GameRuleValueComponent(
                             valueName = screenState.regionData.regionString,
-                            valueIcon = screenState.regionData.regionIcon
+                            valueIcon = screenState.regionData.regionIcon,
+                            cornerShape = RoundedCornerShape(bottomEnd = 14.dp, topEnd = 14.dp),
                         )
                     }
                 )

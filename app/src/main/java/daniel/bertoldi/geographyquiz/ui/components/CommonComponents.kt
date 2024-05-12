@@ -19,8 +19,12 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -50,6 +54,8 @@ fun GameOptionCard(
     @DrawableRes icon: Int,
     @StringRes stringRes: Int,
     nextStep: () -> Unit,
+    showHelpIcon: Boolean = false,
+    helpIconAction: () -> Unit = {},
 ) {
     Card(
         modifier = modifier,
@@ -79,19 +85,33 @@ fun GameOptionCard(
                 contentDescription = null,
                 contentScale = ContentScale.Fit,
             )
-            Text(
+            Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(55.dp)
                     .background(color = Celadon)
                     .border(Dp.Hairline, Gray)
-                    .wrapContentSize(),
-                text = stringResource(id = stringRes),
-                textAlign = TextAlign.Center,
-                color = RichBlack,
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold,
-            )
+                    .padding(horizontal = 10.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center,
+            ) {
+                Text(
+                    modifier = Modifier.padding(start = 10.dp).weight(weight = 1f, fill = false),
+                    text = stringResource(id = stringRes),
+                    textAlign = TextAlign.Center,
+                    color = RichBlack,
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                )
+                if (showHelpIcon) {
+                    IconButton(onClick = { helpIconAction() }) {
+                        Icon(
+                            imageVector = Icons.Filled.Info,
+                            contentDescription = null, // TODO: add content description.
+                        )
+                    }
+                }
+            }
         }
     }
 }
@@ -145,18 +165,19 @@ fun GameRulesComponent(
 @Composable
 fun GameRuleKeyComponent(
     @StringRes keyName: Int,
+    cornerShape: RoundedCornerShape,
 ) {
     Text(
         modifier = Modifier
             .height(55.dp)
             .background(
                 color = RichBlack,
-                shape = RoundedCornerShape(bottomStart = 14.dp, topStart = 14.dp),
+                shape = cornerShape,
             )
             .border(
                 width = 2.dp,
                 color = BrunswickGreen,
-                shape = RoundedCornerShape(bottomStart = 14.dp, topStart = 14.dp)
+                shape = cornerShape,
             )
             .padding(horizontal = 30.dp, vertical = 4.dp),
         text = stringResource(id = keyName),
@@ -171,18 +192,19 @@ fun GameRuleKeyComponent(
 fun GameRuleValueComponent(
     @StringRes valueName: Int,
     @DrawableRes valueIcon: Int,
+    cornerShape: RoundedCornerShape,
 ) {
     Row(
         modifier = Modifier
             .height(55.dp)
             .background(
                 color = Celadon,
-                shape = RoundedCornerShape(bottomEnd = 14.dp, topEnd = 14.dp),
+                shape = cornerShape,
             )
             .border(
                 width = 2.dp,
                 color = BrunswickGreen,
-                shape = RoundedCornerShape(bottomEnd = 14.dp, topEnd = 14.dp),
+                shape = cornerShape,
             ),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center,
@@ -210,6 +232,7 @@ private fun ContinentCardPreview() {
         icon = Region.AFRICA.regionIcon,
         stringRes = Region.AFRICA.regionString,
         nextStep = {},
+        showHelpIcon = true,
     )
 }
 
@@ -225,11 +248,17 @@ private fun GameRulesComponentPreview() {
     GameRulesComponent(
         shouldAnimateHeader = false,
         rules = listOf(
-            { GameRuleKeyComponent(keyName = R.string.choose_region) },
+            {
+                GameRuleKeyComponent(
+                    keyName = R.string.chosen_region,
+                    cornerShape = RoundedCornerShape(bottomStart = 14.dp, topStart = 14.dp),
+                )
+            },
             {
                 GameRuleValueComponent(
                     valueName = R.string.americas,
                     valueIcon = R.drawable.all_americas,
+                    cornerShape = RoundedCornerShape(bottomEnd = 14.dp, topEnd = 14.dp),
                 )
             }
         )
@@ -245,11 +274,18 @@ private fun GameRulesHeaderComponentPreview() {
 @Preview(showBackground = true, widthDp = 165)
 @Composable
 private fun GameRuleKeyComponentPreview() {
-    GameRuleKeyComponent(keyName = R.string.chosen_region)
+    GameRuleKeyComponent(
+        keyName = R.string.chosen_region,
+        cornerShape = RoundedCornerShape(bottomStart = 14.dp, topStart = 14.dp),
+    )
 }
 
 @Preview(showBackground = true, widthDp = 165)
 @Composable
 private fun GameRuleValueComponentPreview() {
-    GameRuleValueComponent(valueName = R.string.africa, valueIcon = R.drawable.africa)
+    GameRuleValueComponent(
+        valueName = R.string.africa,
+        valueIcon = R.drawable.africa,
+        cornerShape = RoundedCornerShape(bottomEnd = 14.dp, topEnd = 14.dp),
+    )
 }

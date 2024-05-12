@@ -4,8 +4,10 @@
 
     <string name="choose_region">Choose the Region</string>
     <string name="choose_area">Choose the Area</string>
+    <string name="choose_game_mode">Select the Game Mode</string>
     <string name="game_rules">Game Rules</string>
     <string name="chosen_region">Chosen Region</string>
+    <string name="chosen_area">Chosen\nArea</string>
 
     <!-- Region -->
     <string name="africa">Africa</string>
@@ -34,4 +36,12 @@
     <string name="east_area">East</string>
     <string name="west_area">West</string>
     <string name="all_area">All</string>
+
+    <!-- Game Modes -->
+    <string name="game_mode_casual">Casual</string>
+    <string name="game_mode_casual_description">Classic. Just go through each flag and try to guess which country it is. There\'s no time limit, just do your best and relax :)</string>
+    <string name="game_mode_time_attack">Time Attack</string>
+    <string name="game_mode_time_attack_description">Try to guess all flags correctly in the shortest amount of time possible. The faster you are, the greater your score.</string>
+    <string name="game_mode_sudden_death">Sudden Death</string>
+    <string name="game_mode_sudden_death_description">If you guess one flag wrong, you\'re out! More fun if you choose the entire area of a region.</string>
 </resources>

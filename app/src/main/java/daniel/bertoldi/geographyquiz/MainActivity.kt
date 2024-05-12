@@ -23,6 +23,7 @@ import daniel.bertoldi.geographyquiz.ui.components.ErrorComponent
 import daniel.bertoldi.geographyquiz.ui.components.FlagGameComponent
 import daniel.bertoldi.geographyquiz.ui.components.HomeComponent
 import daniel.bertoldi.geographyquiz.ui.components.LoadingComponent
+import daniel.bertoldi.geographyquiz.ui.components.SelectGameMode
 import daniel.bertoldi.geographyquiz.ui.components.SelectRegionComponent
 import daniel.bertoldi.geographyquiz.ui.theme.GeographyQuizTheme
 
@@ -87,21 +88,21 @@ class MainActivity : ComponentActivity() {
                             )
                         }
                         composable(
-                            route = "gameMode/{region}/{subregion}",
+                            route = "gameMode/{region}/{subRegion}",
                             arguments = listOf(
                                 navArgument("region") {
                                     type = NavType.StringType
                                     nullable = false
                                 },
-                                navArgument("subregion") {
+                                navArgument("subRegion") {
                                     type = NavType.StringType
                                     nullable = false
                                 }
                             ),
                         ) {
-                            val region = it.arguments?.getString("region")
-                            val subRegion = it.arguments?.getString("subregion")
-                            Text(text = "Region $region / SubRegion: $subRegion")
+                            val region = it.arguments?.getString("region").orEmpty()
+                            val subRegion = it.arguments?.getString("subRegion").orEmpty()
+                            SelectGameMode(a = region, b = subRegion)
                         }
                         composable(
                             route = "flagGame/{continent}",

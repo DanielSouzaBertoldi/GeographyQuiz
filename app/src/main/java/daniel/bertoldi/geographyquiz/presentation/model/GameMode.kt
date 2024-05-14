@@ -1,17 +1,10 @@
 package daniel.bertoldi.geographyquiz.presentation.model
 
-import androidx.annotation.DrawableRes
-import androidx.annotation.StringRes
 import daniel.bertoldi.geographyquiz.R
 
 sealed class GameMode {
-    @get:DrawableRes
     abstract val icon: Int
-
-    @get:StringRes
     abstract val description: Int
-
-    @get:StringRes
     abstract val name: Int
 
     data class Casual(

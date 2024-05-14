@@ -21,9 +21,7 @@ class AreaViewModel @Inject constructor() : ViewModel() {
     val screenState = _screenState.asStateFlow()
 
     fun fetchSubRegions(region: String) {
-        viewModelScope.launch(Dispatchers.IO) {
-            val enumRegion = Region.getRegion(region)
-            _screenState.value = AreaScreenState.Success(enumRegion)
-        }
+        val enumRegion = Region.getRegion(region)
+        _screenState.value = AreaScreenState.Success(enumRegion)
     }
 }

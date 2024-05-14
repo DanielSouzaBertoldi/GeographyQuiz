@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -16,7 +15,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -27,10 +25,8 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -41,69 +37,89 @@ import daniel.bertoldi.geographyquiz.R
 import daniel.bertoldi.geographyquiz.Region
 import daniel.bertoldi.geographyquiz.SubRegion
 import daniel.bertoldi.geographyquiz.presentation.model.GameMode
+import daniel.bertoldi.geographyquiz.presentation.viewmodel.GameModeScreenState
 import daniel.bertoldi.geographyquiz.ui.theme.AliceBlue
 import daniel.bertoldi.geographyquiz.ui.theme.RichBlack
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SelectGameMode(a: String, b: String) {
-    val region = Region.getRegion(a)
-    val subRegion = SubRegion.getSubRegion(b)
-
-    var showBottomSheet by remember { mutableStateOf(false) }
-    var gameModeHelp: GameMode by remember { mutableStateOf(GameMode.Casual()) }
-
+fun SelectGameMode(
+    screenState: GameModeScreenState,
+) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .background(color = AliceBlue),
         verticalArrangement = Arrangement.Center,
     ) {
-        Step(stringRes = R.string.choose_game_mode)
-        GameRulesComponent(
-            rules = listOf(
-                {
-                    GameRuleKeyComponent(
-                        keyName = R.string.chosen_region,
-                        cornerShape = RoundedCornerShape(topStart = 14.dp),
-                    )
-                },
-                {
-                    GameRuleValueComponent(
-                        valueName = region.regionString,
-                        valueIcon = region.regionIcon,
-                        cornerShape = RoundedCornerShape(topEnd = 14.dp),
-                    )
-                },
-                {
-                    GameRuleKeyComponent(
-                        keyName = R.string.chosen_area,
-                        cornerShape = RoundedCornerShape(bottomStart = 14.dp),
-                    )
-                },
-                {
-                    GameRuleValueComponent(
-                        valueName = subRegion.subRegionName,
-                        valueIcon = subRegion.subRegionIcon,
-                        cornerShape = RoundedCornerShape(bottomEnd = 14.dp),
-                    )
-                },
-            )
-        )
+        when (screenState) {
+            is GameModeScreenState.Loading -> {
+                LoadingComponent()
+            }
 
-        GameModes {
+            is GameModeScreenState.ChoosingGameMode -> {
+                ChooseGameModeComponent(
+                    region = screenState.region,
+                    subRegion = screenState.subRegion,
+                )
+            }
+
+            is GameModeScreenState.ConfirmSelection -> {
+                Text(text = "Yeah")
+            }
+        }
+    }
+}
+
+@Composable
+private fun ChooseGameModeComponent(region: Region, subRegion: SubRegion) {
+    var showBottomSheet by remember { mutableStateOf(false) }
+    var gameModeHelp: GameMode by remember { mutableStateOf(GameMode.Casual()) }
+
+    Step(stringRes = R.string.choose_game_mode)
+    GameRulesComponent(
+        rules = listOf(
+            {
+                GameRuleKeyComponent(
+                    keyName = R.string.chosen_region,
+                    cornerShape = RoundedCornerShape(topStart = 14.dp),
+                )
+            },
+            {
+                GameRuleValueComponent(
+                    valueName = region.regionString,
+                    valueIcon = region.regionIcon,
+                    cornerShape = RoundedCornerShape(topEnd = 14.dp),
+                )
+            },
+            {
+                GameRuleKeyComponent(
+                    keyName = R.string.chosen_area,
+                    cornerShape = RoundedCornerShape(bottomStart = 14.dp),
+                )
+            },
+            {
+                GameRuleValueComponent(
+                    valueName = subRegion.subRegionName,
+                    valueIcon = subRegion.subRegionIcon,
+                    cornerShape = RoundedCornerShape(bottomEnd = 14.dp),
+                )
+            },
+        )
+    )
+
+    GameModes(
+        onHelpClick = {
             showBottomSheet = true
             gameModeHelp = it
         }
+    )
 
-        if (showBottomSheet) {
-            GameModeModal(
-                gameModeHelp = gameModeHelp,
-                onSheetStateFinishedHiding = { showBottomSheet = false }
-            )
-        }
+    if (showBottomSheet) {
+        GameModeModal(
+            gameModeHelp = gameModeHelp,
+            onSheetStateFinishedHiding = { showBottomSheet = false }
+        )
     }
 }
 
@@ -226,7 +242,12 @@ private fun GameModes(
 @Preview(showBackground = true)
 @Composable
 private fun SelectGameModePreview() {
-    SelectGameMode(a = "Africa", b = "MIDDLE_AFRICA")
+    SelectGameMode(
+        screenState = GameModeScreenState.ChoosingGameMode(
+            region = Region.AFRICA,
+            subRegion = SubRegion.EASTERN_AFRICA,
+        )
+    )
 }
 
 @Preview
@@ -238,7 +259,10 @@ private fun GameModeModalPreview() {
     )
 }
 
-@Preview(showBackground = true, backgroundColor = 0xFF001A23) // TODO: Can't reference RichBlack directly.
+@Preview(
+    showBackground = true,
+    backgroundColor = 0xFF001A23
+) // TODO: Can't reference RichBlack directly.
 @Composable
 private fun GameModeModalContentPreview() {
     GameModeModalContent(GameMode.Casual())

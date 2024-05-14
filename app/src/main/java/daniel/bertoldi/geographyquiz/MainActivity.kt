@@ -6,7 +6,6 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
@@ -18,6 +17,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import dagger.hilt.android.AndroidEntryPoint
 import daniel.bertoldi.geographyquiz.presentation.viewmodel.AreaViewModel
+import daniel.bertoldi.geographyquiz.presentation.viewmodel.GameModeViewModel
 import daniel.bertoldi.geographyquiz.ui.components.ChooseAreaComponent
 import daniel.bertoldi.geographyquiz.ui.components.ErrorComponent
 import daniel.bertoldi.geographyquiz.ui.components.FlagGameComponent
@@ -100,9 +100,15 @@ class MainActivity : ComponentActivity() {
                                 }
                             ),
                         ) {
-                            val region = it.arguments?.getString("region").orEmpty()
-                            val subRegion = it.arguments?.getString("subRegion").orEmpty()
-                            SelectGameMode(a = region, b = subRegion)
+                            val viewModel = hiltViewModel<GameModeViewModel>()
+
+                            LaunchedEffect(key1 = it.arguments) {
+                                viewModel.fetchArguments(it.arguments)
+                            }
+
+                            SelectGameMode(
+                                screenState = viewModel.screenState.collectAsState().value,
+                            )
                         }
                         composable(
                             route = "flagGame/{continent}",

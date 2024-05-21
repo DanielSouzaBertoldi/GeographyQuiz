@@ -8,6 +8,7 @@
     <string name="game_rules">Game Rules</string>
     <string name="chosen_region">Chosen Region</string>
     <string name="chosen_area">Chosen\nArea</string>
+    <string name="chosen_game_mode">Chosen\nGame Mode</string>
 
     <!-- Region -->
     <string name="africa">Africa</string>

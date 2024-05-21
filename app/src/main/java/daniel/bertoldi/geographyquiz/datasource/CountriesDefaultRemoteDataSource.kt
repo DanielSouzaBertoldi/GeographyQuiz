@@ -19,12 +19,17 @@ class CountriesDefaultRemoteDataSource @Inject constructor(
 
     // TODO: return Flow
     override suspend fun fetchCountriesApi(): List<CountryModel> {
-        val countriesResult = countriesApi.getCountries()
-        return if (countriesResult.isSuccessful) {
-            countriesDataStore.saveFetchTime(System.currentTimeMillis())
-            responseToModelMapper.mapFrom(countriesResult.body()) ?: emptyList()
-        } else {
-            emptyList()
+        try {
+            val countriesResult = countriesApi.getCountries()
+            return if (countriesResult.isSuccessful) {
+                countriesDataStore.saveFetchTime(System.currentTimeMillis())
+                responseToModelMapper.mapFrom(countriesResult.body()) ?: emptyList()
+            } else {
+                emptyList()
+            }
+        } catch (e: Exception) {
+            println("CountriesApi -> $e")
+            return emptyList()
         }
     }
 }

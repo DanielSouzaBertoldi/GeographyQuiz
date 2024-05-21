@@ -45,6 +45,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun SelectGameMode(
     screenState: GameModeScreenState,
+    onGameModeClick: (GameMode, Region, SubRegion) -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -56,23 +57,68 @@ fun SelectGameMode(
             is GameModeScreenState.Loading -> {
                 LoadingComponent()
             }
-
             is GameModeScreenState.ChoosingGameMode -> {
                 ChooseGameModeComponent(
                     region = screenState.region,
                     subRegion = screenState.subRegion,
+                    onGameModeClick = onGameModeClick,
                 )
             }
-
             is GameModeScreenState.ConfirmSelection -> {
-                Text(text = "Yeah")
+                GameRulesComponent(
+                    rules = listOf(
+                        {
+                            GameRuleKeyComponent(
+                                keyName = R.string.chosen_region,
+                                cornerShape = RoundedCornerShape(topStart = 14.dp),
+                            )
+                        },
+                        {
+                            GameRuleValueComponent(
+                                valueName = screenState.region.regionString,
+                                valueIcon = screenState.region.regionIcon,
+                                cornerShape = RoundedCornerShape(topEnd = 14.dp),
+                            )
+                        },
+                        {
+                            GameRuleKeyComponent(
+                                keyName = R.string.chosen_area,
+                                cornerShape = RoundedCornerShape(bottomStart = 0.dp),
+                            )
+                        },
+                        {
+                            GameRuleValueComponent(
+                                valueName = screenState.subRegion.subRegionName,
+                                valueIcon = screenState.subRegion.subRegionIcon,
+                                cornerShape = RoundedCornerShape(bottomEnd = 0.dp),
+                            )
+                        },
+                        {
+                            GameRuleKeyComponent(
+                                keyName = R.string.chosen_game_mode,
+                                cornerShape = RoundedCornerShape(bottomStart = 14.dp),
+                            )
+                        },
+                        {
+                            GameRuleValueComponent(
+                                valueName = screenState.gameMode.name,
+                                valueIcon = screenState.gameMode.icon,
+                                cornerShape = RoundedCornerShape(bottomEnd = 14.dp),
+                            )
+                        },
+                    )
+                )
             }
         }
     }
 }
 
 @Composable
-private fun ChooseGameModeComponent(region: Region, subRegion: SubRegion) {
+private fun ChooseGameModeComponent(
+    region: Region,
+    subRegion: SubRegion,
+    onGameModeClick: (GameMode, Region, SubRegion) -> Unit,
+) {
     var showBottomSheet by remember { mutableStateOf(false) }
     var gameModeHelp: GameMode by remember { mutableStateOf(GameMode.Casual()) }
 
@@ -112,7 +158,8 @@ private fun ChooseGameModeComponent(region: Region, subRegion: SubRegion) {
         onHelpClick = {
             showBottomSheet = true
             gameModeHelp = it
-        }
+        },
+        onGameModeClick = { onGameModeClick(it, region, subRegion) },
     )
 
     if (showBottomSheet) {
@@ -198,6 +245,7 @@ private fun GameModeModalContent(gameModeHelp: GameMode) {
 @Composable
 private fun GameModes(
     onHelpClick: (GameMode) -> Unit,
+    onGameModeClick: (GameMode) -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -210,7 +258,7 @@ private fun GameModes(
             modifier = Modifier.width(165.dp),
             icon = R.drawable.casual,
             stringRes = R.string.game_mode_casual,
-            nextStep = { /* Add action */ },
+            nextStep = { onGameModeClick(GameMode.Casual()) },
             showHelpIcon = true,
             helpIconAction = { onHelpClick(GameMode.Casual()) },
         )
@@ -223,7 +271,7 @@ private fun GameModes(
                 modifier = Modifier.width(165.dp),
                 icon = R.drawable.time_attack,
                 stringRes = R.string.game_mode_time_attack,
-                nextStep = { /* Add action */ },
+                nextStep = { onGameModeClick(GameMode.TimeAttack()) },
                 showHelpIcon = true,
                 helpIconAction = { onHelpClick(GameMode.TimeAttack()) },
             )
@@ -231,7 +279,7 @@ private fun GameModes(
                 modifier = Modifier.width(165.dp),
                 icon = R.drawable.sudden_death,
                 stringRes = R.string.game_mode_sudden_death,
-                nextStep = { /* Add action */ },
+                nextStep = { onGameModeClick(GameMode.SuddenDeath()) },
                 showHelpIcon = true,
                 helpIconAction = { onHelpClick(GameMode.SuddenDeath()) },
             )
@@ -246,7 +294,8 @@ private fun SelectGameModePreview() {
         screenState = GameModeScreenState.ChoosingGameMode(
             region = Region.AFRICA,
             subRegion = SubRegion.EASTERN_AFRICA,
-        )
+        ),
+        onGameModeClick = { _, _, _ -> },
     )
 }
 
@@ -262,7 +311,7 @@ private fun GameModeModalPreview() {
 @Preview(
     showBackground = true,
     backgroundColor = 0xFF001A23
-) // TODO: Can't reference RichBlack directly.
+) // TODO: Can't reference RichBlack directly, which sucks.
 @Composable
 private fun GameModeModalContentPreview() {
     GameModeModalContent(GameMode.Casual())
@@ -271,5 +320,8 @@ private fun GameModeModalContentPreview() {
 @Preview(showBackground = true)
 @Composable
 private fun GameModesPreview() {
-    GameModes(onHelpClick = {})
+    GameModes(
+        onHelpClick = {},
+        onGameModeClick = {},
+    )
 }

@@ -12,11 +12,16 @@ import javax.inject.Inject
 
 sealed class GameModeScreenState {
     data object Loading : GameModeScreenState()
-    data object ConfirmSelection : GameModeScreenState()
 
     data class ChoosingGameMode(
         val region: Region,
         val subRegion: SubRegion,
+    ) : GameModeScreenState()
+
+    data class ConfirmSelection(
+        val region: Region,
+        val subRegion: SubRegion,
+        val gameMode: GameMode,
     ) : GameModeScreenState()
 }
 
@@ -36,7 +41,11 @@ class GameModeViewModel @Inject constructor() : ViewModel() {
         )
     }
 
-    fun confirmSelection(gameMode: GameMode) {
-
+    fun confirmSelection(gameMode: GameMode, region: Region, subRegion: SubRegion) {
+        _screenState.value = GameModeScreenState.ConfirmSelection(
+            region = region,
+            subRegion = subRegion,
+            gameMode = gameMode,
+        )
     }
 }

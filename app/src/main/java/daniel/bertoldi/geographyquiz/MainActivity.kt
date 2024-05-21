@@ -102,12 +102,15 @@ class MainActivity : ComponentActivity() {
                         ) {
                             val viewModel = hiltViewModel<GameModeViewModel>()
 
-                            LaunchedEffect(key1 = it.arguments) {
+                            LaunchedEffect(key1 = Unit) {
                                 viewModel.fetchArguments(it.arguments)
                             }
 
                             SelectGameMode(
                                 screenState = viewModel.screenState.collectAsState().value,
+                                onGameModeClick = { gameMode, region, subRegion ->
+                                    viewModel.confirmSelection(gameMode, region, subRegion)
+                                },
                             )
                         }
                         composable(

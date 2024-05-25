@@ -1,13 +1,10 @@
 package daniel.bertoldi.geographyquiz.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import daniel.bertoldi.geographyquiz.Region
-import kotlinx.coroutines.Dispatchers
+import daniel.bertoldi.geographyquiz.presentation.model.Region
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 sealed class AreaScreenState {

@@ -1,4 +1,4 @@
-package daniel.bertoldi.geographyquiz.ui.components
+package daniel.bertoldi.geographyquiz.presentation.ui.components
 
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateIntOffsetAsState
@@ -35,11 +35,11 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import daniel.bertoldi.geographyquiz.R
-import daniel.bertoldi.geographyquiz.Region
+import daniel.bertoldi.geographyquiz.presentation.model.Region
 import daniel.bertoldi.geographyquiz.presentation.viewmodel.AreaScreenState
-import daniel.bertoldi.geographyquiz.ui.theme.AliceBlue
-import daniel.bertoldi.geographyquiz.ui.theme.BrunswickGreen
-import daniel.bertoldi.geographyquiz.ui.theme.CambridgeBlue
+import daniel.bertoldi.geographyquiz.presentation.ui.theme.AliceBlue
+import daniel.bertoldi.geographyquiz.presentation.ui.theme.BrunswickGreen
+import daniel.bertoldi.geographyquiz.presentation.ui.theme.CambridgeBlue
 import kotlin.math.roundToInt
 
 @Composable

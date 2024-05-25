@@ -1,4 +1,4 @@
-package daniel.bertoldi.geographyquiz
+package daniel.bertoldi.geographyquiz.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

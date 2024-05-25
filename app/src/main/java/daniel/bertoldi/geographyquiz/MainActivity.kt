@@ -17,15 +17,18 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import dagger.hilt.android.AndroidEntryPoint
 import daniel.bertoldi.geographyquiz.presentation.viewmodel.AreaViewModel
+import daniel.bertoldi.geographyquiz.presentation.viewmodel.FlagGameViewModel
 import daniel.bertoldi.geographyquiz.presentation.viewmodel.GameModeViewModel
-import daniel.bertoldi.geographyquiz.ui.components.ChooseAreaComponent
-import daniel.bertoldi.geographyquiz.ui.components.ErrorComponent
-import daniel.bertoldi.geographyquiz.ui.components.FlagGameComponent
-import daniel.bertoldi.geographyquiz.ui.components.HomeComponent
-import daniel.bertoldi.geographyquiz.ui.components.LoadingComponent
-import daniel.bertoldi.geographyquiz.ui.components.SelectGameMode
-import daniel.bertoldi.geographyquiz.ui.components.SelectRegionComponent
-import daniel.bertoldi.geographyquiz.ui.theme.GeographyQuizTheme
+import daniel.bertoldi.geographyquiz.presentation.viewmodel.MainActivityViewModel
+import daniel.bertoldi.geographyquiz.presentation.viewmodel.MainScreenState
+import daniel.bertoldi.geographyquiz.presentation.ui.components.ChooseAreaComponent
+import daniel.bertoldi.geographyquiz.presentation.ui.components.ErrorComponent
+import daniel.bertoldi.geographyquiz.presentation.ui.components.FlagGameComponent
+import daniel.bertoldi.geographyquiz.presentation.ui.components.HomeComponent
+import daniel.bertoldi.geographyquiz.presentation.ui.components.LoadingComponent
+import daniel.bertoldi.geographyquiz.presentation.ui.components.SelectGameMode
+import daniel.bertoldi.geographyquiz.presentation.ui.components.SelectRegionComponent
+import daniel.bertoldi.geographyquiz.presentation.ui.theme.GeographyQuizTheme
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -111,9 +114,9 @@ class MainActivity : ComponentActivity() {
                                 onGameModeClick = { gameMode, region, subRegion ->
                                     viewModel.confirmSelection(gameMode, region, subRegion)
                                 },
-                                onPlayGameClick = {
+                                onPlayGameClick = { region, subRegion, gameMode ->
                                     navigationController.navigate(
-                                        route = "flagGame/${viewModel.chosenRegion}"
+                                        route = "flagGame/${region}/${subRegion}/${gameMode}"
                                     )
                                 },
                                 onUndoChoicesClick = {
@@ -124,16 +127,24 @@ class MainActivity : ComponentActivity() {
                             )
                         }
                         composable(
-                            route = "flagGame/{continent}",
+                            route = "flagGame/{region}/{subregion}/{gamemode}",
                             arguments = listOf(
-                                navArgument("continent") {
+                                navArgument("region") {
                                     type = NavType.StringType
-                                    defaultValue = ""
+                                    nullable = false
+                                },
+                                navArgument("subregion") {
+                                    type = NavType.StringType
+                                    nullable = false
+                                },
+                                navArgument("gamemode") {
+                                    type = NavType.StringType
+                                    nullable = false
                                 },
                             )
                         ) {
                             val viewModel = hiltViewModel<FlagGameViewModel>()
-                            val chosenContinent = it.arguments?.getString("continent").orEmpty()
+                            val chosenContinent = it.arguments?.getString("region").orEmpty()
 
                             LaunchedEffect(chosenContinent) {
                                 viewModel.startFlagGame(chosenContinent)

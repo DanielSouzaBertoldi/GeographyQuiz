@@ -1,4 +1,4 @@
-package daniel.bertoldi.geographyquiz.ui.components
+package daniel.bertoldi.geographyquiz.presentation.ui.components
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
@@ -40,14 +40,14 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import daniel.bertoldi.geographyquiz.R
-import daniel.bertoldi.geographyquiz.Region
-import daniel.bertoldi.geographyquiz.SubRegion
+import daniel.bertoldi.geographyquiz.presentation.model.Region
+import daniel.bertoldi.geographyquiz.presentation.model.SubRegion
 import daniel.bertoldi.geographyquiz.presentation.model.GameMode
 import daniel.bertoldi.geographyquiz.presentation.viewmodel.GameModeScreenState
-import daniel.bertoldi.geographyquiz.ui.theme.AliceBlue
-import daniel.bertoldi.geographyquiz.ui.theme.BrunswickGreen
-import daniel.bertoldi.geographyquiz.ui.theme.Celadon
-import daniel.bertoldi.geographyquiz.ui.theme.RichBlack
+import daniel.bertoldi.geographyquiz.presentation.ui.theme.AliceBlue
+import daniel.bertoldi.geographyquiz.presentation.ui.theme.BrunswickGreen
+import daniel.bertoldi.geographyquiz.presentation.ui.theme.Celadon
+import daniel.bertoldi.geographyquiz.presentation.ui.theme.RichBlack
 import kotlinx.coroutines.launch
 
 
@@ -55,7 +55,7 @@ import kotlinx.coroutines.launch
 fun SelectGameMode(
     screenState: GameModeScreenState,
     onGameModeClick: (GameMode, Region, SubRegion) -> Unit,
-    onPlayGameClick: () -> Unit,
+    onPlayGameClick: (Region, SubRegion, GameMode) -> Unit,
     onUndoChoicesClick: () -> Unit,
 ) {
     Column(
@@ -128,7 +128,13 @@ fun SelectGameMode(
                     ActionButton(
                         modifier = Modifier.padding(top = 60.dp),
                         text = R.string.play,
-                        action = { onPlayGameClick() },
+                        action = {
+                            onPlayGameClick(
+                                screenState.region,
+                                screenState.subRegion,
+                                screenState.gameMode,
+                            )
+                        },
                         textColor = RichBlack,
                         backgroundColor = Celadon,
                         fontWeight = FontWeight.Bold,
@@ -360,7 +366,7 @@ private fun SelectGameModePreview() {
             subRegion = SubRegion.EASTERN_AFRICA,
         ),
         onGameModeClick = { _, _, _ -> },
-        onPlayGameClick = { },
+        onPlayGameClick = { _, _, _ -> },
         onUndoChoicesClick = { },
     )
 }
@@ -375,7 +381,7 @@ private fun SelectConfirmChoicesPreview() {
             gameMode = GameMode.Casual(),
         ),
         onGameModeClick = { _, _, _ -> },
-        onPlayGameClick = { },
+        onPlayGameClick = { _, _, _ -> },
         onUndoChoicesClick = { },
     )
 }

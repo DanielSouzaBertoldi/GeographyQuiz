@@ -1,4 +1,4 @@
-package daniel.bertoldi.geographyquiz.ui.components
+package daniel.bertoldi.geographyquiz.presentation.ui.components
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
@@ -37,15 +37,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import daniel.bertoldi.geographyquiz.Region
+import daniel.bertoldi.geographyquiz.presentation.model.Region
 import daniel.bertoldi.geographyquiz.R
-import daniel.bertoldi.geographyquiz.ui.theme.AliceBlue
-import daniel.bertoldi.geographyquiz.ui.theme.BrunswickGreen
-import daniel.bertoldi.geographyquiz.ui.theme.CambridgeBlue
-import daniel.bertoldi.geographyquiz.ui.theme.Celadon
-import daniel.bertoldi.geographyquiz.ui.theme.Gray
-import daniel.bertoldi.geographyquiz.ui.theme.LightGray
-import daniel.bertoldi.geographyquiz.ui.theme.RichBlack
+import daniel.bertoldi.geographyquiz.presentation.ui.theme.AliceBlue
+import daniel.bertoldi.geographyquiz.presentation.ui.theme.BrunswickGreen
+import daniel.bertoldi.geographyquiz.presentation.ui.theme.CambridgeBlue
+import daniel.bertoldi.geographyquiz.presentation.ui.theme.Celadon
+import daniel.bertoldi.geographyquiz.presentation.ui.theme.Gray
+import daniel.bertoldi.geographyquiz.presentation.ui.theme.LightGray
+import daniel.bertoldi.geographyquiz.presentation.ui.theme.RichBlack
 
 @Composable
 fun GameOptionCard(

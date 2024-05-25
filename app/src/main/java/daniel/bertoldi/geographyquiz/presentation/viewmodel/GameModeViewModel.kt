@@ -3,8 +3,8 @@ package daniel.bertoldi.geographyquiz.presentation.viewmodel
 import android.os.Bundle
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import daniel.bertoldi.geographyquiz.Region
-import daniel.bertoldi.geographyquiz.SubRegion
+import daniel.bertoldi.geographyquiz.presentation.model.Region
+import daniel.bertoldi.geographyquiz.presentation.model.SubRegion
 import daniel.bertoldi.geographyquiz.presentation.model.GameMode
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

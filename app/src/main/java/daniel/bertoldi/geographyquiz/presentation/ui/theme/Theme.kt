@@ -1,4 +1,4 @@
-package daniel.bertoldi.geographyquiz.ui.theme
+package daniel.bertoldi.geographyquiz.presentation.ui.theme
 
 import android.app.Activity
 import android.os.Build

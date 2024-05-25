@@ -1,4 +1,4 @@
-package daniel.bertoldi.geographyquiz.ui.components
+package daniel.bertoldi.geographyquiz.presentation.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -28,8 +28,8 @@ import coil.compose.AsyncImage
 import coil.decode.ImageDecoderDecoder
 import coil.request.ImageRequest
 import daniel.bertoldi.geographyquiz.R
-import daniel.bertoldi.geographyquiz.ui.theme.AliceBlue
-import daniel.bertoldi.geographyquiz.ui.theme.BrunswickGreen
+import daniel.bertoldi.geographyquiz.presentation.ui.theme.AliceBlue
+import daniel.bertoldi.geographyquiz.presentation.ui.theme.BrunswickGreen
 
 @Composable
 internal fun LoadingComponent() {

@@ -1,4 +1,4 @@
-package daniel.bertoldi.geographyquiz.ui.components
+package daniel.bertoldi.geographyquiz.presentation.ui.components
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.layout.Box
@@ -24,9 +24,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import daniel.bertoldi.database.CountryEntity
-import daniel.bertoldi.geographyquiz.Region
-import daniel.bertoldi.geographyquiz.GameState
-import daniel.bertoldi.geographyquiz.GameStep
+import daniel.bertoldi.geographyquiz.presentation.model.Region
+import daniel.bertoldi.geographyquiz.presentation.viewmodel.GameState
+import daniel.bertoldi.geographyquiz.presentation.viewmodel.GameStep
 
 @Composable
 internal fun FlagGameComponent(

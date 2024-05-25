@@ -1,6 +1,6 @@
 package daniel.bertoldi.geographyquiz.factory
 
-import daniel.bertoldi.geographyquiz.Region
+import daniel.bertoldi.geographyquiz.presentation.model.Region
 import daniel.bertoldi.test.utils.DayOfWeek
 import daniel.bertoldi.test.utils.randomBoolean
 import daniel.bertoldi.test.utils.randomEnumValue

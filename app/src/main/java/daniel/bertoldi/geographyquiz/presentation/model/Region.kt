@@ -1,7 +1,8 @@
-package daniel.bertoldi.geographyquiz
+package daniel.bertoldi.geographyquiz.presentation.model
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import daniel.bertoldi.geographyquiz.R
 
 enum class Region(
     val simpleName: String,

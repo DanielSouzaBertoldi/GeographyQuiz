@@ -11,7 +11,8 @@ val WhiteSmoke = Color(0xFFEFEFEF)
 val JetBlack = Color(0xFF0E0E10)
 val OffWhite = Color(0xFFFAF9F6)
 val Gray = Color(0xFF818181)
-val LightGray = Color(0XFFE5E5E5)
+val LightGray = Color(0xFFE5E5E5)
+val Poppy = Color(0xFFD43B3B)
 
 /* Dark Mode Colors */
 val Purple40 = Color(0xFF6650a4)

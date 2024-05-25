@@ -51,8 +51,10 @@ internal fun ChooseAreaComponent(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(color = AliceBlue),
-            verticalArrangement = Arrangement.Center,
+                .background(color = AliceBlue)
+                .padding(top = 40.dp)
+                .padding(horizontal = 24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Step(stringRes = R.string.choose_area)
             GameRulesComponent(
@@ -76,7 +78,7 @@ internal fun ChooseAreaComponent(
             LazyVerticalGrid(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 36.dp, start = 14.dp, end = 14.dp, bottom = 24.dp),
+                    .padding(top = 36.dp, bottom = 24.dp),
                 columns = GridCells.Fixed(2),
                 contentPadding = PaddingValues(6.dp),
                 horizontalArrangement = Arrangement.spacedBy(16.dp),

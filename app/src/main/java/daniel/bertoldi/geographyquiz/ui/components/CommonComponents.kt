@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -123,7 +122,6 @@ fun Step(
     Text(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 24.dp)
             .background(
                 color = CambridgeBlue,
                 shape = RoundedCornerShape(24.dp),
@@ -144,7 +142,6 @@ fun GameRulesComponent(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 24.dp)
             .padding(top = 24.dp),
     ) {
         GameRuleHeaderComponent(shouldAnimateHeader)

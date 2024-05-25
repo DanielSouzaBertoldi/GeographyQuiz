@@ -1,11 +1,15 @@
 package daniel.bertoldi.geographyquiz.ui.components
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -31,6 +35,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import daniel.bertoldi.geographyquiz.R
@@ -39,19 +45,26 @@ import daniel.bertoldi.geographyquiz.SubRegion
 import daniel.bertoldi.geographyquiz.presentation.model.GameMode
 import daniel.bertoldi.geographyquiz.presentation.viewmodel.GameModeScreenState
 import daniel.bertoldi.geographyquiz.ui.theme.AliceBlue
+import daniel.bertoldi.geographyquiz.ui.theme.BrunswickGreen
+import daniel.bertoldi.geographyquiz.ui.theme.Celadon
 import daniel.bertoldi.geographyquiz.ui.theme.RichBlack
 import kotlinx.coroutines.launch
+
 
 @Composable
 fun SelectGameMode(
     screenState: GameModeScreenState,
     onGameModeClick: (GameMode, Region, SubRegion) -> Unit,
+    onPlayGameClick: () -> Unit,
+    onUndoChoicesClick: () -> Unit,
 ) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .background(color = AliceBlue),
-        verticalArrangement = Arrangement.Center,
+            .background(color = AliceBlue)
+            .padding(top = 40.dp)
+            .padding(horizontal = 24.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         when (screenState) {
             is GameModeScreenState.Loading -> {
@@ -65,49 +78,72 @@ fun SelectGameMode(
                 )
             }
             is GameModeScreenState.ConfirmSelection -> {
-                GameRulesComponent(
-                    rules = listOf(
-                        {
-                            GameRuleKeyComponent(
-                                keyName = R.string.chosen_region,
-                                cornerShape = RoundedCornerShape(topStart = 14.dp),
-                            )
-                        },
-                        {
-                            GameRuleValueComponent(
-                                valueName = screenState.region.regionString,
-                                valueIcon = screenState.region.regionIcon,
-                                cornerShape = RoundedCornerShape(topEnd = 14.dp),
-                            )
-                        },
-                        {
-                            GameRuleKeyComponent(
-                                keyName = R.string.chosen_area,
-                                cornerShape = RoundedCornerShape(bottomStart = 0.dp),
-                            )
-                        },
-                        {
-                            GameRuleValueComponent(
-                                valueName = screenState.subRegion.subRegionName,
-                                valueIcon = screenState.subRegion.subRegionIcon,
-                                cornerShape = RoundedCornerShape(bottomEnd = 0.dp),
-                            )
-                        },
-                        {
-                            GameRuleKeyComponent(
-                                keyName = R.string.chosen_game_mode,
-                                cornerShape = RoundedCornerShape(bottomStart = 14.dp),
-                            )
-                        },
-                        {
-                            GameRuleValueComponent(
-                                valueName = screenState.gameMode.name,
-                                valueIcon = screenState.gameMode.icon,
-                                cornerShape = RoundedCornerShape(bottomEnd = 14.dp),
-                            )
-                        },
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.Center,
+                ) {
+                    GameRulesComponent(
+                        rules = listOf(
+                            {
+                                GameRuleKeyComponent(
+                                    keyName = R.string.chosen_region,
+                                    cornerShape = RoundedCornerShape(topStart = 14.dp),
+                                )
+                            },
+                            {
+                                GameRuleValueComponent(
+                                    valueName = screenState.region.regionString,
+                                    valueIcon = screenState.region.regionIcon,
+                                    cornerShape = RoundedCornerShape(topEnd = 14.dp),
+                                )
+                            },
+                            {
+                                GameRuleKeyComponent(
+                                    keyName = R.string.chosen_area,
+                                    cornerShape = RoundedCornerShape(bottomStart = 0.dp),
+                                )
+                            },
+                            {
+                                GameRuleValueComponent(
+                                    valueName = screenState.subRegion.subRegionName,
+                                    valueIcon = screenState.subRegion.subRegionIcon,
+                                    cornerShape = RoundedCornerShape(bottomEnd = 0.dp),
+                                )
+                            },
+                            {
+                                GameRuleKeyComponent(
+                                    keyName = R.string.chosen_game_mode,
+                                    cornerShape = RoundedCornerShape(bottomStart = 14.dp),
+                                )
+                            },
+                            {
+                                GameRuleValueComponent(
+                                    valueName = screenState.gameMode.name,
+                                    valueIcon = screenState.gameMode.icon,
+                                    cornerShape = RoundedCornerShape(bottomEnd = 14.dp),
+                                )
+                            },
+                        )
                     )
-                )
+                    ActionButton(
+                        modifier = Modifier.padding(top = 60.dp),
+                        text = R.string.play,
+                        action = { onPlayGameClick() },
+                        textColor = RichBlack,
+                        backgroundColor = Celadon,
+                        fontWeight = FontWeight.Bold,
+                        textSize = 40.sp,
+                    )
+                    ActionButton(
+                        modifier = Modifier.padding(top = 20.dp),
+                        text = R.string.undo_choices,
+                        action = { onUndoChoicesClick() },
+                        textColor = AliceBlue,
+                        backgroundColor = BrunswickGreen,
+                        fontWeight = FontWeight.Light,
+                        textSize = 32.sp,
+                    )
+                }
             }
         }
     }
@@ -287,6 +323,34 @@ private fun GameModes(
     }
 }
 
+@Composable
+private fun ActionButton(
+    modifier: Modifier = Modifier,
+    @StringRes text: Int,
+    action: () -> Unit,
+    textColor: Color,
+    backgroundColor: Color,
+    fontWeight: FontWeight,
+    textSize: TextUnit,
+) {
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .background(color = backgroundColor, shape = RoundedCornerShape(24.dp))
+            .border(width = Dp.Hairline, color = Color.Black, shape = RoundedCornerShape(24.dp))
+            .padding(vertical = 10.dp)
+            .clickable { action() },
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Text(
+            text = stringResource(id = text),
+            color = textColor,
+            fontSize = textSize,
+            fontWeight = fontWeight,
+        )
+    }
+}
+
 @Preview(showBackground = true)
 @Composable
 private fun SelectGameModePreview() {
@@ -296,15 +360,23 @@ private fun SelectGameModePreview() {
             subRegion = SubRegion.EASTERN_AFRICA,
         ),
         onGameModeClick = { _, _, _ -> },
+        onPlayGameClick = { },
+        onUndoChoicesClick = { },
     )
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
-private fun GameModeModalPreview() {
-    GameModeModal(
-        gameModeHelp = GameMode.Casual(),
-        onSheetStateFinishedHiding = {},
+private fun SelectConfirmChoicesPreview() {
+    SelectGameMode(
+        screenState = GameModeScreenState.ConfirmSelection(
+            region = Region.AFRICA,
+            subRegion = SubRegion.EASTERN_AFRICA,
+            gameMode = GameMode.Casual(),
+        ),
+        onGameModeClick = { _, _, _ -> },
+        onPlayGameClick = { },
+        onUndoChoicesClick = { },
     )
 }
 
@@ -323,5 +395,31 @@ private fun GameModesPreview() {
     GameModes(
         onHelpClick = {},
         onGameModeClick = {},
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun ActionButtonPlayPreview() {
+    ActionButton(
+        text = R.string.play,
+        action = {},
+        textColor = RichBlack,
+        backgroundColor = Celadon,
+        fontWeight = FontWeight.Bold,
+        textSize = 40.sp,
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun ActionButtonUndoChoicesPreview() {
+    ActionButton(
+        text = R.string.undo_choices,
+        action = {},
+        textColor = AliceBlue,
+        backgroundColor = BrunswickGreen,
+        fontWeight = FontWeight.Light,
+        textSize = 32.sp,
     )
 }

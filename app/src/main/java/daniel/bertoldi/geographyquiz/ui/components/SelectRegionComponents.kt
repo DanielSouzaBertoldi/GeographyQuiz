@@ -23,14 +23,16 @@ internal fun SelectRegionComponent(nextStep: (Region) -> Unit) {
     val deviceWidth = LocalConfiguration.current.screenWidthDp.dp
 
     Column(
+        modifier = Modifier
+            .padding(top = 40.dp)
+            .padding(horizontal = 24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
     ) {
         Step(stringRes = R.string.choose_region)
         LazyVerticalGrid(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 36.dp, start = 14.dp, end = 14.dp, bottom = 24.dp),
+                .padding(top = 36.dp, bottom = 24.dp),
             columns = GridCells.Fixed(2),
             contentPadding = PaddingValues(6.dp),
             horizontalArrangement = Arrangement.spacedBy(16.dp),

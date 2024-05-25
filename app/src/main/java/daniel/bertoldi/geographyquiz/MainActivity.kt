@@ -111,6 +111,16 @@ class MainActivity : ComponentActivity() {
                                 onGameModeClick = { gameMode, region, subRegion ->
                                     viewModel.confirmSelection(gameMode, region, subRegion)
                                 },
+                                onPlayGameClick = {
+                                    navigationController.navigate(
+                                        route = "flagGame/${viewModel.chosenRegion}"
+                                    )
+                                },
+                                onUndoChoicesClick = {
+                                    navigationController.navigate(
+                                        route = "regionSelection"
+                                    )
+                                }
                             )
                         }
                         composable(

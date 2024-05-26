@@ -4,5 +4,6 @@ import daniel.bertoldi.geographyquiz.domain.model.CountryModel
 import kotlinx.coroutines.flow.Flow
 
 interface CountriesRepository {
-    suspend fun getCountries(): List<CountryModel>
+    suspend fun fetchCountries(): Flow<List<CountryModel>>
+    suspend fun getCountries(region: String, subRegion: String): Flow<List<CountryModel>>
 }

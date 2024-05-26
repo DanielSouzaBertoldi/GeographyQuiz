@@ -31,6 +31,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -55,9 +56,10 @@ import kotlinx.coroutines.launch
 fun SelectGameMode(
     screenState: GameModeScreenState,
     onGameModeClick: (GameMode, Region, SubRegion) -> Unit,
-    onPlayGameClick: (Region, SubRegion, GameMode) -> Unit,
+    onPlayGameClick: (region: String, subRegion: String, GameMode) -> Unit,
     onUndoChoicesClick: () -> Unit,
 ) {
+    val context = LocalContext.current
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -118,7 +120,7 @@ fun SelectGameMode(
                             },
                             {
                                 GameRuleValueComponent(
-                                    valueName = screenState.gameMode.name,
+                                    valueName = screenState.gameMode.title,
                                     valueIcon = screenState.gameMode.icon,
                                     cornerShape = RoundedCornerShape(bottomEnd = 14.dp),
                                 )
@@ -130,8 +132,9 @@ fun SelectGameMode(
                         text = R.string.play,
                         action = {
                             onPlayGameClick(
-                                screenState.region,
-                                screenState.subRegion,
+                                screenState.region.simpleName,
+                                // TODO: decide if this is worth it.
+                                context.getString(screenState.subRegion.subRegionName),
                                 screenState.gameMode,
                             )
                         },
@@ -257,7 +260,7 @@ private fun GameModeModalContent(gameModeHelp: GameMode) {
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
-                text = stringResource(id = gameModeHelp.name),
+                text = stringResource(id = gameModeHelp.title),
                 fontWeight = FontWeight.Bold,
                 color = Color.White,
                 fontSize = 36.sp,

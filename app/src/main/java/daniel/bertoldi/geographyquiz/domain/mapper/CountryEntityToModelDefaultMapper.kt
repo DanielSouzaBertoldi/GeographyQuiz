@@ -8,6 +8,7 @@ import daniel.bertoldi.geographyquiz.domain.model.CountryNameModel
 import daniel.bertoldi.geographyquiz.domain.model.DayOfWeek
 import daniel.bertoldi.network.InternationalDialResponse
 import daniel.bertoldi.network.NameDataResponse
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class CountryEntityToModelDefaultMapper @Inject constructor() : CountryEntityToModelMapper {

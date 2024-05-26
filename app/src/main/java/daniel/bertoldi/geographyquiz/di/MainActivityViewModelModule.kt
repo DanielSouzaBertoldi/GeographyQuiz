@@ -20,6 +20,10 @@ import daniel.bertoldi.geographyquiz.domain.repository.CountriesDefaultRepositor
 import daniel.bertoldi.geographyquiz.domain.repository.CountriesRepository
 import daniel.bertoldi.geographyquiz.domain.usecase.GetCountriesData
 import daniel.bertoldi.geographyquiz.domain.usecase.GetCountriesDataUseCase
+import daniel.bertoldi.geographyquiz.domain.usecase.GetFlagGameOptions
+import daniel.bertoldi.geographyquiz.domain.usecase.GetFlagGameOptionsUseCase
+import daniel.bertoldi.geographyquiz.presentation.mapper.CountryModelToCountryFlagUiDefaultMapper
+import daniel.bertoldi.geographyquiz.presentation.mapper.CountryModelToCountryFlagUiMapper
 
 @InstallIn(ViewModelComponent::class)
 @Module
@@ -27,6 +31,11 @@ interface MainActivityViewModelModule {
 
     @Binds
     fun bindGetCountriesDataUseCase(getCountriesData: GetCountriesData): GetCountriesDataUseCase
+
+    @Binds
+    fun bindGetFlagGameOptionsUseCase(
+        getFlagGameOptions: GetFlagGameOptions
+    ): GetFlagGameOptionsUseCase
 
     @Binds
     fun bindCountryRepository(countriesRepository: CountriesDefaultRepository): CountriesRepository
@@ -55,6 +64,11 @@ interface MainActivityViewModelModule {
     fun bindCountryModelToEntityMapper(
         countryModelToEntityDefaultMapper: CountryModelToEntityDefaultMapper,
     ): CountryModelToEntityMapper
+
+    @Binds
+    fun bindCountryModelToFlagUiMapper(
+        countryModelToCountryFlagUiDefaultMapper: CountryModelToCountryFlagUiDefaultMapper,
+    ): CountryModelToCountryFlagUiMapper
 
     @Binds
     fun bindCountriesDataStore(

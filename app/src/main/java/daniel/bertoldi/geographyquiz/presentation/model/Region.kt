@@ -76,8 +76,8 @@ enum class Region(
     );
 
     companion object {
-        fun getRegion(region: String) = entries.first {
-            it.simpleName.equals(region, ignoreCase = true)
+        fun String.toRegion() = entries.first {
+            it.simpleName.equals(this, ignoreCase = true)
         }
     }
 }
@@ -121,6 +121,8 @@ enum class SubRegion(
     AUS_NEW(R.string.aus_new, R.drawable.blank_space);
 
     companion object {
-        fun getSubRegion(name: String) = entries.first { it.name.equals(name, ignoreCase = true) }
+        fun String.toSubRegion() = entries.first {
+            it.name.equals(this, ignoreCase = true)
+        }
     }
 }

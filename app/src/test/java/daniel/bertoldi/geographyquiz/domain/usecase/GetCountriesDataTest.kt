@@ -15,11 +15,11 @@ class GetCountriesDataTest {
 
     @Test
     fun invoke_verifyRepositoryCalled() = runTest {
-        coEvery { countriesRepository.getCountries() } returns CountryModelFactory.makeList()
+        coEvery { countriesRepository.fetchCountries() } returns CountryModelFactory.makeList()
 
         useCase()
 
-        coVerify(exactly = 1) { countriesRepository.getCountries() }
+        coVerify(exactly = 1) { countriesRepository.fetchCountries() }
     }
 
 }

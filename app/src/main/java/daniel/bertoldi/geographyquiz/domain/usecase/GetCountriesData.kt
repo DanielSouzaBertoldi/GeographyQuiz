@@ -6,5 +6,5 @@ import javax.inject.Inject
 class GetCountriesData @Inject constructor(
     private val countriesRepository: CountriesRepository,
 ) : GetCountriesDataUseCase {
-    override suspend fun invoke() = countriesRepository.getCountries()
+    override suspend fun invoke() = countriesRepository.fetchCountries()
 }

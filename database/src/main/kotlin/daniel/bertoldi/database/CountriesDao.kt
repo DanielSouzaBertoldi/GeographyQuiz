@@ -5,7 +5,6 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import androidx.room.TypeConverters
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -24,4 +23,10 @@ interface CountriesDao {
 
     @Delete
     suspend fun deleteCountry(country: CountryEntity)
+
+    @Query("SELECT * FROM countries WHERE region = :region")
+    fun fetchCountriesFromRegion(region: String): Flow<List<CountryEntity>>
+
+    @Query("SELECT * FROM countries WHERE region = :region AND subRegion = :subRegion")
+    fun fetchCountriesGivenRegionAndSubRegion(region: String, subRegion: String): Flow<List<CountryEntity>>
 }

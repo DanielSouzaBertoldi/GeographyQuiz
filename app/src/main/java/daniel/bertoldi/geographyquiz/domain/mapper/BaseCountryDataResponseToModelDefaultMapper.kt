@@ -11,6 +11,9 @@ import daniel.bertoldi.network.InternationalDialResponse
 import daniel.bertoldi.network.NameDataResponse
 import javax.inject.Inject
 
+private const val SMALL_PNG_SIZE = "w320"
+private const val LARGE_PNG_SIZE = "w640"
+
 class BaseCountryDataResponseToModelDefaultMapper @Inject constructor() :
     BaseCountryDataResponseToModelMapper {
 
@@ -35,7 +38,7 @@ class BaseCountryDataResponseToModelDefaultMapper @Inject constructor() :
                 carInfo = mapCountryCarInfo(it.car),
                 timezones = it.timezones,
                 continents = it.continents,
-                flagPng = it.flags.png,
+                flagPng = mapPngFlag(it.flags.png),
                 coatOfArms = it.coatOfArms.png,
                 startOfWeek = DayOfWeek.parse(it.startOfWeek),
             )
@@ -56,4 +59,6 @@ class BaseCountryDataResponseToModelDefaultMapper @Inject constructor() :
         signs = car.signs,
         side = car.side,
     )
+
+    private fun mapPngFlag(png: String) = png.replace(SMALL_PNG_SIZE, LARGE_PNG_SIZE)
 }

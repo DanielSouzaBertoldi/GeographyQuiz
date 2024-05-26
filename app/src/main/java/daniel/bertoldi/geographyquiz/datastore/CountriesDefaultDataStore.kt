@@ -20,7 +20,7 @@ class CountriesDefaultDataStore @Inject constructor(
 
         return dataStore.data
             .map {
-                val cacheTimes = it[storedCacheTime] ?: 0
+                val cacheTimes = it[storedCacheTime] ?: 8
                 Duration.ofMillis(currentTime - cacheTimes).toDays() > 7
             }
             .first()

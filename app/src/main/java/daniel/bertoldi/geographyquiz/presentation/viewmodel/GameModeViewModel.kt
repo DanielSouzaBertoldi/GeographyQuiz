@@ -6,6 +6,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import daniel.bertoldi.geographyquiz.presentation.model.Region
 import daniel.bertoldi.geographyquiz.presentation.model.SubRegion
 import daniel.bertoldi.geographyquiz.presentation.model.GameMode
+import daniel.bertoldi.geographyquiz.presentation.model.Region.Companion.toRegion
+import daniel.bertoldi.geographyquiz.presentation.model.SubRegion.Companion.toSubRegion
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
@@ -39,8 +41,8 @@ class GameModeViewModel @Inject constructor() : ViewModel() {
         val subRegion = arguments?.getString("subRegion").orEmpty()
 
         _screenState.value = GameModeScreenState.ChoosingGameMode(
-            region = Region.getRegion(region),
-            subRegion = SubRegion.getSubRegion(subRegion),
+            region = region.toRegion(),
+            subRegion = subRegion.toSubRegion(),
         )
     }
 

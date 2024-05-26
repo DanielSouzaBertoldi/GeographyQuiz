@@ -36,7 +36,7 @@ class CountriesDefaultRepositoryTest {
             isCacheGreaterThanSevenDays = true,
         )
 
-        val actual = repository.getCountries()
+        val actual = repository.fetchCountries()
 
         Assertions.assertEquals(remoteResult, actual)
     }
@@ -50,7 +50,7 @@ class CountriesDefaultRepositoryTest {
             isCacheGreaterThanSevenDays = true,
         )
 
-        repository.getCountries()
+        repository.fetchCountries()
 
         coVerify(exactly = 1) {
             localDataSource.saveCountriesInDb(remoteResult)
@@ -67,7 +67,7 @@ class CountriesDefaultRepositoryTest {
             isCacheGreaterThanSevenDays = false,
         )
 
-        val actual = repository.getCountries()
+        val actual = repository.fetchCountries()
 
         Assertions.assertEquals(localResult, actual)
     }
@@ -81,7 +81,7 @@ class CountriesDefaultRepositoryTest {
             isCacheGreaterThanSevenDays = false,
         )
 
-        repository.getCountries()
+        repository.fetchCountries()
 
         coVerify(exactly = 1) {
             localDataSource.fetchCountriesDb()

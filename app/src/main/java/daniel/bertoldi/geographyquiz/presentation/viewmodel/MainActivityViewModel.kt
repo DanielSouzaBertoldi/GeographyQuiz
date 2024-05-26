@@ -27,8 +27,13 @@ class MainActivityViewModel @Inject constructor(
     init {
         viewModelScope.launch(Dispatchers.IO) {
             // TODO: how to fetch possible error scenarios?
-            getCountriesData()
-            _mainScreenState.value = MainScreenState.Success
+            getCountriesData().collect {
+                if (it.isNotEmpty()) {
+                    _mainScreenState.value = MainScreenState.Success
+                } else {
+                    _mainScreenState.value = MainScreenState.Failed
+                }
+            }
         }
     }
 }

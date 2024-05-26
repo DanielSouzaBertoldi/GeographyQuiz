@@ -9,6 +9,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -116,7 +117,7 @@ class MainActivity : ComponentActivity() {
                                 },
                                 onPlayGameClick = { region, subRegion, gameMode ->
                                     navigationController.navigate(
-                                        route = "flagGame/${region}/${subRegion}/${gameMode}"
+                                        route = "flagGame/$region/$subRegion/${gameMode.name}"
                                     )
                                 },
                                 onUndoChoicesClick = {
@@ -144,10 +145,9 @@ class MainActivity : ComponentActivity() {
                             )
                         ) {
                             val viewModel = hiltViewModel<FlagGameViewModel>()
-                            val chosenContinent = it.arguments?.getString("region").orEmpty()
 
-                            LaunchedEffect(chosenContinent) {
-                                viewModel.startFlagGame(chosenContinent)
+                            LaunchedEffect(key1 = Unit) {
+                                viewModel.startFlagGame(it.arguments)
                             }
 
                             FlagGameComponent(

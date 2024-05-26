@@ -15,4 +15,10 @@ class CountriesDatabaseStuff @Inject constructor(
 
     override suspend fun fetchCountriesInContinent(continent: String) =
         countriesDao.fetchCountriesInContinent(continent)
+
+    override suspend fun fetchCountriesFromRegion(region: String) =
+        countriesDao.fetchCountriesFromRegion(region)
+
+    override suspend fun fetchCountriesFromArea(region: String, subRegion: String) =
+        countriesDao.fetchCountriesGivenRegionAndSubRegion(region, subRegion)
 }

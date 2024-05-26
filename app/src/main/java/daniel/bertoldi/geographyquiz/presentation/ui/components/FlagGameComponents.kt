@@ -1,6 +1,7 @@
 package daniel.bertoldi.geographyquiz.presentation.ui.components
 
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
@@ -29,6 +30,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalInspectionMode
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -39,6 +42,7 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import daniel.bertoldi.database.CountryEntity
 import daniel.bertoldi.geographyquiz.R
+import daniel.bertoldi.geographyquiz.presentation.model.CountryFlagUi
 import daniel.bertoldi.geographyquiz.presentation.model.Region
 import daniel.bertoldi.geographyquiz.presentation.ui.theme.AliceBlue
 import daniel.bertoldi.geographyquiz.presentation.ui.theme.Celadon
@@ -51,7 +55,7 @@ import daniel.bertoldi.geographyquiz.presentation.viewmodel.GameStep
 @Composable
 internal fun FlagGameComponent(
     gameState: GameState?,
-    optionClick: (CountryEntity) -> Unit,
+    optionClick: (CountryFlagUi) -> Unit,
     drawAgain: () -> Unit,
 ) {
     var loadingFlag by remember { mutableStateOf(gameState?.step == GameStep.CHOOSING_OPTION) }
@@ -75,14 +79,15 @@ internal fun FlagGameComponent(
                 modifier = Modifier
                     .width(313.dp)
                     .height(165.dp)
+                    .padding(top = 30.dp)
                     .clip(
                         shape = RoundedCornerShape(15.dp)
-                    )
-                    .padding(top = 30.dp),
-                model = gameState.availableOptions.find { it.isTheCorrectAnswer }?.countryData?.flagPng,
+                    ),
+                model = gameState.availableOptions.find { it.isTheCorrectAnswer }?.countryData?.flagUrl,
                 contentDescription = null,
                 onSuccess = { loadingFlag = false },
-                contentScale = ContentScale.Fit,
+                contentScale = if (loadingFlag) ContentScale.Crop else ContentScale.FillBounds,
+                placeholder = painterResource(id = R.drawable.flags_placeholder),
             )
             Text(
                 modifier = Modifier.padding(top = 18.dp, bottom = 30.dp),
@@ -125,7 +130,7 @@ internal fun FlagGameComponent(
                                 disabledContentColor = disabledContentColor,
                             ),
                             isButtonEnabled = gameState.step == GameStep.CHOOSING_OPTION,
-                            buttonText = it.countryData.name.common,
+                            buttonText = it.countryData.countryName,
                         )
                     }
                 }
@@ -192,7 +197,6 @@ private fun FlagGameComponentPreview() {
             //        countryData = CountryEntity()
             //    )
             // ),
-            chosenContinent = Region.AMERICAS.simpleName,
             clickedOption = null,
             score = 40,
         ),
@@ -201,7 +205,7 @@ private fun FlagGameComponentPreview() {
     )
 }
 
-@Preview(showBackground = true)
+@Preview
 @Composable
 private fun OptionButtonNextFlagPreview() {
     OptionButton(

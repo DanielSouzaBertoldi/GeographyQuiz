@@ -1,8 +1,6 @@
 package daniel.bertoldi.geographyquiz.datasource
 
 import daniel.bertoldi.geographyquiz.domain.model.CountryModel
-import daniel.bertoldi.geographyquiz.presentation.model.Region
-import daniel.bertoldi.geographyquiz.presentation.model.SubRegion
 import kotlinx.coroutines.flow.Flow
 
 interface CountriesLocalDataSource {

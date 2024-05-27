@@ -4,13 +4,9 @@ import android.os.Bundle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import daniel.bertoldi.database.CountryEntity
-import daniel.bertoldi.database.CountriesDatabaseInterface
 import daniel.bertoldi.geographyquiz.domain.usecase.GetFlagGameOptionsUseCase
 import daniel.bertoldi.geographyquiz.presentation.model.CountryFlagUi
 import daniel.bertoldi.geographyquiz.presentation.model.GameMode.Companion.toGameMode
-import daniel.bertoldi.geographyquiz.presentation.model.Region.Companion.toRegion
-import daniel.bertoldi.geographyquiz.presentation.model.SubRegion.Companion.toSubRegion
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

@@ -4,9 +4,7 @@ import daniel.bertoldi.geographyquiz.datasource.CountriesLocalDataSource
 import daniel.bertoldi.geographyquiz.datasource.CountriesRemoteDataSource
 import daniel.bertoldi.geographyquiz.datastore.CountriesDataStore
 import daniel.bertoldi.geographyquiz.domain.model.CountryModel
-import daniel.bertoldi.geographyquiz.presentation.model.Region
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 

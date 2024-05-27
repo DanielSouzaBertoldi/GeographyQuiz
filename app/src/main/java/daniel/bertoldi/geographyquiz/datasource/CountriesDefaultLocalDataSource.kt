@@ -2,15 +2,9 @@ package daniel.bertoldi.geographyquiz.datasource
 
 import daniel.bertoldi.database.CountriesDatabaseInterface
 import daniel.bertoldi.geographyquiz.domain.mapper.CountryEntityToModelMapper
-import daniel.bertoldi.geographyquiz.domain.model.CountryModel
 import daniel.bertoldi.geographyquiz.domain.mapper.CountryModelToEntityMapper
-import daniel.bertoldi.geographyquiz.presentation.model.Region
-import daniel.bertoldi.geographyquiz.presentation.model.SubRegion
+import daniel.bertoldi.geographyquiz.domain.model.CountryModel
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.transform
 import javax.inject.Inject
 

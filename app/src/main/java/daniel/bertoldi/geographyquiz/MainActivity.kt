@@ -9,7 +9,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -17,11 +16,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import dagger.hilt.android.AndroidEntryPoint
-import daniel.bertoldi.geographyquiz.presentation.viewmodel.AreaViewModel
-import daniel.bertoldi.geographyquiz.presentation.viewmodel.FlagGameViewModel
-import daniel.bertoldi.geographyquiz.presentation.viewmodel.GameModeViewModel
-import daniel.bertoldi.geographyquiz.presentation.viewmodel.MainActivityViewModel
-import daniel.bertoldi.geographyquiz.presentation.viewmodel.MainScreenState
 import daniel.bertoldi.geographyquiz.presentation.ui.components.ChooseAreaComponent
 import daniel.bertoldi.geographyquiz.presentation.ui.components.ErrorComponent
 import daniel.bertoldi.geographyquiz.presentation.ui.components.FlagGameComponent
@@ -30,6 +24,11 @@ import daniel.bertoldi.geographyquiz.presentation.ui.components.LoadingComponent
 import daniel.bertoldi.geographyquiz.presentation.ui.components.SelectGameMode
 import daniel.bertoldi.geographyquiz.presentation.ui.components.SelectRegionComponent
 import daniel.bertoldi.geographyquiz.presentation.ui.theme.GeographyQuizTheme
+import daniel.bertoldi.geographyquiz.presentation.viewmodel.AreaViewModel
+import daniel.bertoldi.geographyquiz.presentation.viewmodel.FlagGameViewModel
+import daniel.bertoldi.geographyquiz.presentation.viewmodel.GameModeViewModel
+import daniel.bertoldi.geographyquiz.presentation.viewmodel.MainActivityViewModel
+import daniel.bertoldi.geographyquiz.presentation.viewmodel.MainScreenState
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {

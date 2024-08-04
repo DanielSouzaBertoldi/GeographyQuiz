@@ -3,7 +3,7 @@ plugins {
     alias(libs.plugins.jetbrainsKotlinAndroid)
     alias(libs.plugins.daggerHilt)
     alias(libs.plugins.ksp)
-    // alias(libs.plugins.compose.compiler) TODO: uncomment after upgrading to K2
+    alias(libs.plugins.compose.compiler)
 }
 
 android {
@@ -38,10 +38,6 @@ android {
     }
     kotlinOptions {
         jvmTarget = "1.8"
-    }
-    // TODO: Remove this buildFeatures {} after upgrading to K2
-    buildFeatures {
-        compose = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.13"

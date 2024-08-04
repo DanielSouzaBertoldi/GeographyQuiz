@@ -5,6 +5,7 @@ import daniel.bertoldi.geographyquiz.factory.CountryModelFactory
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Test
 
@@ -15,7 +16,9 @@ class GetCountriesDataTest {
 
     @Test
     fun invoke_verifyRepositoryCalled() = runTest {
-        coEvery { countriesRepository.fetchCountries() } returns CountryModelFactory.makeList()
+        coEvery { countriesRepository.fetchCountries() } returns flow {
+            emit(CountryModelFactory.makeList())
+        }
 
         useCase()
 

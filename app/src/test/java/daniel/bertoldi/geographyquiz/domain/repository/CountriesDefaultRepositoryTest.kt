@@ -11,6 +11,7 @@ import io.mockk.coVerify
 import io.mockk.just
 import io.mockk.mockk
 import io.mockk.runs
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
@@ -94,7 +95,9 @@ class CountriesDefaultRepositoryTest {
         isCacheGreaterThanSevenDays: Boolean = randomBoolean(),
     ) {
         coEvery { remoteDataSource.fetchCountriesApi() } returns remoteDataSourceResult
-        coEvery { localDataSource.fetchCountriesDb() } returns localDataSourceResult
+        coEvery { localDataSource.fetchCountriesDb() } returns flow {
+            emit(localDataSourceResult)
+        }
         coEvery {
             countriesDataStore.checkCacheGreaterThanSevenDays()
         } returns isCacheGreaterThanSevenDays

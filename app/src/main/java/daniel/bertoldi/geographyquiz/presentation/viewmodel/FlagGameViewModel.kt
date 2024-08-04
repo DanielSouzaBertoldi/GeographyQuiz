@@ -44,7 +44,7 @@ class FlagGameViewModel @Inject constructor(
         val flagOptions = mutableListOf<FlagOption>()
         val drawnAnswer = countries.random()
 
-        for (i in 1..5) {
+        repeat(4) {
             val randomNumber = Random.nextInt(from = 0, until = countries.size)
             val randomPosition = randomNumber % countries.size
             val randomCountry = countries[randomPosition]

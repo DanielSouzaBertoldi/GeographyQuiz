@@ -1,5 +1,6 @@
 package daniel.bertoldi.geographyquiz.presentation.ui.components
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -27,7 +28,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -56,6 +59,7 @@ import daniel.bertoldi.geographyquiz.presentation.ui.theme.RichBlack
 import daniel.bertoldi.geographyquiz.presentation.ui.theme.Typography
 import daniel.bertoldi.geographyquiz.presentation.viewmodel.GameState
 import daniel.bertoldi.geographyquiz.presentation.viewmodel.GameStep
+import kotlinx.coroutines.delay
 
 @Composable
 internal fun FlagGameComponent(
@@ -64,6 +68,14 @@ internal fun FlagGameComponent(
     drawAgain: () -> Unit,
 ) {
     var loadingFlag by remember { mutableStateOf(gameState?.step == GameStep.CHOOSING_OPTION) }
+    var dots by remember { mutableIntStateOf(1) }
+    val loadingText = "Loading${"".repeat(dots)}"
+    LaunchedEffect(key1 = loadingFlag) {
+        while (loadingFlag) {
+            delay(400)
+            dots %= 4
+        }
+    }
 
     gameState?.let {
         Column(
@@ -93,19 +105,27 @@ internal fun FlagGameComponent(
                 contentScale = if (loadingFlag) ContentScale.Crop else ContentScale.FillBounds,
                 placeholder = painterResource(id = R.drawable.flags_placeholder),
             )
-            Text(
-                modifier = Modifier.padding(top = 18.dp, bottom = 30.dp),
-                text = "What country is this?",
-                fontWeight = FontWeight.Bold,
-                fontSize = 24.sp,
-            )
             if (loadingFlag) {
+                Text(
+                    modifier = Modifier.padding(top = 18.dp, bottom = 30.dp),
+                    text = loadingText,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 24.sp,
+                )
                 CircularProgressIndicator(
-                    modifier = Modifier.padding(top = 60.dp).size(64.dp),
-                    color = Color.Gray,
-                    trackColor = Color.Black,
+                    modifier = Modifier
+                        .padding(top = 60.dp)
+                        .size(64.dp),
+                    color = AliceBlue,
+                    trackColor = RichBlack,
                 )
             } else {
+                Text(
+                    modifier = Modifier.padding(top = 18.dp, bottom = 30.dp),
+                    text = "What country is this?",
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 24.sp,
+                )
                 OptionsGrid(gameState, optionClick)
                 if (gameState.step == GameStep.OPTION_SELECTED) {
                     OptionButton(

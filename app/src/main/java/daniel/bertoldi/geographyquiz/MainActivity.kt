@@ -151,10 +151,8 @@ class MainActivity : ComponentActivity() {
 
                             FlagGameComponent(
                                 gameState = viewModel.gameState.collectAsState().value,
-                                optionClick = {
-                                    clickedOption -> viewModel.optionClick(clickedOption)
-                                },
-                                drawAgain = { viewModel.drawAgain() }
+                                optionClick = { countryCode -> viewModel.optionClick(countryCode) },
+                                reDrawn = { viewModel.drawAgain() }
                             )
                         }
                     }

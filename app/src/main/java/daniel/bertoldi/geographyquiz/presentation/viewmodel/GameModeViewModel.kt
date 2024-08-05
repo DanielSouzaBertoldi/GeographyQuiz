@@ -12,6 +12,11 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
 
+/*
+ * Game mode idea: have the flag b&w, upside-down, inverted, whatever.
+ * Have the user try to guess the correct country with the least number of
+ * hints (maybe max 3 hints?)
+ */
 sealed class GameModeScreenState {
     data object Loading : GameModeScreenState()
 

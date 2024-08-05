@@ -27,6 +27,6 @@ interface CountriesDao {
     @Query("SELECT * FROM countries WHERE region = :region")
     fun fetchCountriesFromRegion(region: String): Flow<List<CountryEntity>>
 
-    @Query("SELECT * FROM countries WHERE region = :region AND subRegion = :subRegion")
+    @Query("SELECT * FROM countries WHERE region = :region AND subRegion LIKE '%' || :subRegion || '%'")
     fun fetchCountriesGivenRegionAndSubRegion(region: String, subRegion: String): Flow<List<CountryEntity>>
 }

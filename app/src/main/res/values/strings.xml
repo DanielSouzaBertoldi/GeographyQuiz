@@ -12,6 +12,7 @@
     <string name="play">Play</string>
     <string name="undo_choices">Undo Choices</string>
     <string name="next_flag">Next Flag</string>
+    <string name="which_country">Which country is this?</string>
 
     <!-- Region -->
     <string name="africa">Africa</string>

@@ -1,21 +1,16 @@
 package daniel.bertoldi.geographyquiz.presentation.ui.components
 
-import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -24,9 +19,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -50,7 +43,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import daniel.bertoldi.geographyquiz.R
-import daniel.bertoldi.geographyquiz.presentation.model.CountryFlagUi
 import daniel.bertoldi.geographyquiz.presentation.ui.theme.AliceBlue
 import daniel.bertoldi.geographyquiz.presentation.ui.theme.Celadon
 import daniel.bertoldi.geographyquiz.presentation.ui.theme.LightGray
@@ -63,84 +55,99 @@ import kotlinx.coroutines.delay
 
 @Composable
 internal fun FlagGameComponent(
-    gameState: GameState?,
-    optionClick: (CountryFlagUi) -> Unit,
-    drawAgain: () -> Unit,
+    gameState: GameState,
+    optionClick: (String) -> Unit,
+    reDrawn: () -> Unit,
 ) {
-    var loadingFlag by remember { mutableStateOf(gameState?.step == GameStep.CHOOSING_OPTION) }
-    var dots by remember { mutableIntStateOf(1) }
-    val loadingText = "Loading${"".repeat(dots)}"
+    var loadingFlag by remember { mutableStateOf(gameState.step == GameStep.CHOOSING_OPTION) }
+    var dots by remember { mutableIntStateOf(0) }
+    val loadingText = "Loading${".".repeat(dots)}"
     LaunchedEffect(key1 = loadingFlag) {
         while (loadingFlag) {
+            dots = ++dots % 4
             delay(400)
-            dots %= 4
         }
     }
 
-    gameState?.let {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(color = AliceBlue)
-                .padding(top = 40.dp)
-                .padding(horizontal = 24.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = AliceBlue)
+            .padding(top = 40.dp)
+            .padding(horizontal = 24.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
                 text = "Score: ${gameState.score}",
                 fontWeight = FontWeight.Bold,
                 fontSize = 36.sp,
             )
-
-            AsyncImage(
-                modifier = Modifier
-                    .aspectRatio(2f)
-                    .padding(top = 30.dp)
-                    .clip(
-                        shape = RoundedCornerShape(15.dp)
-                    ),
-                model = gameState.availableOptions.find { it.isTheCorrectAnswer }?.countryData?.flagUrl,
-                contentDescription = null,
-                onSuccess = { loadingFlag = false },
-                contentScale = if (loadingFlag) ContentScale.Crop else ContentScale.FillBounds,
-                placeholder = painterResource(id = R.drawable.flags_placeholder),
+            Text(
+                text = "Round: ${gameState.round} / ${gameState.limit}",
+                fontWeight = FontWeight.Bold,
+                fontSize = 24.sp,
             )
-            if (loadingFlag) {
-                Text(
-                    modifier = Modifier.padding(top = 18.dp, bottom = 30.dp),
-                    text = loadingText,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 24.sp,
-                )
-                CircularProgressIndicator(
+        }
+
+        when (gameState.step) {
+            GameStep.END_GAME -> {
+                Text(text = "Parabéns vc acabar de ganhar \uD83D\uDC4D")
+            }
+            else -> {
+                AsyncImage(
                     modifier = Modifier
-                        .padding(top = 60.dp)
-                        .size(64.dp),
-                    color = AliceBlue,
-                    trackColor = RichBlack,
-                )
-            } else {
-                Text(
-                    modifier = Modifier.padding(top = 18.dp, bottom = 30.dp),
-                    text = "What country is this?",
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 24.sp,
-                )
-                OptionsGrid(gameState, optionClick)
-                if (gameState.step == GameStep.OPTION_SELECTED) {
-                    OptionButton(
-                        modifier = Modifier.padding(top = 16.dp),
-                        onClick = {
-                            loadingFlag = true
-                            drawAgain()
-                        },
-                        buttonColors = ButtonDefaults.buttonColors(
-                            containerColor = RichBlack,
-                            contentColor = AliceBlue,
+                        .aspectRatio(2f)
+                        .padding(top = 30.dp)
+                        .clip(
+                            shape = RoundedCornerShape(15.dp)
                         ),
-                        isButtonEnabled = true,
-                        buttonText = stringResource(id = R.string.next_flag),
+                    model = gameState.availableOptions.find { it.countryCode == gameState.correctCountryCode }?.flagUrl,
+                    contentDescription = null,
+                    onSuccess = { loadingFlag = false },
+                    contentScale = if (loadingFlag) ContentScale.Crop else ContentScale.FillBounds,
+                    placeholder = painterResource(id = R.drawable.flags_placeholder),
+                )
+                if (loadingFlag) {
+                    Text(
+                        modifier = Modifier.padding(top = 18.dp, bottom = 30.dp),
+                        text = loadingText,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 24.sp,
                     )
+                    CircularProgressIndicator(
+                        modifier = Modifier
+                            .padding(top = 60.dp)
+                            .size(64.dp),
+                        color = AliceBlue,
+                        trackColor = RichBlack,
+                    )
+                } else {
+                    Text(
+                        modifier = Modifier.padding(top = 18.dp, bottom = 30.dp),
+                        text = stringResource(id = R.string.which_country),
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 24.sp,
+                    )
+                    OptionsGrid(gameState, optionClick)
+                    if (gameState.step == GameStep.OPTION_SELECTED) {
+                        OptionButton(
+                            modifier = Modifier.padding(top = 16.dp),
+                            onClick = {
+                                loadingFlag = true
+                                reDrawn()
+                            },
+                            buttonColors = ButtonDefaults.buttonColors(
+                                containerColor = RichBlack,
+                                contentColor = AliceBlue,
+                            ),
+                            isButtonEnabled = true,
+                            buttonText = stringResource(id = R.string.next_flag),
+                        )
+                    }
                 }
             }
         }
@@ -148,7 +155,7 @@ internal fun FlagGameComponent(
 }
 
 @Composable
-private fun OptionsGrid(gameState: GameState, optionClick: (CountryFlagUi) -> Unit) {
+private fun OptionsGrid(gameState: GameState, optionClick: (String) -> Unit) {
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
         userScrollEnabled = false,
@@ -157,9 +164,9 @@ private fun OptionsGrid(gameState: GameState, optionClick: (CountryFlagUi) -> Un
     ) {
         items(gameState.availableOptions) {
             val disabledContainerColor by animateColorAsState(
-                targetValue = if (gameState.step == GameStep.OPTION_SELECTED && it.isTheCorrectAnswer) {
+                targetValue = if (gameState.userHasChosen() && gameState.isCorrectAnswer(it.countryCode)) {
                     Celadon
-                } else if (gameState.step == GameStep.OPTION_SELECTED && it.countryData.countryCode == gameState.clickedOption?.countryCode) {
+                } else if (gameState.userHasChosen() && gameState.wrongUserOption(it.countryCode)) {
                     Poppy
                 } else {
                     Color.Gray
@@ -167,7 +174,7 @@ private fun OptionsGrid(gameState: GameState, optionClick: (CountryFlagUi) -> Un
                 label = "disabledContainerAnimation",
             )
             val disabledContentColor by animateColorAsState(
-                targetValue = if (gameState.step == GameStep.OPTION_SELECTED && it.isTheCorrectAnswer) {
+                targetValue = if (gameState.userHasChosen() && gameState.isCorrectAnswer(it.countryCode)) {
                     RichBlack
                 } else {
                     AliceBlue
@@ -177,7 +184,7 @@ private fun OptionsGrid(gameState: GameState, optionClick: (CountryFlagUi) -> Un
 
             OptionButton(
                 modifier = Modifier.aspectRatio(1f),
-                onClick = { optionClick(it.countryData) },
+                onClick = { optionClick(it.countryCode) },
                 buttonColors = ButtonDefaults.buttonColors(
                     containerColor = LightGray,
                     contentColor = RichBlack,
@@ -185,7 +192,7 @@ private fun OptionsGrid(gameState: GameState, optionClick: (CountryFlagUi) -> Un
                     disabledContentColor = disabledContentColor,
                 ),
                 isButtonEnabled = gameState.step == GameStep.CHOOSING_OPTION,
-                buttonText = it.countryData.countryName,
+                buttonText = it.countryName,
             )
         }
     }
@@ -239,11 +246,11 @@ private fun FlagGameComponentPreview() {
             //        countryData = CountryEntity()
             //    )
             // ),
-            clickedOption = null,
             score = 40,
+            correctCountryCode = "BR",
         ),
         optionClick = {},
-        drawAgain = {},
+        reDrawn = {},
     )
 }
 
@@ -261,8 +268,8 @@ private fun OptionsGridPreview() {
             //        countryData = CountryEntity()
             //    )
             // ),
-            clickedOption = null,
             score = 40,
+            correctCountryCode = "BR",
         ),
         optionClick = {},
     )

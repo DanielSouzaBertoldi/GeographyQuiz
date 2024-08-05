@@ -18,8 +18,9 @@ import kotlin.random.Random
 class FlagGameViewModel @Inject constructor(
     private val getFlagGameOptionsUseCase: GetFlagGameOptionsUseCase,
 ) : ViewModel() {
-    private val countries = MutableStateFlow<List<CountryFlagUi>>(emptyList())
-    private val _gameState = MutableStateFlow<GameState?>(null)
+    private val allAvailableCountries = mutableListOf<CountryFlagUi>()
+    private val countriesYetToBeDrawn = mutableListOf<CountryFlagUi>()
+    private val _gameState = MutableStateFlow(GameState())
     val gameState = _gameState.asStateFlow()
 
     fun startFlagGame(bundle: Bundle?) {
@@ -29,59 +30,66 @@ class FlagGameViewModel @Inject constructor(
 
         viewModelScope.launch(Dispatchers.IO) {
             getFlagGameOptionsUseCase(chosenRegion, chosenSubRegion).collect {
-                countries.value = it
+                allAvailableCountries.addAll(it)
+                countriesYetToBeDrawn.addAll(it)
+                _gameState.value = _gameState.value.copy(limit = it.size)
 
-                val drawnCountries = countries.value.shuffled().take(5).toMutableList()
-
-                _gameState.value = GameState(
-                    availableOptions = drawFlagOptions(drawnCountries),
-                )
+                val correctAnswerIdx = drawFlagOptions()
+                countriesYetToBeDrawn.removeAt(correctAnswerIdx)
             }
         }
     }
 
-    private fun drawFlagOptions(countries: MutableList<CountryFlagUi>): List<FlagOption> {
-        val flagOptions = mutableListOf<FlagOption>()
-        val drawnAnswer = countries.random()
+    private fun drawFlagOptions(): Int {
+        val validCountries = countriesYetToBeDrawn.toMutableList()
+        val countryOptions = mutableListOf<CountryFlagUi>()
+        val correctAnswerIdx = Random.nextInt(validCountries.size)
+        val correctCountry = validCountries[correctAnswerIdx]
+        validCountries.removeAt(correctAnswerIdx)
 
-        repeat(4) {
-            val randomNumber = Random.nextInt(from = 0, until = countries.size)
-            val randomPosition = randomNumber % countries.size
-            val randomCountry = countries[randomPosition]
+        repeat(3) {
+            val randomCountry = if (validCountries.size == 0) {
+                allAvailableCountries.filter { it != correctCountry }.random()
+            } else {
+                val idx = Random.nextInt(validCountries.size)
+                validCountries[idx]
+            }
+            validCountries.remove(randomCountry)
 
-            flagOptions.add(
-                FlagOption(
-                    isTheCorrectAnswer = randomCountry.countryCode == drawnAnswer.countryCode,
-                    countryData = randomCountry,
-                )
-            )
-            countries.removeAt(randomPosition)
+            countryOptions.add(randomCountry)
         }
-        return flagOptions
+        countryOptions.add(correctCountry)
+
+        _gameState.value = _gameState.value.copy(
+            step = GameStep.CHOOSING_OPTION,
+            availableOptions = countryOptions.shuffled(),
+            correctCountryCode = correctCountry.countryCode,
+        )
+        return correctAnswerIdx
     }
 
     fun drawAgain() {
-        val filteredCountries = countries.value
-            .filterNot { it.countryCode == gameState.value?.availableOptions?.find { it.isTheCorrectAnswer }?.countryData?.countryCode }
-        val drawnCountries = filteredCountries.shuffled().take(5).toMutableList()
-
-        _gameState.value = _gameState.value?.copy(
-            step = GameStep.CHOOSING_OPTION,
-            availableOptions = drawFlagOptions(drawnCountries),
-        )
+        if (_gameState.value.round == allAvailableCountries.size){
+            _gameState.value = _gameState.value.copy(
+                step = GameStep.END_GAME,
+            )
+        } else {
+            _gameState.value = _gameState.value.copy(
+                round = _gameState.value.round.inc()
+            )
+            val correctAnswerIdx = drawFlagOptions()
+            countriesYetToBeDrawn.removeAt(correctAnswerIdx)
+        }
     }
 
-    fun optionClick(clickedOption: CountryFlagUi) {
-        var pointsToAdd = _gameState.value?.score ?: 0
-        if (clickedOption.countryCode == gameState.value?.availableOptions?.find { it.isTheCorrectAnswer }?.countryData?.countryCode) {
-            pointsToAdd += 20
-        } else {
-            pointsToAdd -= 20
-        }
+    fun optionClick(countryCodeSelected: String) {
+        var pointsToAdd = _gameState.value.score
+        val isOptionCorrect = countryCodeSelected == _gameState.value.correctCountryCode
+        if (isOptionCorrect) pointsToAdd += 20 else pointsToAdd -= 20
 
-        _gameState.value = _gameState.value?.copy(
+        _gameState.value = _gameState.value.copy(
             step = GameStep.OPTION_SELECTED,
-            clickedOption = clickedOption,
+            chosenCountryCode = countryCodeSelected,
             score = pointsToAdd,
         )
     }
@@ -89,17 +97,20 @@ class FlagGameViewModel @Inject constructor(
 
 data class GameState(
     val step: GameStep = GameStep.CHOOSING_OPTION,
-    val availableOptions: List<FlagOption>,
-    val clickedOption: CountryFlagUi? = null,
+    val correctCountryCode: String = "",
+    val chosenCountryCode: String = "",
+    val availableOptions: List<CountryFlagUi> = emptyList(),
     val score: Int = 0,
-)
-
-data class FlagOption(
-    val isTheCorrectAnswer: Boolean = false,
-    val countryData: CountryFlagUi,
-)
+    val round: Int = 1,
+    val limit: Int = 1,
+) {
+    fun userHasChosen() = this.step == GameStep.OPTION_SELECTED
+    fun isCorrectAnswer(countryCode: String) = correctCountryCode == countryCode
+    fun wrongUserOption(countryCode: String) = chosenCountryCode == countryCode
+}
 
 enum class GameStep {
     CHOOSING_OPTION,
     OPTION_SELECTED,
+    END_GAME,
 }

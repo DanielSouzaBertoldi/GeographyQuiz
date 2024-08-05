@@ -68,15 +68,11 @@ class FlagGameViewModel @Inject constructor(
         return correctAnswerIdx
     }
 
-    fun drawAgain() {
+    fun nextRound() {
         if (_gameState.value.round == allAvailableCountries.size){
-            _gameState.value = _gameState.value.copy(
-                step = GameStep.END_GAME,
-            )
+            _gameState.value = _gameState.value.copy(step = GameStep.END_GAME)
         } else {
-            _gameState.value = _gameState.value.copy(
-                round = _gameState.value.round.inc()
-            )
+            _gameState.value = _gameState.value.copy(round = _gameState.value.round.inc())
             val correctAnswerIdx = drawFlagOptions()
             countriesYetToBeDrawn.removeAt(correctAnswerIdx)
         }

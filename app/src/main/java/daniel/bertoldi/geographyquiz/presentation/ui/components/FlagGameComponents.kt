@@ -1,5 +1,10 @@
 package daniel.bertoldi.geographyquiz.presentation.ui.components
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionLayout
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -53,11 +58,85 @@ import daniel.bertoldi.geographyquiz.presentation.viewmodel.GameState
 import daniel.bertoldi.geographyquiz.presentation.viewmodel.GameStep
 import kotlinx.coroutines.delay
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 internal fun FlagGameComponent(
     gameState: GameState,
     optionClick: (String) -> Unit,
     reDrawn: () -> Unit,
+) {
+
+    SharedTransitionLayout {
+        AnimatedContent(
+            targetState = gameState.step,
+            label = "animated content change",
+            contentKey = { if (gameState.step != GameStep.END_GAME) "ongoing" else "end" },
+        ) { currentGameStep ->
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(color = AliceBlue)
+                    .padding(top = 40.dp)
+                    .padding(horizontal = 24.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                when (currentGameStep) {
+                    GameStep.END_GAME -> {
+                        with(this@SharedTransitionLayout) {
+                            Text(
+                                modifier = Modifier
+                                    .sharedBounds(
+                                        sharedContentState = rememberSharedContentState(key = "game-score"),
+                                        animatedVisibilityScope = this@AnimatedContent,
+                                        resizeMode = SharedTransitionScope.ResizeMode.ScaleToBounds(),
+                                    ),
+                                text = "Score: ${gameState.score}",
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 40.sp,
+                            )
+                            Text(
+                                modifier = Modifier
+                                    .sharedBounds(
+                                        sharedContentState = rememberSharedContentState(key = "game-round"),
+                                        animatedVisibilityScope = this@AnimatedContent,
+                                        resizeMode = SharedTransitionScope.ResizeMode.ScaleToBounds(),
+                                    )
+                                    .padding(top = 20.dp),
+                                text = "Round: ${gameState.round} / ${gameState.limit}",
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 36.sp,
+                            )
+                            Text(
+                                modifier = Modifier.padding(top = 30.dp),
+                                text = "Parabéns vc acabar de ganhar \uD83D\uDC4D",
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 36.sp,
+                            )
+                        }
+                    }
+                    else -> {
+                        OnGoingGameContent(
+                            gameState = gameState,
+                            optionClick = optionClick,
+                            reDrawn = reDrawn,
+                            sharedTransitionScope = this@SharedTransitionLayout,
+                            animatedVisibilityScope = this@AnimatedContent,
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalSharedTransitionApi::class)
+@Composable
+private fun OnGoingGameContent(
+    gameState: GameState,
+    optionClick: (String) -> Unit,
+    reDrawn: () -> Unit,
+    sharedTransitionScope: SharedTransitionScope,
+    animatedVisibilityScope: AnimatedVisibilityScope,
 ) {
     var loadingFlag by remember { mutableStateOf(gameState.step == GameStep.CHOOSING_OPTION) }
     var dots by remember { mutableIntStateOf(0) }
@@ -69,87 +148,82 @@ internal fun FlagGameComponent(
         }
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(color = AliceBlue)
-            .padding(top = 40.dp)
-            .padding(horizontal = 24.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
+    Row(
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically,
     ) {
-        Row(
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
+        with(sharedTransitionScope) {
             Text(
+                modifier = Modifier
+                    .sharedBounds(
+                        sharedContentState = rememberSharedContentState(key = "game-score"),
+                        animatedVisibilityScope = animatedVisibilityScope,
+                        resizeMode = SharedTransitionScope.ResizeMode.ScaleToBounds(),
+                    ),
                 text = "Score: ${gameState.score}",
                 fontWeight = FontWeight.Bold,
                 fontSize = 36.sp,
             )
             Text(
+                modifier = Modifier
+                    .sharedBounds(
+                        sharedContentState = rememberSharedContentState(key = "game-round"),
+                        animatedVisibilityScope = animatedVisibilityScope,
+                        resizeMode = SharedTransitionScope.ResizeMode.ScaleToBounds(),
+                    ),
                 text = "Round: ${gameState.round} / ${gameState.limit}",
                 fontWeight = FontWeight.Bold,
                 fontSize = 24.sp,
             )
         }
-
-        when (gameState.step) {
-            GameStep.END_GAME -> {
-                Text(text = "Parabéns vc acabar de ganhar \uD83D\uDC4D")
-            }
-            else -> {
-                AsyncImage(
-                    modifier = Modifier
-                        .aspectRatio(2f)
-                        .padding(top = 30.dp)
-                        .clip(
-                            shape = RoundedCornerShape(15.dp)
-                        ),
-                    model = gameState.availableOptions.find { it.countryCode == gameState.correctCountryCode }?.flagUrl,
-                    contentDescription = null,
-                    onSuccess = { loadingFlag = false },
-                    contentScale = if (loadingFlag) ContentScale.Crop else ContentScale.FillBounds,
-                    placeholder = painterResource(id = R.drawable.flags_placeholder),
-                )
-                if (loadingFlag) {
-                    Text(
-                        modifier = Modifier.padding(top = 18.dp, bottom = 30.dp),
-                        text = loadingText,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 24.sp,
-                    )
-                    CircularProgressIndicator(
-                        modifier = Modifier
-                            .padding(top = 60.dp)
-                            .size(64.dp),
-                        color = AliceBlue,
-                        trackColor = RichBlack,
-                    )
-                } else {
-                    Text(
-                        modifier = Modifier.padding(top = 18.dp, bottom = 30.dp),
-                        text = stringResource(id = R.string.which_country),
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 24.sp,
-                    )
-                    OptionsGrid(gameState, optionClick)
-                    if (gameState.step == GameStep.OPTION_SELECTED) {
-                        OptionButton(
-                            modifier = Modifier.padding(top = 16.dp),
-                            onClick = {
-                                loadingFlag = true
-                                reDrawn()
-                            },
-                            buttonColors = ButtonDefaults.buttonColors(
-                                containerColor = RichBlack,
-                                contentColor = AliceBlue,
-                            ),
-                            isButtonEnabled = true,
-                            buttonText = stringResource(id = R.string.next_flag),
-                        )
-                    }
-                }
-            }
+    }
+    AsyncImage(
+        modifier = Modifier
+            .aspectRatio(2f)
+            .padding(top = 30.dp)
+            .clip(shape = RoundedCornerShape(15.dp)),
+        model = gameState.availableOptions.find { it.countryCode == gameState.correctCountryCode }?.flagUrl,
+        contentDescription = null,
+        onSuccess = { loadingFlag = false },
+        contentScale = if (loadingFlag) ContentScale.Crop else ContentScale.FillBounds,
+        placeholder = painterResource(id = R.drawable.flags_placeholder),
+    )
+    if (loadingFlag) {
+        Text(
+            modifier = Modifier.padding(top = 18.dp, bottom = 30.dp),
+            text = loadingText,
+            fontWeight = FontWeight.Bold,
+            fontSize = 24.sp,
+        )
+        CircularProgressIndicator(
+            modifier = Modifier
+                .padding(top = 60.dp)
+                .size(64.dp),
+            color = AliceBlue,
+            trackColor = RichBlack,
+        )
+    } else {
+        Text(
+            modifier = Modifier.padding(top = 18.dp, bottom = 30.dp),
+            text = stringResource(id = R.string.which_country),
+            fontWeight = FontWeight.Bold,
+            fontSize = 24.sp,
+        )
+        OptionsGrid(gameState, optionClick)
+        if (gameState.step == GameStep.OPTION_SELECTED) {
+            OptionButton(
+                modifier = Modifier.padding(top = 16.dp),
+                onClick = {
+                    loadingFlag = true
+                    reDrawn()
+                },
+                buttonColors = ButtonDefaults.buttonColors(
+                    containerColor = RichBlack,
+                    contentColor = AliceBlue,
+                ),
+                isButtonEnabled = true,
+                buttonText = stringResource(id = R.string.next_flag),
+            )
         }
     }
 }

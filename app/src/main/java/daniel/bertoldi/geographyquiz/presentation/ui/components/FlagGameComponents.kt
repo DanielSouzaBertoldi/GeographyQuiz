@@ -1,6 +1,8 @@
 package daniel.bertoldi.geographyquiz.presentation.ui.components
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
@@ -9,6 +11,7 @@ import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
@@ -23,8 +26,12 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -46,6 +53,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import coil.compose.AsyncImage
 import daniel.bertoldi.geographyquiz.R
 import daniel.bertoldi.geographyquiz.presentation.ui.theme.AliceBlue
@@ -56,7 +64,9 @@ import daniel.bertoldi.geographyquiz.presentation.ui.theme.RichBlack
 import daniel.bertoldi.geographyquiz.presentation.ui.theme.Typography
 import daniel.bertoldi.geographyquiz.presentation.viewmodel.GameState
 import daniel.bertoldi.geographyquiz.presentation.viewmodel.GameStep
+import daniel.bertoldi.geographyquiz.presentation.viewmodel.RoundState
 import kotlinx.coroutines.delay
+import kotlin.math.round
 
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
@@ -64,64 +74,55 @@ internal fun FlagGameComponent(
     gameState: GameState,
     optionClick: (String) -> Unit,
     reDrawn: () -> Unit,
+    giveUp: () -> Unit,
+    onPlayAgain: () -> Unit,
 ) {
+    var showDialog by remember { mutableStateOf(false) }
+    BackHandler(enabled = gameState.step != GameStep.END_GAME) { showDialog = true }
 
-    SharedTransitionLayout {
-        AnimatedContent(
-            targetState = gameState.step,
-            label = "animated content change",
-            contentKey = { if (gameState.step != GameStep.END_GAME) "ongoing" else "end" },
-        ) { currentGameStep ->
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(color = AliceBlue)
-                    .padding(top = 40.dp)
-                    .padding(horizontal = 24.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                when (currentGameStep) {
-                    GameStep.END_GAME -> {
-                        with(this@SharedTransitionLayout) {
-                            Text(
-                                modifier = Modifier
-                                    .sharedBounds(
-                                        sharedContentState = rememberSharedContentState(key = "game-score"),
-                                        animatedVisibilityScope = this@AnimatedContent,
-                                        resizeMode = SharedTransitionScope.ResizeMode.ScaleToBounds(),
-                                    ),
-                                text = "Score: ${gameState.score}",
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 40.sp,
-                            )
-                            Text(
-                                modifier = Modifier
-                                    .sharedBounds(
-                                        sharedContentState = rememberSharedContentState(key = "game-round"),
-                                        animatedVisibilityScope = this@AnimatedContent,
-                                        resizeMode = SharedTransitionScope.ResizeMode.ScaleToBounds(),
-                                    )
-                                    .padding(top = 20.dp),
-                                text = "Round: ${gameState.round} / ${gameState.limit}",
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 36.sp,
-                            )
-                            Text(
-                                modifier = Modifier.padding(top = 30.dp),
-                                text = "Parabéns vc acabar de ganhar \uD83D\uDC4D",
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 36.sp,
+    Box(modifier = Modifier.fillMaxSize()) {
+        AnimatedVisibility(visible = showDialog) {
+            GiveUpDialog(
+                onConfirm = giveUp,
+                onDecline = { showDialog = false },
+            )
+        }
+
+        SharedTransitionLayout {
+            AnimatedContent(
+                targetState = gameState.step,
+                label = "animated content change",
+                // TODO: manually setting the contentKey breaks SharedTransition for some reason... I think it's because we have
+                //  the animated content code running right in the moment that sharedtransition needs to do its stuff. Try AnimatedVisibility maybe?
+                contentKey = { if (gameState.step != GameStep.END_GAME) "ongoing" else "end" },
+            ) { currentGameStep ->
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(color = AliceBlue)
+                        .padding(top = 40.dp)
+                        .padding(horizontal = 24.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    when (currentGameStep) {
+                        GameStep.END_GAME -> {
+                            EndGameContent(
+                                finalScore = gameState.score,
+                                roundState = gameState.roundState,
+                                sharedTransitionScope = this@SharedTransitionLayout,
+                                animatedVisibilityScope = this@AnimatedContent,
+                                playAgain = onPlayAgain,
                             )
                         }
-                    }
-                    else -> {
-                        OnGoingGameContent(
-                            gameState = gameState,
-                            optionClick = optionClick,
-                            reDrawn = reDrawn,
-                            sharedTransitionScope = this@SharedTransitionLayout,
-                            animatedVisibilityScope = this@AnimatedContent,
-                        )
+                        else -> {
+                            OnGoingGameContent(
+                                gameState = gameState,
+                                optionClick = optionClick,
+                                reDrawn = reDrawn,
+                                sharedTransitionScope = this@SharedTransitionLayout,
+                                animatedVisibilityScope = this@AnimatedContent,
+                            )
+                        }
                     }
                 }
             }
@@ -171,7 +172,7 @@ private fun OnGoingGameContent(
                         animatedVisibilityScope = animatedVisibilityScope,
                         resizeMode = SharedTransitionScope.ResizeMode.ScaleToBounds(),
                     ),
-                text = "Round: ${gameState.round} / ${gameState.limit}",
+                text = "Round: ${gameState.roundState.currentRound} / ${gameState.roundState.totalFlags}",
                 fontWeight = FontWeight.Bold,
                 fontSize = 24.sp,
             )
@@ -306,6 +307,151 @@ private fun OptionButton(
     }
 }
 
+@OptIn(ExperimentalSharedTransitionApi::class)
+@Composable
+private fun EndGameContent(
+    finalScore: Int,
+    roundState: RoundState,
+    sharedTransitionScope: SharedTransitionScope,
+    animatedVisibilityScope: AnimatedVisibilityScope,
+    playAgain: () -> Unit,
+) {
+    with(sharedTransitionScope) {
+        Text(
+            modifier = Modifier
+                .sharedBounds(
+                    sharedContentState = rememberSharedContentState(key = "game-score"),
+                    animatedVisibilityScope = animatedVisibilityScope,
+                    resizeMode = SharedTransitionScope.ResizeMode.ScaleToBounds(),
+                ),
+            text = "Final score: $finalScore",
+            fontWeight = FontWeight.Bold,
+            fontSize = 40.sp,
+        )
+        Text(
+            modifier = Modifier
+                .sharedBounds(
+                    sharedContentState = rememberSharedContentState(key = "game-round"),
+                    animatedVisibilityScope = animatedVisibilityScope,
+                    resizeMode = SharedTransitionScope.ResizeMode.ScaleToBounds(),
+                )
+                .padding(top = 20.dp),
+            text = "Round: ${roundState.currentRound} / ${roundState.totalFlags}",
+            fontWeight = FontWeight.Bold,
+            fontSize = 36.sp,
+        )
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+        ) {
+            Text(
+                modifier = Modifier.padding(top = 30.dp),
+                text = "Hits: ${roundState.hits}",
+                fontWeight = FontWeight.Bold,
+                fontSize = 26.sp,
+            )
+            Text(
+                modifier = Modifier.padding(top = 30.dp),
+                text = "Misses: ${roundState.misses}",
+                fontWeight = FontWeight.Bold,
+                fontSize = 26.sp,
+            )
+        }
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center,
+        ) {
+            Text(
+                modifier = Modifier.padding(top = 30.dp),
+                text = "Final Rank: ",
+                fontWeight = FontWeight.Bold,
+                fontSize = 26.sp,
+            )
+            Text(
+                modifier = Modifier.padding(top = 30.dp),
+                text = roundState.getGameRank().name,
+                fontWeight = FontWeight.Bold,
+                fontSize = 30.sp,
+            )
+        }
+        ActionButton(
+            modifier = Modifier.padding(top = 60.dp),
+            text = R.string.play_again,
+            action = { playAgain() },
+            textColor = RichBlack,
+            backgroundColor = Celadon,
+            fontWeight = FontWeight.Bold,
+            textSize = 40.sp,
+        )
+    }
+}
+
+@Composable
+private fun GiveUpDialog(
+    onConfirm: () -> Unit,
+    onDecline: () -> Unit,
+) {
+    Dialog(onDismissRequest = { onDecline() }) {
+        Card(
+            modifier = Modifier
+                .fillMaxWidth(),
+            shape = RoundedCornerShape(16.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = RichBlack,
+                contentColor = AliceBlue,
+            ),
+        ) {
+            Column(
+                modifier = Modifier.padding(top = 16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                Icon(
+                    modifier = Modifier.size(50.dp),
+                    painter = painterResource(id = R.drawable.broken_earth),
+                    contentDescription = null,
+                )
+                Text(
+                    modifier = Modifier.padding(horizontal = 24.dp),
+                    text = "Are you sure you want to quit?",
+                    style = Typography.titleLarge,
+                    textAlign = TextAlign.Center,
+                    fontSize = 28.sp,
+                )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.Bottom
+                ) {
+                    TextButton(
+                        modifier = Modifier
+                            .background(Celadon)
+                            .weight(1f),
+                        onClick = { onConfirm() },
+                    ) {
+                        Text(
+                            text = "Hell yeah.",
+                            textAlign = TextAlign.Center,
+                            color = RichBlack,
+                        )
+                    }
+                    TextButton(
+                        modifier = Modifier
+                            .background(Poppy)
+                            .weight(1f),
+                        onClick = { onDecline() },
+                    ) {
+                        Text(
+                            text = "Hell no.",
+                            textAlign = TextAlign.Center,
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
 @Preview(showBackground = true)
 @Composable
 private fun FlagGameComponentPreview() {
@@ -325,6 +471,8 @@ private fun FlagGameComponentPreview() {
         ),
         optionClick = {},
         reDrawn = {},
+        giveUp = {},
+        onPlayAgain = {},
     )
 }
 
@@ -416,5 +564,14 @@ private fun OptionButtonFlagOptionNotClickedStatePreview() {
         ),
         isButtonEnabled = false,
         buttonText = "Central African Republic",
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun GiveUpComposablePreview() {
+    GiveUpDialog(
+        onConfirm = {},
+        onDecline = {},
     )
 }

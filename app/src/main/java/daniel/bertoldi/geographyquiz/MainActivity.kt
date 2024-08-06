@@ -152,7 +152,19 @@ class MainActivity : ComponentActivity() {
                             FlagGameComponent(
                                 gameState = viewModel.gameState.collectAsState().value,
                                 optionClick = { countryCode -> viewModel.optionClick(countryCode) },
-                                reDrawn = { viewModel.nextRound() }
+                                reDrawn = { viewModel.nextRound() },
+                                giveUp = {
+                                    navigationController.popBackStack(
+                                        route = "home",
+                                        inclusive = false,
+                                    )
+                                },
+                                onPlayAgain = {
+                                    navigationController.popBackStack(
+                                        route = "regionSelection",
+                                        inclusive = false,
+                                    )
+                                }
                             )
                         }
                     }

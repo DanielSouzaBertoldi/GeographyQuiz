@@ -13,6 +13,7 @@
     <string name="undo_choices">Undo Choices</string>
     <string name="next_flag">Next Flag</string>
     <string name="which_country">Which country is this?</string>
+    <string name="play_again">Play again</string>
 
     <!-- Region -->
     <string name="africa">Africa</string>

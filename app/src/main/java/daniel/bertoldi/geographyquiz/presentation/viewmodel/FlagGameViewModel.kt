@@ -32,7 +32,9 @@ class FlagGameViewModel @Inject constructor(
             getFlagGameOptionsUseCase(chosenRegion, chosenSubRegion).collect {
                 allAvailableCountries.addAll(it)
                 countriesYetToBeDrawn.addAll(it)
-                _gameState.value = _gameState.value.copy(limit = it.size)
+                _gameState.value = _gameState.value.copy(
+                    roundState = _gameState.value.roundState.copy(totalFlags = it.size),
+                )
 
                 val correctAnswerIdx = drawFlagOptions()
                 countriesYetToBeDrawn.removeAt(correctAnswerIdx)
@@ -46,19 +48,19 @@ class FlagGameViewModel @Inject constructor(
         val correctAnswerIdx = Random.nextInt(validCountries.size)
         val correctCountry = validCountries[correctAnswerIdx]
         validCountries.removeAt(correctAnswerIdx)
+        countryOptions.add(correctCountry)
 
         repeat(3) {
             val randomCountry = if (validCountries.size == 0) {
-                allAvailableCountries.filter { it != correctCountry }.random()
+                allAvailableCountries.filterNot { it in countryOptions }.random()
             } else {
                 val idx = Random.nextInt(validCountries.size)
                 validCountries[idx]
             }
-            validCountries.remove(randomCountry)
 
+            validCountries.remove(randomCountry)
             countryOptions.add(randomCountry)
         }
-        countryOptions.add(correctCountry)
 
         _gameState.value = _gameState.value.copy(
             step = GameStep.CHOOSING_OPTION,
@@ -69,19 +71,41 @@ class FlagGameViewModel @Inject constructor(
     }
 
     fun nextRound() {
-        if (_gameState.value.round == allAvailableCountries.size){
-            _gameState.value = _gameState.value.copy(step = GameStep.END_GAME)
+        val currentGameState = _gameState.value
+
+        if (currentGameState.roundState.currentRound == allAvailableCountries.size){
+            _gameState.value = currentGameState.copy(step = GameStep.END_GAME)
         } else {
-            _gameState.value = _gameState.value.copy(round = _gameState.value.round.inc())
+            _gameState.value = currentGameState.copy(
+                roundState = currentGameState.roundState.copy(
+                    currentRound = currentGameState.roundState.currentRound.inc(),
+                )
+            )
             val correctAnswerIdx = drawFlagOptions()
             countriesYetToBeDrawn.removeAt(correctAnswerIdx)
         }
     }
 
     fun optionClick(countryCodeSelected: String) {
-        var pointsToAdd = _gameState.value.score
-        val isOptionCorrect = countryCodeSelected == _gameState.value.correctCountryCode
-        if (isOptionCorrect) pointsToAdd += 20 else pointsToAdd -= 20
+        val currentGameState = _gameState.value
+        var pointsToAdd = currentGameState.score
+        val isOptionCorrect = countryCodeSelected == currentGameState.correctCountryCode
+
+        if (isOptionCorrect) {
+            pointsToAdd += 20
+            _gameState.value = currentGameState.copy(
+                roundState = currentGameState.roundState.copy(
+                    hits = currentGameState.roundState.hits.inc(),
+                )
+            )
+        } else {
+            pointsToAdd -= 20
+            _gameState.value = currentGameState.copy(
+                roundState = currentGameState.roundState.copy(
+                    misses = currentGameState.roundState.misses.inc(),
+                )
+            )
+        }
 
         _gameState.value = _gameState.value.copy(
             step = GameStep.OPTION_SELECTED,
@@ -97,16 +121,48 @@ data class GameState(
     val chosenCountryCode: String = "",
     val availableOptions: List<CountryFlagUi> = emptyList(),
     val score: Int = 0,
-    val round: Int = 1,
-    val limit: Int = 1,
+    val roundState: RoundState = RoundState(),
 ) {
     fun userHasChosen() = this.step == GameStep.OPTION_SELECTED
     fun isCorrectAnswer(countryCode: String) = correctCountryCode == countryCode
     fun wrongUserOption(countryCode: String) = chosenCountryCode == countryCode
 }
 
+data class RoundState(
+    val currentRound: Int = 1,
+    val totalFlags: Int = 1,
+    val hits: Int = 0,
+    val misses: Int = 0,
+) {
+    fun getGameRank(): GameRank {
+        if (hits + misses == 0) return GameRank.NONE
+
+        val hitPercentage = (hits.toDouble() / misses.toDouble()) * 100
+        return when {
+            hitPercentage == 100.0 -> GameRank.FLAWLESS
+            hitPercentage >= 70.0 -> GameRank.EXCELLENT
+            hitPercentage >= 50.0 -> GameRank.GOOD
+            hitPercentage >= 30.0 -> GameRank.AVERAGE
+            hitPercentage >= 10.0 -> GameRank.POOR
+            hitPercentage >= 0.0 -> GameRank.VERY_POOR
+            else -> GameRank.FAIL
+        }
+    }
+}
+
 enum class GameStep {
     CHOOSING_OPTION,
     OPTION_SELECTED,
     END_GAME,
+}
+
+enum class GameRank {
+    FLAWLESS,
+    EXCELLENT,
+    GOOD,
+    AVERAGE,
+    POOR,
+    VERY_POOR,
+    FAIL,
+    NONE
 }

@@ -29,6 +29,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
@@ -41,14 +42,14 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import daniel.bertoldi.geographyquiz.R
+import daniel.bertoldi.geographyquiz.presentation.model.GameMode
 import daniel.bertoldi.geographyquiz.presentation.model.Region
 import daniel.bertoldi.geographyquiz.presentation.model.SubRegion
-import daniel.bertoldi.geographyquiz.presentation.model.GameMode
-import daniel.bertoldi.geographyquiz.presentation.viewmodel.GameModeScreenState
 import daniel.bertoldi.geographyquiz.presentation.ui.theme.AliceBlue
 import daniel.bertoldi.geographyquiz.presentation.ui.theme.BrunswickGreen
 import daniel.bertoldi.geographyquiz.presentation.ui.theme.Celadon
 import daniel.bertoldi.geographyquiz.presentation.ui.theme.RichBlack
+import daniel.bertoldi.geographyquiz.presentation.viewmodel.GameModeScreenState
 import kotlinx.coroutines.launch
 
 
@@ -333,7 +334,7 @@ private fun GameModes(
 }
 
 @Composable
-private fun ActionButton(
+internal fun ActionButton(
     modifier: Modifier = Modifier,
     @StringRes text: Int,
     action: () -> Unit,
@@ -345,10 +346,11 @@ private fun ActionButton(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .background(color = backgroundColor, shape = RoundedCornerShape(24.dp))
+            .clip(RoundedCornerShape(24.dp))
+            .background(color = backgroundColor)
             .border(width = Dp.Hairline, color = Color.Black, shape = RoundedCornerShape(24.dp))
-            .padding(vertical = 10.dp)
-            .clickable { action() },
+            .clickable { action() }
+            .padding(vertical = 10.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Text(

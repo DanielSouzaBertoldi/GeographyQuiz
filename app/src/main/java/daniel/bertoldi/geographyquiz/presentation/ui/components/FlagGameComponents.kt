@@ -70,7 +70,6 @@ import daniel.bertoldi.geographyquiz.presentation.viewmodel.GameStep
 import daniel.bertoldi.geographyquiz.presentation.viewmodel.RoundState
 import kotlinx.coroutines.delay
 
-@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 internal fun FlagGameComponent(
     gameState: GameState,
@@ -91,41 +90,35 @@ internal fun FlagGameComponent(
             )
         }
 
-        SharedTransitionLayout {
-            AnimatedContent(
-                targetState = gameState.step,
-                label = "animated content change",
-                // TODO: manually setting the contentKey breaks SharedTransition for some reason... I think it's because we have
-                //  the animated content code running right in the moment that sharedtransition needs to do its stuff. Try AnimatedVisibility maybe?
-                contentKey = { if (gameState.step != GameStep.END_GAME) "ongoing" else "end" },
-            ) { currentGameStep ->
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(color = AliceBlue)
-                        .padding(top = 40.dp)
-                        .padding(horizontal = 24.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                ) {
-                    when (currentGameStep) {
-                        GameStep.END_GAME -> {
-                            EndGameContent(
-                                finalScore = gameState.score,
-                                roundState = gameState.roundState,
-                                playAgain = onPlayAgain,
-                                retry = onRetry,
-                            )
-                        }
+        AnimatedContent(
+            targetState = gameState.step,
+            label = "animated content change",
+            contentKey = { if (gameState.step != GameStep.END_GAME) "ongoing" else "end" },
+        ) { currentGameStep ->
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(color = AliceBlue)
+                    .padding(top = 40.dp)
+                    .padding(horizontal = 24.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                when (currentGameStep) {
+                    GameStep.END_GAME -> {
+                        EndGameContent(
+                            finalScore = gameState.score,
+                            roundState = gameState.roundState,
+                            playAgain = onPlayAgain,
+                            retry = onRetry,
+                        )
+                    }
 
-                        else -> {
-                            OnGoingGameContent(
-                                gameState = gameState,
-                                optionClick = optionClick,
-                                reDrawn = reDrawn,
-                                sharedTransitionScope = this@SharedTransitionLayout,
-                                animatedVisibilityScope = this@AnimatedContent,
-                            )
-                        }
+                    else -> {
+                        OnGoingGameContent(
+                            gameState = gameState,
+                            optionClick = optionClick,
+                            reDrawn = reDrawn,
+                        )
                     }
                 }
             }
@@ -139,8 +132,6 @@ private fun OnGoingGameContent(
     gameState: GameState,
     optionClick: (String) -> Unit,
     reDrawn: () -> Unit,
-    sharedTransitionScope: SharedTransitionScope,
-    animatedVisibilityScope: AnimatedVisibilityScope,
 ) {
     var loadingFlag by remember { mutableStateOf(gameState.step == GameStep.CHOOSING_OPTION) }
     var dots by remember { mutableIntStateOf(0) }
@@ -157,24 +148,16 @@ private fun OnGoingGameContent(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        with(sharedTransitionScope) {
-            Text(
-                modifier = Modifier
-                    .sharedBounds(
-                        sharedContentState = rememberSharedContentState(key = "game-score"),
-                        animatedVisibilityScope = animatedVisibilityScope,
-                        resizeMode = SharedTransitionScope.ResizeMode.ScaleToBounds(),
-                    ),
-                text = "Score: ${gameState.score}",
-                fontWeight = FontWeight.Bold,
-                fontSize = 24.sp,
-            )
-            Text(
-                text = "Round: ${gameState.roundState.currentRound} / ${gameState.roundState.totalFlags}",
-                fontWeight = FontWeight.Bold,
-                fontSize = 20.sp,
-            )
-        }
+        Text(
+            text = "Score: ${gameState.score}",
+            fontWeight = FontWeight.Bold,
+            fontSize = 24.sp,
+        )
+        Text(
+            text = "Round: ${gameState.roundState.currentRound} / ${gameState.roundState.totalFlags}",
+            fontWeight = FontWeight.Bold,
+            fontSize = 20.sp,
+        )
     }
     AsyncImage(
         modifier = Modifier

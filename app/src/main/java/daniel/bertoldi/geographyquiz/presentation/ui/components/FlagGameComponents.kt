@@ -3,10 +3,6 @@ package daniel.bertoldi.geographyquiz.presentation.ui.components
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.AnimatedVisibilityScope
-import androidx.compose.animation.ExperimentalSharedTransitionApi
-import androidx.compose.animation.SharedTransitionLayout
-import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -52,12 +48,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.LineBreak
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import coil.compose.AsyncImage
 import daniel.bertoldi.geographyquiz.R
+import daniel.bertoldi.geographyquiz.presentation.model.CountryFlagUi
 import daniel.bertoldi.geographyquiz.presentation.ui.theme.AliceBlue
 import daniel.bertoldi.geographyquiz.presentation.ui.theme.BrunswickGreen
 import daniel.bertoldi.geographyquiz.presentation.ui.theme.Celadon
@@ -126,7 +125,6 @@ internal fun FlagGameComponent(
     }
 }
 
-@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 private fun OnGoingGameContent(
     gameState: GameState,
@@ -193,7 +191,7 @@ private fun OnGoingGameContent(
         )
         OptionsGrid(gameState, optionClick)
         if (gameState.step == GameStep.OPTION_SELECTED) {
-            OptionButton(
+            OptionSquareButton(
                 modifier = Modifier.padding(top = 16.dp),
                 onClick = {
                     loadingFlag = true
@@ -238,7 +236,7 @@ private fun OptionsGrid(gameState: GameState, optionClick: (String) -> Unit) {
                 label = "disabledContentAnimation",
             )
 
-            OptionButton(
+            OptionSquareButton(
                 modifier = Modifier.aspectRatio(1f),
                 onClick = { optionClick(it.countryCode) },
                 buttonColors = ButtonDefaults.buttonColors(
@@ -255,7 +253,7 @@ private fun OptionsGrid(gameState: GameState, optionClick: (String) -> Unit) {
 }
 
 @Composable
-private fun OptionButton(
+private fun OptionSquareButton(
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
     buttonColors: ButtonColors,
@@ -452,18 +450,34 @@ private fun GiveUpDialog(
 
 @Preview(showBackground = true)
 @Composable
-private fun FlagGameComponentPreview() {
+private fun FlagGameComponentPreview(
+    @PreviewParameter(OnGoingGameParameterProvider::class) gameStep: GameStep,
+) {
     FlagGameComponent(
         gameState = GameState(
-            step = GameStep.CHOOSING_OPTION,
-            availableOptions = emptyList(),
-            // TODO: Create an UI Model. It's pathetic to instantiate CountryEntity here.
-            // availableOptions = listOf(
-            //    FlagOption(
-            //        isTheCorrectAnswer = true,
-            //        countryData = CountryEntity()
-            //    )
-            // ),
+            step = gameStep,
+            availableOptions = listOf(
+                CountryFlagUi(
+                    countryCode = "BR",
+                    countryName = "Brazil",
+                    flagUrl = "https://flagcdn.com/w320/br.png"
+                ),
+                CountryFlagUi(
+                    countryCode = "AO",
+                    countryName = "Angola",
+                    flagUrl = "https://flagcdn.com/w320/ao.png"
+                ),
+                CountryFlagUi(
+                    countryCode = "ST",
+                    countryName = "São Tomé e Príncipe",
+                    flagUrl = "https://flagcdn.com/w320/st.png"
+                ),
+                CountryFlagUi(
+                    countryCode = "PT",
+                    countryName = "Portugal",
+                    flagUrl = "https://flagcdn.com/w320/pt.png"
+                ),
+            ),
             score = 40,
             correctCountryCode = "BR",
         ),
@@ -481,14 +495,28 @@ private fun OptionsGridPreview() {
     OptionsGrid(
         gameState = GameState(
             step = GameStep.CHOOSING_OPTION,
-            availableOptions = emptyList(),
-            // TODO: Create an UI Model. It's pathetic to instantiate CountryEntity here.
-            // availableOptions = listOf(
-            //    FlagOption(
-            //        isTheCorrectAnswer = true,
-            //        countryData = CountryEntity()
-            //    )
-            // ),
+             availableOptions = listOf(
+                CountryFlagUi(
+                    countryCode = "BR",
+                    countryName = "Brazil",
+                    flagUrl = "https://flagcdn.com/w320/br.png"
+                ),
+                 CountryFlagUi(
+                     countryCode = "AO",
+                     countryName = "Angola",
+                     flagUrl = "https://flagcdn.com/w320/ao.png"
+                 ),
+                 CountryFlagUi(
+                     countryCode = "ST",
+                     countryName = "São Tomé e Príncipe",
+                     flagUrl = "https://flagcdn.com/w320/st.png"
+                 ),
+                 CountryFlagUi(
+                     countryCode = "PT",
+                     countryName = "Portugal",
+                     flagUrl = "https://flagcdn.com/w320/pt.png"
+                 ),
+             ),
             score = 40,
             correctCountryCode = "BR",
         ),
@@ -499,7 +527,7 @@ private fun OptionsGridPreview() {
 @Preview
 @Composable
 private fun OptionButtonNextFlagPreview() {
-    OptionButton(
+    OptionSquareButton(
         onClick = {},
         buttonColors = ButtonDefaults.buttonColors(
             containerColor = RichBlack,
@@ -513,7 +541,7 @@ private fun OptionButtonNextFlagPreview() {
 @Preview
 @Composable
 private fun OptionButtonFlagOptionInitialStatePreview() {
-    OptionButton(
+    OptionSquareButton(
         onClick = {},
         buttonColors = ButtonDefaults.buttonColors(
             containerColor = LightGray,
@@ -527,7 +555,7 @@ private fun OptionButtonFlagOptionInitialStatePreview() {
 @Preview
 @Composable
 private fun OptionButtonFlagOptionCorrectGuessStatePreview() {
-    OptionButton(
+    OptionSquareButton(
         onClick = {},
         buttonColors = ButtonDefaults.buttonColors(
             disabledContainerColor = Celadon,
@@ -541,7 +569,7 @@ private fun OptionButtonFlagOptionCorrectGuessStatePreview() {
 @Preview
 @Composable
 private fun OptionButtonFlagOptionWrongGuessStatePreview() {
-    OptionButton(
+    OptionSquareButton(
         onClick = {},
         buttonColors = ButtonDefaults.buttonColors(
             disabledContainerColor = Poppy,
@@ -555,7 +583,7 @@ private fun OptionButtonFlagOptionWrongGuessStatePreview() {
 @Preview
 @Composable
 private fun OptionButtonFlagOptionNotClickedStatePreview() {
-    OptionButton(
+    OptionSquareButton(
         onClick = {},
         buttonColors = ButtonDefaults.buttonColors(
             disabledContainerColor = Color.Gray,
@@ -588,5 +616,12 @@ private fun GiveUpComposablePreview() {
     GiveUpDialog(
         onConfirm = {},
         onDecline = {},
+    )
+}
+
+class OnGoingGameParameterProvider() : PreviewParameterProvider<GameStep> {
+    override val values = sequenceOf(
+        GameStep.CHOOSING_OPTION,
+        GameStep.OPTION_SELECTED,
     )
 }

@@ -1,5 +1,6 @@
 package daniel.bertoldi.geographyquiz.presentation.ui.components
 
+import androidx.annotation.StringRes
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateIntOffsetAsState
 import androidx.compose.animation.core.tween
@@ -57,7 +58,8 @@ internal fun ChooseAreaComponent(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Step(stringRes = R.string.choose_area)
-            GameRulesComponent(
+            GeographyQuizTableComponent(
+                tableHeaderText = R.string.game_rules,
                 shouldAnimateHeader = true,
                 rules = listOf(
                     {
@@ -68,7 +70,7 @@ internal fun ChooseAreaComponent(
                     },
                     {
                         GameRuleValueComponent(
-                            valueName = screenState.regionData.regionString,
+                            valueName = stringResource(id = screenState.regionData.regionString),
                             valueIcon = screenState.regionData.regionIcon,
                             cornerShape = RoundedCornerShape(bottomEnd = 14.dp, topEnd = 14.dp),
                         )
@@ -104,7 +106,8 @@ internal fun ChooseAreaComponent(
 }
 
 @Composable
-fun GameRuleHeaderComponent(
+fun GeographyQuizTableHeaderComponent(
+    @StringRes tableHeaderText: Int,
     shouldAnimateHeader: Boolean = false,
 ) {
     var animateHeader by remember { mutableStateOf(false) }
@@ -146,7 +149,7 @@ fun GameRuleHeaderComponent(
                 shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
             )
             .padding(bottom = 16.dp, top = 10.dp),
-        text = stringResource(id = R.string.game_rules),
+        text = stringResource(id = tableHeaderText),
         fontSize = 24.sp,
         color = AliceBlue,
         textAlign = TextAlign.Center,

@@ -85,7 +85,8 @@ fun SelectGameMode(
                     modifier = Modifier.fillMaxSize(),
                     verticalArrangement = Arrangement.Center,
                 ) {
-                    GameRulesComponent(
+                    GeographyQuizTableComponent(
+                        tableHeaderText = R.string.game_rules,
                         rules = listOf(
                             {
                                 GameRuleKeyComponent(
@@ -95,7 +96,7 @@ fun SelectGameMode(
                             },
                             {
                                 GameRuleValueComponent(
-                                    valueName = screenState.region.regionString,
+                                    valueName = stringResource(id = screenState.region.regionString),
                                     valueIcon = screenState.region.regionIcon,
                                     cornerShape = RoundedCornerShape(topEnd = 14.dp),
                                 )
@@ -108,7 +109,7 @@ fun SelectGameMode(
                             },
                             {
                                 GameRuleValueComponent(
-                                    valueName = screenState.subRegion.subRegionName,
+                                    valueName = stringResource(screenState.subRegion.subRegionName),
                                     valueIcon = screenState.subRegion.subRegionIcon,
                                     cornerShape = RoundedCornerShape(bottomEnd = 0.dp),
                                 )
@@ -121,7 +122,7 @@ fun SelectGameMode(
                             },
                             {
                                 GameRuleValueComponent(
-                                    valueName = screenState.gameMode.title,
+                                    valueName = stringResource(screenState.gameMode.title),
                                     valueIcon = screenState.gameMode.icon,
                                     cornerShape = RoundedCornerShape(bottomEnd = 14.dp),
                                 )
@@ -169,7 +170,8 @@ private fun ChooseGameModeComponent(
     var gameModeHelp: GameMode by remember { mutableStateOf(GameMode.Casual()) }
 
     Step(stringRes = R.string.choose_game_mode)
-    GameRulesComponent(
+    GeographyQuizTableComponent(
+        tableHeaderText = R.string.game_rules,
         rules = listOf(
             {
                 GameRuleKeyComponent(
@@ -179,7 +181,7 @@ private fun ChooseGameModeComponent(
             },
             {
                 GameRuleValueComponent(
-                    valueName = region.regionString,
+                    valueName = stringResource(region.regionString),
                     valueIcon = region.regionIcon,
                     cornerShape = RoundedCornerShape(topEnd = 14.dp),
                 )
@@ -192,7 +194,7 @@ private fun ChooseGameModeComponent(
             },
             {
                 GameRuleValueComponent(
-                    valueName = subRegion.subRegionName,
+                    valueName = stringResource(subRegion.subRegionName),
                     valueIcon = subRegion.subRegionIcon,
                     cornerShape = RoundedCornerShape(bottomEnd = 14.dp),
                 )

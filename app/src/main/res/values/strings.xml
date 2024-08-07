@@ -14,6 +14,12 @@
     <string name="next_flag">Next Flag</string>
     <string name="which_country">Which country is this?</string>
     <string name="play_again">Play again</string>
+    <string name="retry">Retry</string>
+    <string name="game_results">Game Results</string>
+    <string name="ranking">Ranking</string>
+    <string name="final_score">Final Score</string>
+    <string name="hits_and_misses">Hits / Misses</string>
+    <string name="accuracy">Accuracy</string>
 
     <!-- Region -->
     <string name="africa">Africa</string>
@@ -50,4 +56,22 @@
     <string name="game_mode_time_attack_description">Try to guess all flags correctly in the shortest amount of time possible. The faster you are, the greater your score.</string>
     <string name="game_mode_sudden_death">Sudden Death</string>
     <string name="game_mode_sudden_death_description">If you guess one flag wrong, you\'re out! More fun if you choose the entire area of a region.</string>
+
+    <!-- Game Rank -->
+    <string name="game_rank_flawless_title">Flawless</string>
+    <string name="game_rank_flawless_description">Awesome! You aced this game. How about another one?</string>
+    <string name="game_rank_excellent_title">Excellent</string>
+    <string name="game_rank_excellent_description">You were great! I know you can ace this game. Try again?</string>
+    <string name="game_rank_good_title">Good</string>
+    <string name="game_rank_good_description">That was nice, congratulations! Why don\'t you practice a bit more?</string>
+    <string name="game_rank_average_title">Average</string>
+    <string name="game_rank_average_description">Good effort! I bet you can rank better by trying again.</string>
+    <string name="game_rank_poor_title">Poor</string>
+    <string name="game_rank_poor_description">That was tough, but you managed to push through it. Why don\'t you try again?</string>
+    <string name="game_rank_very_poor_title">Very Poor</string>
+    <string name="game_rank_very_poor_description">Just practice a little bit more and you\'ll be ranking higher in no time!</string>
+    <string name="game_rank_fail_title">Fail</string>
+    <string name="game_rank_fail_description">Ouch, that was rough. Just more reason to keep trying again!</string>
+    <string name="game_rank_none_title">Error</string>
+    <string name="game_rank_none_description">Ooops! Something went terribly wrong on my part. Sorry!</string>
 </resources>

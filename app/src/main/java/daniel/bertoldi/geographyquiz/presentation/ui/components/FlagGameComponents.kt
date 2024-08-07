@@ -8,6 +8,7 @@ import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -17,6 +18,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -57,6 +59,7 @@ import androidx.compose.ui.window.Dialog
 import coil.compose.AsyncImage
 import daniel.bertoldi.geographyquiz.R
 import daniel.bertoldi.geographyquiz.presentation.ui.theme.AliceBlue
+import daniel.bertoldi.geographyquiz.presentation.ui.theme.BrunswickGreen
 import daniel.bertoldi.geographyquiz.presentation.ui.theme.Celadon
 import daniel.bertoldi.geographyquiz.presentation.ui.theme.LightGray
 import daniel.bertoldi.geographyquiz.presentation.ui.theme.Poppy
@@ -66,7 +69,6 @@ import daniel.bertoldi.geographyquiz.presentation.viewmodel.GameState
 import daniel.bertoldi.geographyquiz.presentation.viewmodel.GameStep
 import daniel.bertoldi.geographyquiz.presentation.viewmodel.RoundState
 import kotlinx.coroutines.delay
-import kotlin.math.round
 
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
@@ -76,6 +78,7 @@ internal fun FlagGameComponent(
     reDrawn: () -> Unit,
     giveUp: () -> Unit,
     onPlayAgain: () -> Unit,
+    onRetry: () -> Unit,
 ) {
     var showDialog by remember { mutableStateOf(false) }
     BackHandler(enabled = gameState.step != GameStep.END_GAME) { showDialog = true }
@@ -109,11 +112,11 @@ internal fun FlagGameComponent(
                             EndGameContent(
                                 finalScore = gameState.score,
                                 roundState = gameState.roundState,
-                                sharedTransitionScope = this@SharedTransitionLayout,
-                                animatedVisibilityScope = this@AnimatedContent,
                                 playAgain = onPlayAgain,
+                                retry = onRetry,
                             )
                         }
+
                         else -> {
                             OnGoingGameContent(
                                 gameState = gameState,
@@ -150,6 +153,7 @@ private fun OnGoingGameContent(
     }
 
     Row(
+        modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -163,18 +167,12 @@ private fun OnGoingGameContent(
                     ),
                 text = "Score: ${gameState.score}",
                 fontWeight = FontWeight.Bold,
-                fontSize = 36.sp,
+                fontSize = 24.sp,
             )
             Text(
-                modifier = Modifier
-                    .sharedBounds(
-                        sharedContentState = rememberSharedContentState(key = "game-round"),
-                        animatedVisibilityScope = animatedVisibilityScope,
-                        resizeMode = SharedTransitionScope.ResizeMode.ScaleToBounds(),
-                    ),
                 text = "Round: ${gameState.roundState.currentRound} / ${gameState.roundState.totalFlags}",
                 fontWeight = FontWeight.Bold,
-                fontSize = 24.sp,
+                fontSize = 20.sp,
             )
         }
     }
@@ -307,74 +305,82 @@ private fun OptionButton(
     }
 }
 
-@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 private fun EndGameContent(
     finalScore: Int,
     roundState: RoundState,
-    sharedTransitionScope: SharedTransitionScope,
-    animatedVisibilityScope: AnimatedVisibilityScope,
     playAgain: () -> Unit,
+    retry: () -> Unit,
 ) {
-    with(sharedTransitionScope) {
-        Text(
+    val rank = roundState.getGameRank()
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Image(
             modifier = Modifier
-                .sharedBounds(
-                    sharedContentState = rememberSharedContentState(key = "game-score"),
-                    animatedVisibilityScope = animatedVisibilityScope,
-                    resizeMode = SharedTransitionScope.ResizeMode.ScaleToBounds(),
-                ),
-            text = "Final score: $finalScore",
-            fontWeight = FontWeight.Bold,
-            fontSize = 40.sp,
+                .height(170.dp)
+                .padding(bottom = 14.dp),
+            painter = painterResource(id = rank.image),
+            contentDescription = null,
         )
-        Text(
-            modifier = Modifier
-                .sharedBounds(
-                    sharedContentState = rememberSharedContentState(key = "game-round"),
-                    animatedVisibilityScope = animatedVisibilityScope,
-                    resizeMode = SharedTransitionScope.ResizeMode.ScaleToBounds(),
-                )
-                .padding(top = 20.dp),
-            text = "Round: ${roundState.currentRound} / ${roundState.totalFlags}",
-            fontWeight = FontWeight.Bold,
-            fontSize = 36.sp,
+
+        GeographyQuizTableComponent(
+            tableHeaderText = R.string.game_results,
+            shouldAnimateHeader = true,
+            rules = listOf(
+                {
+                    GameRuleKeyComponent(
+                        keyName = R.string.ranking,
+                        cornerShape = RoundedCornerShape(topStart = 14.dp),
+                    )
+                },
+                {
+                    GameRuleValueComponent(
+                        valueName = stringResource(id = rank.title),
+                        cornerShape = RoundedCornerShape(topEnd = 14.dp),
+                    )
+                },
+                {
+                    GameRuleKeyComponent(
+                        keyName = R.string.final_score,
+                        cornerShape = RoundedCornerShape(bottomStart = 0.dp),
+                    )
+                },
+                {
+                    GameRuleValueComponent(
+                        valueName = finalScore.toString(),
+                        cornerShape = RoundedCornerShape(bottomEnd = 0.dp),
+                    )
+                },
+                {
+                    GameRuleKeyComponent(
+                        keyName = R.string.hits_and_misses,
+                        cornerShape = RoundedCornerShape(bottomStart = 0.dp),
+                    )
+                },
+                {
+                    GameRuleValueComponent(
+                        valueName = "${roundState.hits} / ${roundState.misses}",
+                        cornerShape = RoundedCornerShape(bottomEnd = 0.dp),
+                    )
+                },
+                {
+                    GameRuleKeyComponent(
+                        keyName = R.string.accuracy,
+                        cornerShape = RoundedCornerShape(bottomStart = 14.dp),
+                    )
+                },
+                {
+                    GameRuleValueComponent(
+                        valueName = "${roundState.accuracy}%",
+                        cornerShape = RoundedCornerShape(bottomEnd = 14.dp),
+                    )
+                },
+            )
         )
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-        ) {
-            Text(
-                modifier = Modifier.padding(top = 30.dp),
-                text = "Hits: ${roundState.hits}",
-                fontWeight = FontWeight.Bold,
-                fontSize = 26.sp,
-            )
-            Text(
-                modifier = Modifier.padding(top = 30.dp),
-                text = "Misses: ${roundState.misses}",
-                fontWeight = FontWeight.Bold,
-                fontSize = 26.sp,
-            )
-        }
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center,
-        ) {
-            Text(
-                modifier = Modifier.padding(top = 30.dp),
-                text = "Final Rank: ",
-                fontWeight = FontWeight.Bold,
-                fontSize = 26.sp,
-            )
-            Text(
-                modifier = Modifier.padding(top = 30.dp),
-                text = roundState.getGameRank().name,
-                fontWeight = FontWeight.Bold,
-                fontSize = 30.sp,
-            )
-        }
+
         ActionButton(
             modifier = Modifier.padding(top = 60.dp),
             text = R.string.play_again,
@@ -383,6 +389,15 @@ private fun EndGameContent(
             backgroundColor = Celadon,
             fontWeight = FontWeight.Bold,
             textSize = 40.sp,
+        )
+        ActionButton(
+            modifier = Modifier.padding(top = 20.dp),
+            text = R.string.retry,
+            action = { retry() },
+            textColor = AliceBlue,
+            backgroundColor = BrunswickGreen,
+            fontWeight = FontWeight.Light,
+            textSize = 32.sp,
         )
     }
 }
@@ -473,6 +488,7 @@ private fun FlagGameComponentPreview() {
         reDrawn = {},
         giveUp = {},
         onPlayAgain = {},
+        onRetry = {},
     )
 }
 
@@ -564,6 +580,22 @@ private fun OptionButtonFlagOptionNotClickedStatePreview() {
         ),
         isButtonEnabled = false,
         buttonText = "Central African Republic",
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun EndGameContentPreview() {
+    EndGameContent(
+        finalScore = 200,
+        roundState = RoundState(
+            currentRound = 10,
+            totalFlags = 10,
+            hits = 5,
+            misses = 5,
+        ),
+        playAgain = {},
+        retry = {},
     )
 }
 

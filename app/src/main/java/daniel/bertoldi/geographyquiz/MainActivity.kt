@@ -145,9 +145,7 @@ class MainActivity : ComponentActivity() {
                         ) {
                             val viewModel = hiltViewModel<FlagGameViewModel>()
 
-                            LaunchedEffect(key1 = Unit) {
-                                viewModel.startFlagGame(it.arguments)
-                            }
+                            LaunchedEffect(key1 = Unit) { viewModel.init(it.arguments) }
 
                             FlagGameComponent(
                                 gameState = viewModel.gameState.collectAsState().value,
@@ -164,7 +162,8 @@ class MainActivity : ComponentActivity() {
                                         route = "regionSelection",
                                         inclusive = false,
                                     )
-                                }
+                                },
+                                onRetry = { viewModel.retryCurrentGame() },
                             )
                         }
                     }

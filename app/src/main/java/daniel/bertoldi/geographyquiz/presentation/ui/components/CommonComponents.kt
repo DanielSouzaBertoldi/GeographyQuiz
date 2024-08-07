@@ -7,9 +7,11 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -95,7 +97,9 @@ fun GameOptionCard(
                 horizontalArrangement = Arrangement.Center,
             ) {
                 Text(
-                    modifier = Modifier.padding(start = 10.dp).weight(weight = 1f, fill = false),
+                    modifier = Modifier
+                        .padding(start = 10.dp)
+                        .weight(weight = 1f, fill = false),
                     text = stringResource(id = stringRes),
                     textAlign = TextAlign.Center,
                     color = RichBlack,
@@ -135,7 +139,8 @@ fun Step(
 }
 
 @Composable
-fun GameRulesComponent(
+fun GeographyQuizTableComponent(
+    @StringRes tableHeaderText: Int,
     shouldAnimateHeader: Boolean = false,
     rules: List<@Composable ColumnScope.() -> Unit>,
 ) {
@@ -144,13 +149,14 @@ fun GameRulesComponent(
             .fillMaxWidth()
             .padding(top = 24.dp),
     ) {
-        GameRuleHeaderComponent(shouldAnimateHeader)
+        GeographyQuizTableHeaderComponent(tableHeaderText, shouldAnimateHeader)
         LazyVerticalGrid(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(color = LightGray, shape = RoundedCornerShape(14.dp))
                 .border(width = 2.dp, color = BrunswickGreen, shape = RoundedCornerShape(14.dp)),
             columns = GridCells.Fixed(2),
+            verticalArrangement = Arrangement.Center,
         ) {
             items(rules) {
                 it()
@@ -164,7 +170,7 @@ fun GameRuleKeyComponent(
     @StringRes keyName: Int,
     cornerShape: RoundedCornerShape,
 ) {
-    Text(
+    Box(
         modifier = Modifier
             .height(55.dp)
             .background(
@@ -175,20 +181,25 @@ fun GameRuleKeyComponent(
                 width = 2.dp,
                 color = BrunswickGreen,
                 shape = cornerShape,
-            )
-            .padding(horizontal = 30.dp, vertical = 4.dp),
-        text = stringResource(id = keyName),
-        color = Celadon,
-        fontWeight = FontWeight.Bold,
-        fontSize = 20.sp,
-        textAlign = TextAlign.Center,
-    )
+            ),
+        contentAlignment = Alignment.Center,
+    ) {
+        Text(
+            modifier = Modifier
+                .padding(horizontal = 30.dp, vertical = 4.dp),
+            text = stringResource(id = keyName),
+            color = Celadon,
+            fontWeight = FontWeight.Bold,
+            fontSize = 20.sp,
+            textAlign = TextAlign.Center,
+        )
+    }
 }
 
 @Composable
 fun GameRuleValueComponent(
-    @StringRes valueName: Int,
-    @DrawableRes valueIcon: Int,
+    valueName: String,
+    @DrawableRes valueIcon: Int? = null,
     cornerShape: RoundedCornerShape,
 ) {
     Row(
@@ -207,18 +218,20 @@ fun GameRuleValueComponent(
         horizontalArrangement = Arrangement.Center,
     ) {
         Text(
-            text = stringResource(id = valueName),
+            text = valueName,
             color = RichBlack,
             fontWeight = FontWeight.Bold,
             fontSize = 20.sp,
             textAlign = TextAlign.Center,
         )
-        Image(
-            modifier = Modifier
-                .size(36.dp),
-            painter = painterResource(id = valueIcon),
-            contentDescription = null,
-        )
+        if (valueIcon != null) {
+            Image(
+                modifier = Modifier
+                    .size(36.dp),
+                painter = painterResource(id = valueIcon),
+                contentDescription = null,
+            )
+        }
     }
 }
 
@@ -242,7 +255,8 @@ private fun StepPreview() {
 @Preview(showBackground = true)
 @Composable
 private fun GameRulesComponentPreview() {
-    GameRulesComponent(
+    GeographyQuizTableComponent(
+        tableHeaderText = R.string.game_rules,
         shouldAnimateHeader = false,
         rules = listOf(
             {
@@ -253,7 +267,7 @@ private fun GameRulesComponentPreview() {
             },
             {
                 GameRuleValueComponent(
-                    valueName = R.string.americas,
+                    valueName = stringResource(id = R.string.americas),
                     valueIcon = R.drawable.all_americas,
                     cornerShape = RoundedCornerShape(bottomEnd = 14.dp, topEnd = 14.dp),
                 )
@@ -265,7 +279,10 @@ private fun GameRulesComponentPreview() {
 @Preview(showBackground = true)
 @Composable
 private fun GameRulesHeaderComponentPreview() {
-    GameRuleHeaderComponent(shouldAnimateHeader = false)
+    GeographyQuizTableHeaderComponent(
+        tableHeaderText = R.string.game_rules,
+        shouldAnimateHeader = false,
+    )
 }
 
 @Preview(showBackground = true, widthDp = 165)
@@ -281,7 +298,7 @@ private fun GameRuleKeyComponentPreview() {
 @Composable
 private fun GameRuleValueComponentPreview() {
     GameRuleValueComponent(
-        valueName = R.string.africa,
+        valueName = stringResource(R.string.africa),
         valueIcon = R.drawable.africa,
         cornerShape = RoundedCornerShape(bottomEnd = 14.dp, topEnd = 14.dp),
     )

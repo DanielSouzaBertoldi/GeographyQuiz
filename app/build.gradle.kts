@@ -87,6 +87,8 @@ dependencies {
     testImplementation(libs.jupiter.api)
     testImplementation(libs.mockk)
     testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.kotlin.test)
+    testImplementation(libs.turbine) // TODO: remove this guy if I can't use it.
     testRuntimeOnly(libs.jupiter.engine)
     testRuntimeOnly(libs.jupiter.vintage)
 

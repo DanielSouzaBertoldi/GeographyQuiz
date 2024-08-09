@@ -68,6 +68,7 @@ import daniel.bertoldi.geographyquiz.presentation.viewmodel.GameState
 import daniel.bertoldi.geographyquiz.presentation.viewmodel.GameStep
 import daniel.bertoldi.geographyquiz.presentation.viewmodel.RoundState
 import kotlinx.coroutines.delay
+import java.util.Locale
 
 @Composable
 internal fun FlagGameComponent(
@@ -355,7 +356,7 @@ private fun EndGameContent(
                 },
                 {
                     GameRuleValueComponent(
-                        valueName = "${roundState.accuracy}%",
+                        valueName = "${"%.2f".format(Locale.ROOT, roundState.accuracy)}%",
                         cornerShape = RoundedCornerShape(bottomEnd = 14.dp),
                     )
                 },

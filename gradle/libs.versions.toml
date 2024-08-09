@@ -23,7 +23,9 @@ mockk = "1.13.10"
 kotlinxCoroutinesTest = "1.8.1"
 datastore = "1.1.1"
 lottie = "6.4.0"
-compose-ui = "1.7.0-beta06"
+compose-ui = "1.7.0-beta07"
+kotlin-test = "2.0.0"
+turbine = "1.1.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -65,7 +67,8 @@ mockk-agent = { group = "io.mockk", name = "mockk-agent", version.ref = "mockk" 
 kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlinxCoroutinesTest" }
 datastore-prefs = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore" }
 lottie = { group = "com.airbnb.android", name = "lottie-compose", version.ref = "lottie" }
-
+kotlin-test = { group = "org.jetbrains.kotlin", name = "kotlin-test", version.ref = "kotlin-test" }
+turbine = { group = "app.cash.turbine", name = "turbine", version.ref = "turbine" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

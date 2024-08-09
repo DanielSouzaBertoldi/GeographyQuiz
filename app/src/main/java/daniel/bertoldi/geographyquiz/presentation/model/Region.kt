@@ -101,14 +101,14 @@ enum class SubRegion(
 
     ALL_ASIA(R.string.all_area, R.drawable.blank_space),
     WESTERN_ASIA(R.string.western, R.drawable.western_asia),
-    SOUTH_EASTERN_ASIA(R.string.south_eastern, R.drawable.south_eastern_asia),
+    SOUTH_EASTERN_ASIA(R.string.southeast, R.drawable.south_eastern_asia),
     SOUTHERN_ASIA(R.string.southern, R.drawable.southern_asia),
     CENTRAL_ASIA(R.string.central_area, R.drawable.central_asia),
     EASTERN_ASIA(R.string.eastern, R.drawable.eastern_asia),
 
     ALL_EUROPE(R.string.all_area, R.drawable.all_europe),
     EASTERN_EUROPE(R.string.eastern, R.drawable.eastern_europe),
-    SOUTH_EASTERN_EUROPE(R.string.south_eastern, R.drawable.south_east_europe),
+    SOUTH_EASTERN_EUROPE(R.string.southeast, R.drawable.south_east_europe),
     NORTHERN_EUROPE(R.string.northern, R.drawable.northern_europe),
     SOUTHERN_EUROPE(R.string.southern, R.drawable.blank_space),
     CENTRAL_EUROPE(R.string.central_area, R.drawable.central_europe),

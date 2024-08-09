@@ -24,6 +24,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.ImageLoader
 import coil.compose.AsyncImage
 import coil.decode.ImageDecoderDecoder
 import coil.request.ImageRequest
@@ -48,6 +49,7 @@ internal fun LoadingComponent() {
 @Composable
 internal fun HomeComponent(
     navigateToGameScreen: () -> Unit,
+    imageLoader: ImageLoader,
 ) {
     Column(
         modifier = Modifier
@@ -63,6 +65,7 @@ internal fun HomeComponent(
                 .decoderFactory(ImageDecoderDecoder.Factory())
                 .build(),
             contentDescription = null,
+            imageLoader = imageLoader,
         )
         Button(
             modifier = Modifier
@@ -102,7 +105,7 @@ private fun LoadingComponentPreview() {
 @Preview(showBackground = true)
 @Composable
 private fun BeginGameComponentPreview() {
-    HomeComponent(navigateToGameScreen = {})
+    HomeComponent(navigateToGameScreen = {}, imageLoader = ImageLoader(LocalContext.current))
 }
 
 @Preview(showBackground = true)

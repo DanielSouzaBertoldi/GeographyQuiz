@@ -15,6 +15,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import coil.ImageLoader
 import dagger.hilt.android.AndroidEntryPoint
 import daniel.bertoldi.geographyquiz.presentation.ui.components.ChooseAreaComponent
 import daniel.bertoldi.geographyquiz.presentation.ui.components.ErrorComponent
@@ -29,9 +30,12 @@ import daniel.bertoldi.geographyquiz.presentation.viewmodel.FlagGameViewModel
 import daniel.bertoldi.geographyquiz.presentation.viewmodel.GameModeViewModel
 import daniel.bertoldi.geographyquiz.presentation.viewmodel.MainActivityViewModel
 import daniel.bertoldi.geographyquiz.presentation.viewmodel.MainScreenState
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    @Inject lateinit var imageLoader: ImageLoader
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,7 +58,8 @@ class MainActivity : ComponentActivity() {
                                 is MainScreenState.Success -> HomeComponent(
                                     navigateToGameScreen = {
                                         navigationController.navigate("regionSelection")
-                                    }
+                                    },
+                                    imageLoader = imageLoader,
                                 )
 
                                 is MainScreenState.Failed -> ErrorComponent()
@@ -164,6 +169,7 @@ class MainActivity : ComponentActivity() {
                                     )
                                 },
                                 onRetry = { viewModel.retryCurrentGame() },
+                                imageLoader = imageLoader,
                             )
                         }
                     }

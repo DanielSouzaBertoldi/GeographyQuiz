@@ -42,6 +42,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -54,6 +55,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import coil.ImageLoader
 import coil.compose.AsyncImage
 import daniel.bertoldi.geographyquiz.R
 import daniel.bertoldi.geographyquiz.presentation.model.CountryFlagUi
@@ -78,6 +80,7 @@ internal fun FlagGameComponent(
     giveUp: () -> Unit,
     onPlayAgain: () -> Unit,
     onRetry: () -> Unit,
+    imageLoader: ImageLoader,
 ) {
     var showDialog by remember { mutableStateOf(false) }
     BackHandler(enabled = gameState.step != GameStep.END_GAME) { showDialog = true }
@@ -118,6 +121,7 @@ internal fun FlagGameComponent(
                             gameState = gameState,
                             optionClick = optionClick,
                             reDrawn = reDrawn,
+                            imageLoader = imageLoader,
                         )
                     }
                 }
@@ -131,6 +135,7 @@ private fun OnGoingGameContent(
     gameState: GameState,
     optionClick: (String) -> Unit,
     reDrawn: () -> Unit,
+    imageLoader: ImageLoader,
 ) {
     var loadingFlag by remember { mutableStateOf(gameState.step == GameStep.CHOOSING_OPTION) }
     var dots by remember { mutableIntStateOf(0) }
@@ -168,6 +173,7 @@ private fun OnGoingGameContent(
         onSuccess = { loadingFlag = false },
         contentScale = if (loadingFlag) ContentScale.Crop else ContentScale.FillBounds,
         placeholder = painterResource(id = R.drawable.flags_placeholder),
+        imageLoader = imageLoader,
     )
     if (loadingFlag) {
         Text(
@@ -487,6 +493,7 @@ private fun FlagGameComponentPreview(
         giveUp = {},
         onPlayAgain = {},
         onRetry = {},
+        imageLoader = ImageLoader(LocalContext.current),
     )
 }
 

@@ -49,7 +49,6 @@ internal fun LoadingComponent() {
 @Composable
 internal fun HomeComponent(
     navigateToGameScreen: () -> Unit,
-    imageLoader: ImageLoader,
 ) {
     Column(
         modifier = Modifier
@@ -65,7 +64,6 @@ internal fun HomeComponent(
                 .decoderFactory(ImageDecoderDecoder.Factory())
                 .build(),
             contentDescription = null,
-            imageLoader = imageLoader,
         )
         Button(
             modifier = Modifier
@@ -105,7 +103,7 @@ private fun LoadingComponentPreview() {
 @Preview(showBackground = true)
 @Composable
 private fun BeginGameComponentPreview() {
-    HomeComponent(navigateToGameScreen = {}, imageLoader = ImageLoader(LocalContext.current))
+    HomeComponent(navigateToGameScreen = {})
 }
 
 @Preview(showBackground = true)

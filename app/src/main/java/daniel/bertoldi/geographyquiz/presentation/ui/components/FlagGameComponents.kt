@@ -80,7 +80,6 @@ internal fun FlagGameComponent(
     giveUp: () -> Unit,
     onPlayAgain: () -> Unit,
     onRetry: () -> Unit,
-    imageLoader: ImageLoader,
 ) {
     var showDialog by remember { mutableStateOf(false) }
     BackHandler(enabled = gameState.step != GameStep.END_GAME) { showDialog = true }
@@ -121,7 +120,6 @@ internal fun FlagGameComponent(
                             gameState = gameState,
                             optionClick = optionClick,
                             reDrawn = reDrawn,
-                            imageLoader = imageLoader,
                         )
                     }
                 }
@@ -135,7 +133,6 @@ private fun OnGoingGameContent(
     gameState: GameState,
     optionClick: (String) -> Unit,
     reDrawn: () -> Unit,
-    imageLoader: ImageLoader,
 ) {
     var loadingFlag by remember { mutableStateOf(gameState.step == GameStep.CHOOSING_OPTION) }
     var dots by remember { mutableIntStateOf(0) }
@@ -173,7 +170,6 @@ private fun OnGoingGameContent(
         onSuccess = { loadingFlag = false },
         contentScale = if (loadingFlag) ContentScale.Crop else ContentScale.FillBounds,
         placeholder = painterResource(id = R.drawable.flags_placeholder),
-        imageLoader = imageLoader,
     )
     if (loadingFlag) {
         Text(
@@ -493,7 +489,6 @@ private fun FlagGameComponentPreview(
         giveUp = {},
         onPlayAgain = {},
         onRetry = {},
-        imageLoader = ImageLoader(LocalContext.current),
     )
 }
 

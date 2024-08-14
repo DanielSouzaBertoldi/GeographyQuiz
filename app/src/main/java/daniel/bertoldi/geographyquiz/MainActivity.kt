@@ -35,8 +35,6 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-    @Inject lateinit var imageLoader: ImageLoader
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -59,7 +57,6 @@ class MainActivity : ComponentActivity() {
                                     navigateToGameScreen = {
                                         navigationController.navigate("regionSelection")
                                     },
-                                    imageLoader = imageLoader,
                                 )
 
                                 is MainScreenState.Failed -> ErrorComponent()
@@ -169,7 +166,6 @@ class MainActivity : ComponentActivity() {
                                     )
                                 },
                                 onRetry = { viewModel.retryCurrentGame() },
-                                imageLoader = imageLoader,
                             )
                         }
                     }

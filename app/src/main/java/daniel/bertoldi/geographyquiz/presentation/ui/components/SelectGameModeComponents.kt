@@ -395,8 +395,8 @@ private fun SelectConfirmChoicesPreview() {
 
 @Preview(
     showBackground = true,
-    backgroundColor = 0xFF001A23
-) // TODO: Can't reference RichBlack directly, which sucks.
+    backgroundColor = 0xFF001A23 // TODO: Can't reference RichBlack directly, which sucks.
+)
 @Composable
 private fun GameModeModalContentPreview() {
     GameModeModalContent(GameMode.Casual())

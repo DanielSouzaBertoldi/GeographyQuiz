@@ -20,6 +20,7 @@
     <string name="final_score">Final Score</string>
     <string name="hits_and_misses">Hits / Misses</string>
     <string name="accuracy">Accuracy</string>
+    <string name="time_elapsed">Total Time</string>
 
     <!-- Region -->
     <string name="africa">Africa</string>

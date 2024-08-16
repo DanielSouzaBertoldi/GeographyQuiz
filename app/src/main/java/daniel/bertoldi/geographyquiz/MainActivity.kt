@@ -166,6 +166,7 @@ class MainActivity : ComponentActivity() {
                                     )
                                 },
                                 onRetry = { viewModel.retryCurrentGame() },
+                                onGameEnd = { viewModel.saveDuration(it) },
                             )
                         }
                     }

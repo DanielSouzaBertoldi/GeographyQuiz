@@ -17,6 +17,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.random.Random
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
 
 @HiltViewModel
 class FlagGameViewModel @Inject constructor(
@@ -98,12 +100,19 @@ class FlagGameViewModel @Inject constructor(
         countriesYetToBeDrawn.removeAt(correctAnswerIdx)
     }
 
+    fun saveDuration(duration: Duration) {
+        _gameState.value = _gameState.value.copy(
+            duration = duration,
+        )
+    }
+
     private fun startFlagGame() {
         viewModelScope.launch(Dispatchers.IO) {
             getFlagGameOptionsUseCase(chosenRegion, chosenSubRegion).collect {
                 allAvailableCountries.addAll(it)
                 countriesYetToBeDrawn.addAll(it)
                 _gameState.value = _gameState.value.copy(
+                    gameMode = chosenGameMode,
                     roundState = _gameState.value.roundState.copy(totalFlags = it.size),
                 )
 
@@ -144,10 +153,12 @@ class FlagGameViewModel @Inject constructor(
 
 data class GameState(
     val step: GameStep = GameStep.CHOOSING_OPTION,
+    val gameMode: GameMode = GameMode.Casual(),
     val correctCountryCode: String = "",
     val chosenCountryCode: String = "",
     val availableOptions: List<CountryFlagUi> = emptyList(),
     val score: Int = 0,
+    val duration: Duration = 0.seconds,
     val roundState: RoundState = RoundState(),
 ) {
     fun userHasChosen() = this.step == GameStep.OPTION_SELECTED

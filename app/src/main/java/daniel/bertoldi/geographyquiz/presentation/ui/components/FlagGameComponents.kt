@@ -42,7 +42,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -55,10 +54,11 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-import coil.ImageLoader
+import androidx.lifecycle.compose.LifecycleResumeEffect
 import coil.compose.AsyncImage
 import daniel.bertoldi.geographyquiz.R
 import daniel.bertoldi.geographyquiz.presentation.model.CountryFlagUi
+import daniel.bertoldi.geographyquiz.presentation.model.GameMode
 import daniel.bertoldi.geographyquiz.presentation.ui.theme.AliceBlue
 import daniel.bertoldi.geographyquiz.presentation.ui.theme.BrunswickGreen
 import daniel.bertoldi.geographyquiz.presentation.ui.theme.Celadon
@@ -71,6 +71,8 @@ import daniel.bertoldi.geographyquiz.presentation.viewmodel.GameStep
 import daniel.bertoldi.geographyquiz.presentation.viewmodel.RoundState
 import kotlinx.coroutines.delay
 import java.util.Locale
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
 
 @Composable
 internal fun FlagGameComponent(
@@ -80,6 +82,7 @@ internal fun FlagGameComponent(
     giveUp: () -> Unit,
     onPlayAgain: () -> Unit,
     onRetry: () -> Unit,
+    onGameEnd: (Duration) -> Unit,
 ) {
     var showDialog by remember { mutableStateOf(false) }
     BackHandler(enabled = gameState.step != GameStep.END_GAME) { showDialog = true }
@@ -110,6 +113,8 @@ internal fun FlagGameComponent(
                         EndGameContent(
                             finalScore = gameState.score,
                             roundState = gameState.roundState,
+                            gameMode = gameState.gameMode,
+                            duration = gameState.duration,
                             playAgain = onPlayAgain,
                             retry = onRetry,
                         )
@@ -120,6 +125,7 @@ internal fun FlagGameComponent(
                             gameState = gameState,
                             optionClick = optionClick,
                             reDrawn = reDrawn,
+                            onGameEnd = onGameEnd,
                         )
                     }
                 }
@@ -133,6 +139,7 @@ private fun OnGoingGameContent(
     gameState: GameState,
     optionClick: (String) -> Unit,
     reDrawn: () -> Unit,
+    onGameEnd: (Duration) -> Unit,
 ) {
     var loadingFlag by remember { mutableStateOf(gameState.step == GameStep.CHOOSING_OPTION) }
     var dots by remember { mutableIntStateOf(0) }
@@ -144,22 +151,7 @@ private fun OnGoingGameContent(
         }
     }
 
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Text(
-            text = "Score: ${gameState.score}",
-            fontWeight = FontWeight.Bold,
-            fontSize = 24.sp,
-        )
-        Text(
-            text = "Round: ${gameState.roundState.currentRound} / ${gameState.roundState.totalFlags}",
-            fontWeight = FontWeight.Bold,
-            fontSize = 20.sp,
-        )
-    }
+    GameInfoComponent(gameState, onGameEnd, loadingFlag)
     AsyncImage(
         modifier = Modifier
             .aspectRatio(2f)
@@ -206,6 +198,42 @@ private fun OnGoingGameContent(
                 ),
                 isButtonEnabled = true,
                 buttonText = stringResource(id = R.string.next_flag),
+            )
+        }
+    }
+}
+
+@Composable
+private fun GameInfoComponent(
+    gameState: GameState,
+    onGameEnd: (Duration) -> Unit,
+    loadingFlag: Boolean,
+) {
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text(
+                text = "Score: ${gameState.score}",
+                fontWeight = FontWeight.Bold,
+                fontSize = 24.sp,
+            )
+            Text(
+                text = "Round: ${gameState.roundState.currentRound} / ${gameState.roundState.totalFlags}",
+                fontWeight = FontWeight.Bold,
+                fontSize = 20.sp,
+            )
+        }
+        if (gameState.gameMode is GameMode.TimeAttack) {
+            TimeCounter(
+                gameFinished = gameState.step == GameStep.END_GAME,
+                onGameFinished = onGameEnd,
+                loadingFlag = loadingFlag,
             )
         }
     }
@@ -293,6 +321,8 @@ private fun OptionSquareButton(
 private fun EndGameContent(
     finalScore: Int,
     roundState: RoundState,
+    gameMode: GameMode,
+    duration: Duration,
     playAgain: () -> Unit,
     retry: () -> Unit,
 ) {
@@ -313,7 +343,7 @@ private fun EndGameContent(
         GeographyQuizTableComponent(
             tableHeaderText = R.string.game_results,
             shouldAnimateHeader = true,
-            rules = listOf(
+            rules = listOfNotNull(
                 {
                     GameRuleKeyComponent(
                         keyName = R.string.ranking,
@@ -349,6 +379,18 @@ private fun EndGameContent(
                         valueName = "${roundState.hits} / ${roundState.misses}",
                         cornerShape = RoundedCornerShape(bottomEnd = 0.dp),
                     )
+                },
+                {
+                    GameRuleKeyComponent(
+                        keyName = R.string.time_elapsed,
+                        cornerShape = RoundedCornerShape(bottomStart = 0.dp),
+                    ).takeIf { gameMode is GameMode.TimeAttack }
+                },
+                {
+                    GameRuleValueComponent(
+                        valueName = duration.inWholeSeconds.seconds.toString(),
+                        cornerShape = RoundedCornerShape(bottomEnd = 0.dp),
+                    ).takeIf { gameMode is GameMode.TimeAttack }
                 },
                 {
                     GameRuleKeyComponent(
@@ -451,6 +493,44 @@ private fun GiveUpDialog(
     }
 }
 
+@Composable
+private fun TimeCounter(
+    gameFinished: Boolean,
+    onGameFinished: (Duration) -> Unit,
+    loadingFlag: Boolean,
+) {
+    var timeElapsed by remember { mutableStateOf(0.seconds) }
+    var shouldTrackTime by remember { mutableStateOf(true) }
+
+    LifecycleResumeEffect(key1 = Unit) {
+        shouldTrackTime = true
+        onPauseOrDispose { shouldTrackTime = false }
+    }
+
+    LaunchedEffect(key1 = shouldTrackTime, key2 = loadingFlag, key3 = gameFinished) {
+        while (shouldTrackTime && !loadingFlag && !gameFinished) {
+            delay(1.seconds)
+            timeElapsed += 1.seconds
+        }
+        if (gameFinished) onGameFinished(timeElapsed)
+    }
+
+    Row(
+        modifier = Modifier.padding(top = 8.dp),
+    ) {
+        Text(
+            text = "Time: ",
+            fontWeight = FontWeight.Bold,
+            fontSize = 24.sp,
+        )
+        Text(
+            text = timeElapsed.inWholeSeconds.seconds.toString(),
+            fontWeight = FontWeight.Bold,
+            fontSize = 26.sp,
+        )
+    }
+}
+
 @Preview(showBackground = true)
 @Composable
 private fun FlagGameComponentPreview(
@@ -489,6 +569,44 @@ private fun FlagGameComponentPreview(
         giveUp = {},
         onPlayAgain = {},
         onRetry = {},
+        onGameEnd = {},
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun GameInfoComponentPreview() {
+    GameInfoComponent(
+        gameState = GameState(
+            step = GameStep.CHOOSING_OPTION,
+            gameMode = GameMode.TimeAttack(),
+            availableOptions = listOf(
+                CountryFlagUi(
+                    countryCode = "BR",
+                    countryName = "Brazil",
+                    flagUrl = "https://flagcdn.com/w320/br.png"
+                ),
+                CountryFlagUi(
+                    countryCode = "AO",
+                    countryName = "Angola",
+                    flagUrl = "https://flagcdn.com/w320/ao.png"
+                ),
+                CountryFlagUi(
+                    countryCode = "ST",
+                    countryName = "São Tomé e Príncipe",
+                    flagUrl = "https://flagcdn.com/w320/st.png"
+                ),
+                CountryFlagUi(
+                    countryCode = "PT",
+                    countryName = "Portugal",
+                    flagUrl = "https://flagcdn.com/w320/pt.png"
+                ),
+            ),
+            score = 40,
+            correctCountryCode = "BR",
+        ),
+        loadingFlag = false,
+        onGameEnd = {},
     )
 }
 
@@ -608,6 +726,8 @@ private fun EndGameContentPreview() {
             hits = 5,
             misses = 5,
         ),
+        gameMode = GameMode.Casual(),
+        duration = Duration.ZERO,
         playAgain = {},
         retry = {},
     )
@@ -622,7 +742,7 @@ private fun GiveUpComposablePreview() {
     )
 }
 
-class OnGoingGameParameterProvider() : PreviewParameterProvider<GameStep> {
+class OnGoingGameParameterProvider : PreviewParameterProvider<GameStep> {
     override val values = sequenceOf(
         GameStep.CHOOSING_OPTION,
         GameStep.OPTION_SELECTED,

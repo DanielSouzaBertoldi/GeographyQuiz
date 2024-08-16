@@ -73,6 +73,7 @@ fun SelectGameMode(
             is GameModeScreenState.Loading -> {
                 LoadingComponent()
             }
+
             is GameModeScreenState.ChoosingGameMode -> {
                 ChooseGameModeComponent(
                     region = screenState.region,
@@ -80,54 +81,37 @@ fun SelectGameMode(
                     onGameModeClick = onGameModeClick,
                 )
             }
+
             is GameModeScreenState.ConfirmSelection -> {
                 Column(
                     modifier = Modifier.fillMaxSize(),
                     verticalArrangement = Arrangement.Center,
                 ) {
-                    GeographyQuizTableComponent(
+                    TableComponent(
                         tableHeaderText = R.string.game_rules,
-                        rules = listOf(
-                            {
-                                GameRuleKeyComponent(
-                                    keyName = R.string.chosen_region,
-                                    cornerShape = RoundedCornerShape(topStart = 14.dp),
+                        tableMap = mapOf(
+                            Pair(
+                                TableKey(name = stringResource(id = R.string.chosen_region)),
+                                TableValue(
+                                    name = stringResource(id = screenState.region.regionString),
+                                    icon = screenState.region.regionIcon,
                                 )
-                            },
-                            {
-                                GameRuleValueComponent(
-                                    valueName = stringResource(id = screenState.region.regionString),
-                                    valueIcon = screenState.region.regionIcon,
-                                    cornerShape = RoundedCornerShape(topEnd = 14.dp),
+                            ),
+                            Pair(
+                                TableKey(name = stringResource(id = R.string.chosen_area)),
+                                TableValue(
+                                    name = stringResource(screenState.subRegion.subRegionName),
+                                    icon = screenState.subRegion.subRegionIcon,
                                 )
-                            },
-                            {
-                                GameRuleKeyComponent(
-                                    keyName = R.string.chosen_area,
-                                    cornerShape = RoundedCornerShape(bottomStart = 0.dp),
+                            ),
+                            Pair(
+                                TableKey(name = stringResource(id = R.string.chosen_game_mode)),
+                                TableValue(
+                                    name = stringResource(screenState.gameMode.title),
+                                    icon = screenState.gameMode.icon,
                                 )
-                            },
-                            {
-                                GameRuleValueComponent(
-                                    valueName = stringResource(screenState.subRegion.subRegionName),
-                                    valueIcon = screenState.subRegion.subRegionIcon,
-                                    cornerShape = RoundedCornerShape(bottomEnd = 0.dp),
-                                )
-                            },
-                            {
-                                GameRuleKeyComponent(
-                                    keyName = R.string.chosen_game_mode,
-                                    cornerShape = RoundedCornerShape(bottomStart = 14.dp),
-                                )
-                            },
-                            {
-                                GameRuleValueComponent(
-                                    valueName = stringResource(screenState.gameMode.title),
-                                    valueIcon = screenState.gameMode.icon,
-                                    cornerShape = RoundedCornerShape(bottomEnd = 14.dp),
-                                )
-                            },
-                        )
+                            ),
+                        ),
                     )
                     ActionButton(
                         modifier = Modifier.padding(top = 60.dp),
@@ -170,36 +154,24 @@ private fun ChooseGameModeComponent(
     var gameModeHelp: GameMode by remember { mutableStateOf(GameMode.Casual()) }
 
     Step(stringRes = R.string.choose_game_mode)
-    GeographyQuizTableComponent(
+    TableComponent(
         tableHeaderText = R.string.game_rules,
-        rules = listOf(
-            {
-                GameRuleKeyComponent(
-                    keyName = R.string.chosen_region,
-                    cornerShape = RoundedCornerShape(topStart = 14.dp),
+        tableMap = mapOf(
+            Pair(
+                TableKey(name = stringResource(id = R.string.chosen_region)),
+                TableValue(
+                    name = stringResource(region.regionString),
+                    icon = region.regionIcon,
                 )
-            },
-            {
-                GameRuleValueComponent(
-                    valueName = stringResource(region.regionString),
-                    valueIcon = region.regionIcon,
-                    cornerShape = RoundedCornerShape(topEnd = 14.dp),
+            ),
+            Pair(
+                TableKey(name = stringResource(id = R.string.chosen_area)),
+                TableValue(
+                    name = stringResource(subRegion.subRegionName),
+                    icon = subRegion.subRegionIcon,
                 )
-            },
-            {
-                GameRuleKeyComponent(
-                    keyName = R.string.chosen_area,
-                    cornerShape = RoundedCornerShape(bottomStart = 14.dp),
-                )
-            },
-            {
-                GameRuleValueComponent(
-                    valueName = stringResource(subRegion.subRegionName),
-                    valueIcon = subRegion.subRegionIcon,
-                    cornerShape = RoundedCornerShape(bottomEnd = 14.dp),
-                )
-            },
-        )
+            ),
+        ),
     )
 
     GameModes(

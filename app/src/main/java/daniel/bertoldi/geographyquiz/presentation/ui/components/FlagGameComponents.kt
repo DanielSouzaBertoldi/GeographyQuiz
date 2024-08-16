@@ -340,71 +340,31 @@ private fun EndGameContent(
             contentDescription = null,
         )
 
-        GeographyQuizTableComponent(
+        TableComponent(
             tableHeaderText = R.string.game_results,
             shouldAnimateHeader = true,
-            rules = listOfNotNull(
-                {
-                    GameRuleKeyComponent(
-                        keyName = R.string.ranking,
-                        cornerShape = RoundedCornerShape(topStart = 14.dp),
-                    )
-                },
-                {
-                    GameRuleValueComponent(
-                        valueName = stringResource(id = rank.title),
-                        cornerShape = RoundedCornerShape(topEnd = 14.dp),
-                    )
-                },
-                {
-                    GameRuleKeyComponent(
-                        keyName = R.string.final_score,
-                        cornerShape = RoundedCornerShape(bottomStart = 0.dp),
-                    )
-                },
-                {
-                    GameRuleValueComponent(
-                        valueName = finalScore.toString(),
-                        cornerShape = RoundedCornerShape(bottomEnd = 0.dp),
-                    )
-                },
-                {
-                    GameRuleKeyComponent(
-                        keyName = R.string.hits_and_misses,
-                        cornerShape = RoundedCornerShape(bottomStart = 0.dp),
-                    )
-                },
-                {
-                    GameRuleValueComponent(
-                        valueName = "${roundState.hits} / ${roundState.misses}",
-                        cornerShape = RoundedCornerShape(bottomEnd = 0.dp),
-                    )
-                },
-                {
-                    GameRuleKeyComponent(
-                        keyName = R.string.time_elapsed,
-                        cornerShape = RoundedCornerShape(bottomStart = 0.dp),
-                    ).takeIf { gameMode is GameMode.TimeAttack }
-                },
-                {
-                    GameRuleValueComponent(
-                        valueName = duration.inWholeSeconds.seconds.toString(),
-                        cornerShape = RoundedCornerShape(bottomEnd = 0.dp),
-                    ).takeIf { gameMode is GameMode.TimeAttack }
-                },
-                {
-                    GameRuleKeyComponent(
-                        keyName = R.string.accuracy,
-                        cornerShape = RoundedCornerShape(bottomStart = 14.dp),
-                    )
-                },
-                {
-                    GameRuleValueComponent(
-                        valueName = "${"%.2f".format(Locale.ROOT, roundState.accuracy)}%",
-                        cornerShape = RoundedCornerShape(bottomEnd = 14.dp),
-                    )
-                },
-            )
+            tableMap = mapOf(
+                Pair(
+                    TableKey(name = stringResource(id = R.string.ranking)),
+                    TableValue(name = stringResource(id = rank.title))
+                ),
+                Pair(
+                    TableKey(name = stringResource(R.string.final_score)),
+                    TableValue(name = finalScore.toString())
+                ),
+                Pair(
+                    TableKey(name = stringResource(R.string.hits_and_misses)),
+                    TableValue(name = "${roundState.hits} / ${roundState.misses}")
+                ),
+                Pair(
+                    TableKey(name = stringResource(id = R.string.time_elapsed)),
+                    TableValue(name = duration.inWholeSeconds.seconds.toString()),
+                ),
+                Pair(
+                    TableKey(name = stringResource(R.string.accuracy)),
+                    TableValue(name = "${"%.2f".format(Locale.ROOT, roundState.accuracy)}%"),
+                ),
+            ),
         )
 
         ActionButton(

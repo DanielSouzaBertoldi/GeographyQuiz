@@ -1,47 +1,27 @@
 package daniel.bertoldi.geographyquiz.presentation.ui.components
 
-import androidx.annotation.StringRes
-import androidx.compose.animation.core.FastOutSlowInEasing
-import androidx.compose.animation.core.animateIntOffsetAsState
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import daniel.bertoldi.geographyquiz.R
 import daniel.bertoldi.geographyquiz.presentation.model.Region
 import daniel.bertoldi.geographyquiz.presentation.viewmodel.AreaScreenState
 import daniel.bertoldi.geographyquiz.presentation.ui.theme.AliceBlue
-import daniel.bertoldi.geographyquiz.presentation.ui.theme.BrunswickGreen
-import daniel.bertoldi.geographyquiz.presentation.ui.theme.CambridgeBlue
-import kotlin.math.roundToInt
 
 @Composable
 internal fun ChooseAreaComponent(
@@ -58,24 +38,18 @@ internal fun ChooseAreaComponent(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Step(stringRes = R.string.choose_area)
-            GeographyQuizTableComponent(
+            TableComponent(
                 tableHeaderText = R.string.game_rules,
                 shouldAnimateHeader = true,
-                rules = listOf(
-                    {
-                        GameRuleKeyComponent(
-                            keyName = R.string.chosen_region,
-                            cornerShape = RoundedCornerShape(bottomStart = 14.dp, topStart = 14.dp),
-                        )
-                    },
-                    {
-                        GameRuleValueComponent(
-                            valueName = stringResource(id = screenState.regionData.regionString),
-                            valueIcon = screenState.regionData.regionIcon,
-                            cornerShape = RoundedCornerShape(bottomEnd = 14.dp, topEnd = 14.dp),
-                        )
-                    }
-                )
+                tableMap = mapOf(
+                    Pair(
+                        TableKey(name = stringResource(id = R.string.chosen_region)),
+                        TableValue(
+                            name = stringResource(id = screenState.regionData.regionString),
+                            icon = screenState.regionData.regionIcon,
+                        ),
+                    )
+                ),
             )
             LazyVerticalGrid(
                 modifier = Modifier
@@ -103,57 +77,6 @@ internal fun ChooseAreaComponent(
             Text(text = "Hold on I'm loading stuff here tho.....")
         }
     }
-}
-
-@Composable
-fun GeographyQuizTableHeaderComponent(
-    @StringRes tableHeaderText: Int,
-    shouldAnimateHeader: Boolean = false,
-) {
-    var animateHeader by remember { mutableStateOf(false) }
-    val finalHeaderYOffset = with(LocalDensity.current) {
-        -40.dp.toPx().roundToInt()
-    }
-    val animatedOffset by animateIntOffsetAsState(
-        targetValue = if (animateHeader) IntOffset(0, finalHeaderYOffset) else IntOffset(0, 0),
-        animationSpec = tween(
-            easing = FastOutSlowInEasing,
-            durationMillis = 800,
-            delayMillis = 200,
-        ),
-        label = "header animation"
-    )
-    val offsetModifier = if (shouldAnimateHeader) {
-        Modifier
-            .offset(y = 50.dp)
-            .offset { animatedOffset }
-    } else {
-        Modifier.offset(y = 10.dp)
-    }
-    LaunchedEffect(key1 = Unit) {
-        animateHeader = shouldAnimateHeader
-    }
-
-    Text(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(55.dp)
-            .then(offsetModifier)
-            .background(
-                color = CambridgeBlue,
-                shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
-            )
-            .border(
-                width = 2.dp,
-                color = BrunswickGreen,
-                shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
-            )
-            .padding(bottom = 16.dp, top = 10.dp),
-        text = stringResource(id = tableHeaderText),
-        fontSize = 24.sp,
-        color = AliceBlue,
-        textAlign = TextAlign.Center,
-    )
 }
 
 @Preview(showBackground = true)

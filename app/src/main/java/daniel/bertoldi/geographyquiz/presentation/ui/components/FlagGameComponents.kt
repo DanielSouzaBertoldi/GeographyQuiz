@@ -32,6 +32,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -78,7 +79,7 @@ import kotlin.time.Duration.Companion.seconds
 internal fun FlagGameComponent(
     gameState: GameState,
     optionClick: (String) -> Unit,
-    reDrawn: () -> Unit,
+    nextRound: () -> Unit,
     giveUp: () -> Unit,
     onPlayAgain: () -> Unit,
     onRetry: () -> Unit,
@@ -124,7 +125,7 @@ internal fun FlagGameComponent(
                         OnGoingGameContent(
                             gameState = gameState,
                             optionClick = optionClick,
-                            reDrawn = reDrawn,
+                            nextRound = nextRound,
                             onGameEnd = onGameEnd,
                         )
                     }
@@ -138,12 +139,14 @@ internal fun FlagGameComponent(
 private fun OnGoingGameContent(
     gameState: GameState,
     optionClick: (String) -> Unit,
-    reDrawn: () -> Unit,
+    nextRound: () -> Unit,
     onGameEnd: (Duration) -> Unit,
 ) {
     var loadingFlag by remember { mutableStateOf(gameState.step == GameStep.CHOOSING_OPTION) }
     var dots by remember { mutableIntStateOf(0) }
     val loadingText = "Loading${".".repeat(dots)}"
+    val timeElapsed = remember { mutableStateOf(0.seconds) }
+
     LaunchedEffect(key1 = loadingFlag) {
         while (loadingFlag) {
             dots = ++dots % 4
@@ -151,7 +154,7 @@ private fun OnGoingGameContent(
         }
     }
 
-    GameInfoComponent(gameState, onGameEnd, loadingFlag)
+    GameInfoComponent(gameState, timeElapsed, loadingFlag)
     AsyncImage(
         modifier = Modifier
             .aspectRatio(2f)
@@ -190,7 +193,10 @@ private fun OnGoingGameContent(
                 modifier = Modifier.padding(top = 16.dp),
                 onClick = {
                     loadingFlag = true
-                    reDrawn()
+                    if (gameState.roundState.currentRound == gameState.roundState.totalFlags)
+                        onGameEnd(timeElapsed.value)
+                    else
+                        nextRound()
                 },
                 buttonColors = ButtonDefaults.buttonColors(
                     containerColor = RichBlack,
@@ -206,7 +212,7 @@ private fun OnGoingGameContent(
 @Composable
 private fun GameInfoComponent(
     gameState: GameState,
-    onGameEnd: (Duration) -> Unit,
+    timeElapsed: MutableState<Duration>,
     loadingFlag: Boolean,
 ) {
     Column(
@@ -231,8 +237,7 @@ private fun GameInfoComponent(
         }
         if (gameState.gameMode is GameMode.TimeAttack) {
             TimeCounter(
-                gameFinished = gameState.step == GameStep.END_GAME,
-                onGameFinished = onGameEnd,
+                timeElapsed = timeElapsed,
                 loadingFlag = loadingFlag,
             )
         }
@@ -455,11 +460,9 @@ private fun GiveUpDialog(
 
 @Composable
 private fun TimeCounter(
-    gameFinished: Boolean,
-    onGameFinished: (Duration) -> Unit,
+    timeElapsed: MutableState<Duration>,
     loadingFlag: Boolean,
 ) {
-    var timeElapsed by remember { mutableStateOf(0.seconds) }
     var shouldTrackTime by remember { mutableStateOf(true) }
 
     LifecycleResumeEffect(key1 = Unit) {
@@ -467,12 +470,11 @@ private fun TimeCounter(
         onPauseOrDispose { shouldTrackTime = false }
     }
 
-    LaunchedEffect(key1 = shouldTrackTime, key2 = loadingFlag, key3 = gameFinished) {
-        while (shouldTrackTime && !loadingFlag && !gameFinished) {
+    LaunchedEffect(key1 = shouldTrackTime, key2 = loadingFlag) {
+        while (shouldTrackTime && !loadingFlag) {
             delay(1.seconds)
-            timeElapsed += 1.seconds
+            timeElapsed.value += 1.seconds
         }
-        if (gameFinished) onGameFinished(timeElapsed)
     }
 
     Row(
@@ -484,7 +486,7 @@ private fun TimeCounter(
             fontSize = 24.sp,
         )
         Text(
-            text = timeElapsed.inWholeSeconds.seconds.toString(),
+            text = timeElapsed.value.inWholeSeconds.seconds.toString(),
             fontWeight = FontWeight.Bold,
             fontSize = 26.sp,
         )
@@ -525,7 +527,7 @@ private fun FlagGameComponentPreview(
             correctCountryCode = "BR",
         ),
         optionClick = {},
-        reDrawn = {},
+        nextRound = {},
         giveUp = {},
         onPlayAgain = {},
         onRetry = {},
@@ -566,7 +568,7 @@ private fun GameInfoComponentPreview() {
             correctCountryCode = "BR",
         ),
         loadingFlag = false,
-        onGameEnd = {},
+        timeElapsed = remember { mutableStateOf(23.seconds) }
     )
 }
 

@@ -44,17 +44,13 @@ class FlagGameViewModel @Inject constructor(
     fun nextRound() {
         val currentGameState = _gameState.value
 
-        if (currentGameState.roundState.currentRound == allAvailableCountries.size) {
-            _gameState.value = currentGameState.copy(step = GameStep.END_GAME)
-        } else {
-            _gameState.value = currentGameState.copy(
-                roundState = currentGameState.roundState.copy(
-                    currentRound = currentGameState.roundState.currentRound.inc(),
-                )
+        _gameState.value = currentGameState.copy(
+            roundState = currentGameState.roundState.copy(
+                currentRound = currentGameState.roundState.currentRound.inc(),
             )
-            val correctAnswerIdx = drawFlagOptions()
-            countriesYetToBeDrawn.removeAt(correctAnswerIdx)
-        }
+        )
+        val correctAnswerIdx = drawFlagOptions()
+        countriesYetToBeDrawn.removeAt(correctAnswerIdx)
     }
 
     fun optionClick(countryCodeSelected: String) {
@@ -100,8 +96,9 @@ class FlagGameViewModel @Inject constructor(
         countriesYetToBeDrawn.removeAt(correctAnswerIdx)
     }
 
-    fun saveDuration(duration: Duration) {
+    fun endGame(duration: Duration) {
         _gameState.value = _gameState.value.copy(
+            step = GameStep.END_GAME,
             duration = duration,
         )
     }

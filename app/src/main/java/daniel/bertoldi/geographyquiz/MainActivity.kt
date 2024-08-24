@@ -15,7 +15,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import coil.ImageLoader
 import dagger.hilt.android.AndroidEntryPoint
 import daniel.bertoldi.geographyquiz.presentation.ui.components.ChooseAreaComponent
 import daniel.bertoldi.geographyquiz.presentation.ui.components.ErrorComponent
@@ -30,7 +29,6 @@ import daniel.bertoldi.geographyquiz.presentation.viewmodel.FlagGameViewModel
 import daniel.bertoldi.geographyquiz.presentation.viewmodel.GameModeViewModel
 import daniel.bertoldi.geographyquiz.presentation.viewmodel.MainActivityViewModel
 import daniel.bertoldi.geographyquiz.presentation.viewmodel.MainScreenState
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -152,7 +150,7 @@ class MainActivity : ComponentActivity() {
                             FlagGameComponent(
                                 gameState = viewModel.gameState.collectAsState().value,
                                 optionClick = { countryCode -> viewModel.optionClick(countryCode) },
-                                reDrawn = { viewModel.nextRound() },
+                                nextRound = { viewModel.nextRound() },
                                 giveUp = {
                                     navigationController.popBackStack(
                                         route = "home",
@@ -166,7 +164,7 @@ class MainActivity : ComponentActivity() {
                                     )
                                 },
                                 onRetry = { viewModel.retryCurrentGame() },
-                                onGameEnd = { viewModel.saveDuration(it) },
+                                onGameEnd = { viewModel.endGame(it) },
                             )
                         }
                     }

@@ -1,6 +1,9 @@
 package daniel.bertoldi.geographyquiz.domain.mapper
 
+import daniel.bertoldi.database.CarRegulations
 import daniel.bertoldi.database.CountryEntity
+import daniel.bertoldi.database.CountryNames
+import daniel.bertoldi.database.InternationalDialInfo
 import daniel.bertoldi.network.InternationalDialResponse
 import daniel.bertoldi.network.NameDataResponse
 import daniel.bertoldi.test.utils.DayOfWeek
@@ -67,7 +70,7 @@ class CountryEntityToModelDefaultMapperTest {
 
     @Test
     fun mapFrom_withCountryEntity_assertCountryNameCorrectlyMapped() {
-        val countryName = CountryEntityFactory.makeNameDataResponse()
+        val countryName = CountryEntityFactory.makeCountryNames()
         val countryEntity = CountryEntityFactory.make(name = countryName)
         val actual = mapper.mapFrom(listOf(countryEntity)).first()
 
@@ -77,7 +80,7 @@ class CountryEntityToModelDefaultMapperTest {
 
     @Test
     fun mapFrom_withCountryEntity_assertCountryCallingCodesCorrectlyMapped() {
-        val countryIdd = CountryEntityFactory.makeInternationalDialResponse()
+        val countryIdd = CountryEntityFactory.makeInternationalDialInfo()
         val countryEntity = CountryEntityFactory.make(idd = countryIdd)
         val actual = mapper.mapFrom(listOf(countryEntity)).first()
 
@@ -93,28 +96,30 @@ class CountryEntityToModelDefaultMapperTest {
         val carSigns = randomList<String>()
         val carSide = randomString()
         val countryEntity = CountryEntityFactory.make(
-            carSigns = carSigns,
-            carSide = carSide,
+            carRegulations = CarRegulations(
+                carSigns = carSigns,
+                carSide = carSide,
+            ),
         )
         val actual = mapper.mapFrom(listOf(countryEntity)).first()
 
-        Assertions.assertEquals(countryEntity.carSide, actual.carInfo.side)
-        Assertions.assertEquals(countryEntity.carSigns, actual.carInfo.signs)
+        Assertions.assertEquals(countryEntity.carRegulations.carSide, actual.carInfo.side)
+        Assertions.assertEquals(countryEntity.carRegulations.carSigns, actual.carInfo.signs)
     }
 }
 
 
-// TODO: Move the CountryEntityFactory to a common module that can
+// TODO: Move the CountryEntityFactory in :database:test to a common module that can
 //  be used here and in the `androidTest` in :database, then delete this duplicate code.
 object CountryEntityFactory {
 
     fun make(
         countryCode: String = randomUUID(),
-        name: NameDataResponse = makeNameDataResponse(),
+        name: CountryNames = makeCountryNames(),
         tld: List<String>? = randomList(),
         independent: Boolean = randomBoolean(),
         unMember: Boolean = randomBoolean(),
-        idd: InternationalDialResponse = makeInternationalDialResponse(),
+        idd: InternationalDialInfo = makeInternationalDialInfo(),
         capital: List<String>? = randomList(),
         altSpellings: List<String> = emptyList(),
         region: String = randomString(),
@@ -124,8 +129,7 @@ object CountryEntityFactory {
         area: Float = randomFloat(),
         emojiFlag: String = randomUrl(),
         population: Int = randomInt(),
-        carSigns: List<String>? = randomList(),
-        carSide: String = randomString(),
+        carRegulations: CarRegulations = makeCarRegulations(),
         timezones: List<String> = randomList(),
         continents: List<String> = randomList(),
         flagPng: String = randomUrl(),
@@ -147,8 +151,7 @@ object CountryEntityFactory {
         area = area,
         emojiFlag = emojiFlag,
         population = population,
-        carSigns = carSigns,
-        carSide = carSide,
+        carRegulations = carRegulations,
         timezones = timezones,
         continents = continents,
         flagPng = flagPng,
@@ -156,20 +159,27 @@ object CountryEntityFactory {
         startOfWeek = startOfWeek
     )
 
-    // TODO: this shouldn't be referencing a model in the network module.
-    fun makeNameDataResponse(
+    fun makeCountryNames(
         common: String = randomString(),
         official: String = randomString(),
-    ) = NameDataResponse(
+    ) = CountryNames(
         common = common,
         official = official,
     )
 
-    fun makeInternationalDialResponse(
+    fun makeInternationalDialInfo(
         root: String? = randomString(),
         suffixes: List<String>? = randomList()
-    ) = InternationalDialResponse(
+    ) = InternationalDialInfo(
         root = root,
         suffixes = suffixes,
+    )
+
+    fun makeCarRegulations(
+        carSigns: List<String> = randomList<String>(),
+        carSide: String = randomString(),
+    ) = CarRegulations(
+        carSigns = carSigns,
+        carSide = carSide,
     )
 }

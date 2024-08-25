@@ -1,14 +1,14 @@
 package daniel.bertoldi.geographyquiz.domain.mapper
 
+import daniel.bertoldi.database.CarRegulations
 import daniel.bertoldi.database.CountryEntity
+import daniel.bertoldi.database.CountryNames
+import daniel.bertoldi.database.InternationalDialInfo
 import daniel.bertoldi.geographyquiz.domain.model.CountryCallingCodesModel
 import daniel.bertoldi.geographyquiz.domain.model.CountryCarInfoModel
 import daniel.bertoldi.geographyquiz.domain.model.CountryModel
 import daniel.bertoldi.geographyquiz.domain.model.CountryNameModel
 import daniel.bertoldi.geographyquiz.domain.model.DayOfWeek
-import daniel.bertoldi.network.InternationalDialResponse
-import daniel.bertoldi.network.NameDataResponse
-import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class CountryEntityToModelDefaultMapper @Inject constructor() : CountryEntityToModelMapper {
@@ -31,7 +31,7 @@ class CountryEntityToModelDefaultMapper @Inject constructor() : CountryEntityToM
                 area = it.area,
                 emojiFlag = it.emojiFlag,
                 population = it.population,
-                carInfo = mapCountryCarInfoModel(it.carSigns, it.carSide),
+                carInfo = mapCountryCarInfoModel(it.carRegulations),
                 timezones = it.timezones,
                 continents = it.continents,
                 flagPng = it.flagPng,
@@ -41,19 +41,19 @@ class CountryEntityToModelDefaultMapper @Inject constructor() : CountryEntityToM
         }
     }
 
-    private fun mapCountryNameModel(name: NameDataResponse) = CountryNameModel(
+    private fun mapCountryNameModel(name: CountryNames) = CountryNameModel(
         common = name.common,
         official = name.official,
     )
 
-    private fun mapCountryCallingCodes(idd: InternationalDialResponse) = CountryCallingCodesModel(
+    private fun mapCountryCallingCodes(idd: InternationalDialInfo) = CountryCallingCodesModel(
         root = idd.root,
         suffixes = idd.suffixes,
     )
 
-    private fun mapCountryCarInfoModel(carSigns: List<String>?, carSide: String) =
+    private fun mapCountryCarInfoModel(carRegulations: CarRegulations) =
         CountryCarInfoModel(
-            signs = carSigns,
-            side = carSide,
+            signs = carRegulations.carSigns,
+            side = carRegulations.carSide,
         )
 }

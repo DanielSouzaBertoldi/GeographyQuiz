@@ -30,7 +30,7 @@ class CountriesDefaultRepository @Inject constructor(
         region: String,
         subRegion: String,
     ): Flow<List<CountryModel>> {
-        return localDataSource.fetchCountriesGivenArea(region, subRegion)
+        return localDataSource.fetchCountriesInSubRegion(region, subRegion)
     }
 
     private suspend fun checkCache(): Boolean {

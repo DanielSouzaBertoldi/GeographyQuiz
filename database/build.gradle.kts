@@ -56,18 +56,16 @@ dependencies {
     implementation(libs.room.runtime)
     implementation(libs.dagger.hilt)
     implementation(libs.moshi.kotlin)
-
-    implementation(project(":network")) // TODO: this really shouldn't be here!
-    androidTestImplementation(project(":test-utils"))
-
     ksp(libs.room.compiler)
     ksp(libs.hilt.compiler)
 
     testImplementation(libs.junit)
+    testImplementation(libs.jupiter.api)
     testImplementation(libs.room.testing)
+    testImplementation(project(":test-utils"))
     androidTestImplementation(libs.mockk.android)
     androidTestImplementation(libs.mockk.agent)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-    androidTestImplementation(project(":network"))
+    androidTestImplementation(project(":test-utils"))
 }

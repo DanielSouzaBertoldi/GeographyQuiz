@@ -7,5 +7,5 @@ interface CountriesLocalDataSource {
 
     suspend fun fetchCountriesDb(): Flow<List<CountryModel>>
     suspend fun saveCountriesInDb(countries: List<CountryModel>)
-    suspend fun fetchCountriesGivenArea(region: String, subRegion: String): Flow<List<CountryModel>>
+    suspend fun fetchCountriesInSubRegion(region: String, subRegion: String): Flow<List<CountryModel>>
 }

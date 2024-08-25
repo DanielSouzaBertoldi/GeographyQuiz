@@ -1,21 +1,21 @@
 package daniel.bertoldi.database.typeconverters
 
 import androidx.room.TypeConverter
-import daniel.bertoldi.network.NameDataResponse
+import daniel.bertoldi.database.CountryNames
 
 private const val DELIMITER = "|"
 
-class NameDataResponseTypeConverter {
+class CountryNamesTypeConverter {
 
     @TypeConverter
-    fun fromNameDataResponseModel(value: NameDataResponse): String {
+    fun fromCountryNamesModel(value: CountryNames): String {
         return "${value.common}$DELIMITER${value.official}"
     }
 
     @TypeConverter
-    fun toNameDataResponseModel(value: String): NameDataResponse {
+    fun toCountryNamesModel(value: String): CountryNames {
         val splitString = value.split(DELIMITER)
-        return NameDataResponse(
+        return CountryNames(
             common = splitString.component1(),
             official = splitString.component2(),
         )

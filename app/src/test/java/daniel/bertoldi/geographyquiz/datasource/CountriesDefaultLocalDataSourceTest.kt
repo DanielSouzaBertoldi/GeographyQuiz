@@ -1,8 +1,7 @@
 package daniel.bertoldi.geographyquiz.datasource
 
 import daniel.bertoldi.database.CountryEntity
-import daniel.bertoldi.database.CountriesDatabaseStuff
-import daniel.bertoldi.geographyquiz.domain.mapper.CountryEntityFactory
+import daniel.bertoldi.database.CountryEntityFactory
 import daniel.bertoldi.geographyquiz.domain.mapper.CountryEntityToModelMapper
 import daniel.bertoldi.geographyquiz.domain.model.CountryModel
 import daniel.bertoldi.geographyquiz.domain.mapper.CountryModelToEntityMapper
@@ -36,7 +35,7 @@ class CountriesDefaultLocalDataSourceTest {
             CountryModelFactory.make(),
         )
         prepareScenario(
-            databaseCountries = listOf(CountryEntityFactory.make()),
+            databaseCountries = listOf(daniel.bertoldi.database.CountryEntityFactory.make()),
             entityToModelResult = countries,
         )
 
@@ -60,9 +59,9 @@ class CountriesDefaultLocalDataSourceTest {
     @Test
     fun saveCountriesInDb_withCountriesList_verifyCorrectCountriesSaved() = runTest {
         val countriesEntities = listOf(
-            CountryEntityFactory.make(),
-            CountryEntityFactory.make(),
-            CountryEntityFactory.make(),
+            daniel.bertoldi.database.CountryEntityFactory.make(),
+            daniel.bertoldi.database.CountryEntityFactory.make(),
+            daniel.bertoldi.database.CountryEntityFactory.make(),
         )
 
         prepareScenario(
@@ -90,9 +89,9 @@ class CountriesDefaultLocalDataSourceTest {
     }
 
     private fun prepareScenario(
-        databaseCountries: List<CountryEntity> = listOf(CountryEntityFactory.make()),
+        databaseCountries: List<CountryEntity> = listOf(daniel.bertoldi.database.CountryEntityFactory.make()),
         entityToModelResult: List<CountryModel> = listOf(CountryModelFactory.make()),
-        modelToEntitiesResult: List<CountryEntity> = listOf(CountryEntityFactory.make())
+        modelToEntitiesResult: List<CountryEntity> = listOf(daniel.bertoldi.database.CountryEntityFactory.make())
     ) {
         // TODO: is this ok?
         val fakeFlow = flow {

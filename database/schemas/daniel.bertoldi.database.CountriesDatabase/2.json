@@ -1,12 +1,12 @@
 {
   "formatVersion": 1,
   "database": {
-    "version": 1,
-    "identityHash": "7db1af62f6ee3792c549a7123d6ea6f9",
+    "version": 2,
+    "identityHash": "6acff099dd72761a75f4b9685b240294",
     "entities": [
       {
         "tableName": "countries",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`country_code` TEXT NOT NULL, `name` TEXT NOT NULL, `top_level_domains` TEXT, `independent` INTEGER, `un_member` INTEGER NOT NULL, `international_dial_info` TEXT NOT NULL, `capital` TEXT, `alternative_spellings` TEXT NOT NULL, `region` TEXT NOT NULL, `subRegion` TEXT, `languages` TEXT, `landlocked` INTEGER NOT NULL, `area` REAL NOT NULL, `emoji_flag` TEXT NOT NULL, `population` INTEGER NOT NULL, `car_regulations` TEXT NOT NULL, `timezones` TEXT NOT NULL, `continents` TEXT NOT NULL, `flagPng` TEXT NOT NULL, `coatOfArms` TEXT, `startOfWeek` TEXT NOT NULL, PRIMARY KEY(`country_code`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`country_code` TEXT NOT NULL, `name` TEXT NOT NULL, `top_level_domains` TEXT, `independent` INTEGER, `un_member` INTEGER NOT NULL, `international_dial_info` TEXT NOT NULL, `capital` TEXT, `alternative_spellings` TEXT NOT NULL, `region` TEXT NOT NULL, `subRegion` TEXT, `languages` TEXT, `landlocked` INTEGER NOT NULL, `area` REAL NOT NULL, `emoji_flag` TEXT NOT NULL, `population` INTEGER NOT NULL, `car_signs` TEXT, `car_side` TEXT NOT NULL, `timezones` TEXT NOT NULL, `continents` TEXT NOT NULL, `flagPng` TEXT NOT NULL, `coatOfArms` TEXT, `startOfWeek` TEXT NOT NULL, PRIMARY KEY(`country_code`))",
         "fields": [
           {
             "fieldPath": "countryCode",
@@ -99,8 +99,14 @@
             "notNull": true
           },
           {
-            "fieldPath": "carRegulations",
-            "columnName": "car_regulations",
+            "fieldPath": "carSigns",
+            "columnName": "car_signs",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "carSide",
+            "columnName": "car_side",
             "affinity": "TEXT",
             "notNull": true
           },
@@ -148,7 +154,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '7db1af62f6ee3792c549a7123d6ea6f9')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '6acff099dd72761a75f4b9685b240294')"
     ]
   }
 }

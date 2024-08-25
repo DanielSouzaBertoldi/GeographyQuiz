@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface CountriesDao {
     @Query("SELECT * FROM countries")
-    fun getAll(): Flow<List<CountryEntity>>
+    fun getAllCountries(): Flow<List<CountryEntity>>
 
     @Query("SELECT COUNT(*) FROM countries")
     fun fetchCountriesCount(): Flow<Int>

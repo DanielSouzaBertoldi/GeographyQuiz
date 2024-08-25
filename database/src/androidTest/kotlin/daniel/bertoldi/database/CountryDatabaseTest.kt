@@ -6,7 +6,7 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.squareup.moshi.Moshi
 import daniel.bertoldi.database.CountryEntityFactory.makeInternationalDialResponse
-import daniel.bertoldi.database.typeconverters.InternationalDialTypeConverter
+import daniel.bertoldi.database.typeconverters.InternationalDialInfoTypeConverter
 import daniel.bertoldi.network.InternationalDialResponse
 import daniel.bertoldi.test.utils.randomList
 import daniel.bertoldi.test.utils.randomString
@@ -33,7 +33,7 @@ class CountryDatabaseTest {
         val context = ApplicationProvider.getApplicationContext<Context>()
         database = Room
             .inMemoryDatabaseBuilder(context, CountriesDatabase::class.java)
-            .addTypeConverter(InternationalDialTypeConverter(moshi))
+            .addTypeConverter(InternationalDialInfoTypeConverter(moshi))
             .build()
         countriesDao = database.countriesDao()
     }
@@ -58,7 +58,7 @@ class CountryDatabaseTest {
         prepareScenario(fromJsonMock = internationalDialResponse)
 
         countriesDao.insertCountries(listOf(country))
-        val fetchCountry = countriesDao.getAll().first()
+        val fetchCountry = countriesDao.getAllCountries().first()
         Assert.assertEquals(country.toString(), fetchCountry.toString())
     }
 
@@ -130,7 +130,7 @@ class CountryDatabaseTest {
         )
         countriesDao.insertCountries(listOfCountries)
         countriesDao.deleteCountry(countryToBeDeleted)
-        val remainingCountries = countriesDao.getAll()
+        val remainingCountries = countriesDao.getAllCountries()
         Assert.assertEquals(3, remainingCountries.size)
     }
 

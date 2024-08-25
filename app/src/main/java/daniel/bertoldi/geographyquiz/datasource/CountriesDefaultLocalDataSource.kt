@@ -1,6 +1,6 @@
 package daniel.bertoldi.geographyquiz.datasource
 
-import daniel.bertoldi.database.CountriesDatabaseInterface
+import daniel.bertoldi.database.CountriesDao
 import daniel.bertoldi.geographyquiz.domain.mapper.CountryEntityToModelMapper
 import daniel.bertoldi.geographyquiz.domain.mapper.CountryModelToEntityMapper
 import daniel.bertoldi.geographyquiz.domain.model.CountryModel
@@ -11,30 +11,30 @@ import javax.inject.Inject
 private const val ALL_AREA = "All"
 
 class CountriesDefaultLocalDataSource @Inject constructor(
-    private val countriesDatabase: CountriesDatabaseInterface,
+    private val countriesDao: CountriesDao,
     private val entityToModelMapper: CountryEntityToModelMapper,
     private val modelToEntityMapper: CountryModelToEntityMapper,
 ) : CountriesLocalDataSource {
 
     override suspend fun fetchCountriesDb(): Flow<List<CountryModel>> {
-        return countriesDatabase.getAllCountries().transform {
+        return countriesDao.getAllCountries().transform {
             emit(entityToModelMapper.mapFrom(it))
         }
     }
 
     override suspend fun saveCountriesInDb(countries: List<CountryModel>) {
         val countriesEntities = modelToEntityMapper.mapFrom(countries)
-        countriesDatabase.saveCountries(countriesEntities)
+        countriesDao.insertCountries(countriesEntities)
     }
 
-    override suspend fun fetchCountriesGivenArea(
+    override suspend fun fetchCountriesInSubRegion(
         region: String,
         subRegion: String,
     ): Flow<List<CountryModel>> {
         val countries = if (subRegion == ALL_AREA) {
-            countriesDatabase.fetchCountriesFromRegion(region)
+            countriesDao.fetchCountriesFromRegion(region)
         } else {
-            countriesDatabase.fetchCountriesFromArea(region, subRegion)
+            countriesDao.fetchCountriesGivenRegionAndSubRegion(region, subRegion)
         }
 
         return countries.transform {

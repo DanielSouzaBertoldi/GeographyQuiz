@@ -78,7 +78,6 @@ dependencies {
     // internal modules
     implementation(project(":database"))
     implementation(project(":network"))
-    testImplementation(project(":test-utils"))
 
     ksp(libs.hilt.compiler)
     ksp(libs.moshi.codegen)
@@ -89,6 +88,7 @@ dependencies {
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.kotlin.test)
     testImplementation(libs.turbine) // TODO: remove this guy if I can't use it.
+    testImplementation(project(":test-utils"))
     testRuntimeOnly(libs.jupiter.engine)
     testRuntimeOnly(libs.jupiter.vintage)
 

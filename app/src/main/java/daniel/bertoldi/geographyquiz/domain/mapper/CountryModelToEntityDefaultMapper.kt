@@ -1,9 +1,10 @@
 package daniel.bertoldi.geographyquiz.domain.mapper
 
+import daniel.bertoldi.database.CarRegulations
 import daniel.bertoldi.database.CountryEntity
+import daniel.bertoldi.database.CountryNames
+import daniel.bertoldi.database.InternationalDialInfo
 import daniel.bertoldi.geographyquiz.domain.model.CountryModel
-import daniel.bertoldi.network.InternationalDialResponse
-import daniel.bertoldi.network.NameDataResponse
 import javax.inject.Inject
 
 class CountryModelToEntityDefaultMapper @Inject constructor() : CountryModelToEntityMapper {
@@ -11,14 +12,14 @@ class CountryModelToEntityDefaultMapper @Inject constructor() : CountryModelToEn
         return countries.map {
             CountryEntity(
                 countryCode = it.countryCode,
-                name = NameDataResponse(
+                name = CountryNames(
                     common = it.name.common,
                     official = it.name.official,
                 ),
                 tld = it.topLevelDomains,
                 independent = it.independent,
                 unMember = it.unMember,
-                idd = InternationalDialResponse(
+                idd = InternationalDialInfo(
                     root = it.internationalDialResponse.root,
                     suffixes = it.internationalDialResponse.suffixes,
                 ),
@@ -31,8 +32,10 @@ class CountryModelToEntityDefaultMapper @Inject constructor() : CountryModelToEn
                 area = it.area,
                 emojiFlag = it.emojiFlag,
                 population = it.population,
-                carSide = it.carInfo.side,
-                carSigns = it.carInfo.signs,
+                carRegulations = CarRegulations(
+                    carSigns = it.carInfo.signs,
+                    carSide = it.carInfo.side,
+                ),
                 timezones = it.timezones,
                 continents = it.continents,
                 flagPng = it.flagPng,

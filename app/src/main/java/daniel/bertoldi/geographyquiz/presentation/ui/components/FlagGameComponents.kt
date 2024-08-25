@@ -187,7 +187,13 @@ private fun OnGoingGameContent(
             fontWeight = FontWeight.Bold,
             fontSize = 24.sp,
         )
-        OptionsGrid(gameState, optionClick)
+
+        OptionsGrid(
+            gameState = gameState,
+            optionClick = optionClick,
+            gameFailed = { onGameEnd(timeElapsed.value) }
+        )
+
         if (gameState.step == GameStep.OPTION_SELECTED) {
             OptionSquareButton(
                 modifier = Modifier.padding(top = 16.dp),
@@ -246,7 +252,19 @@ private fun GameInfoComponent(
 }
 
 @Composable
-private fun OptionsGrid(gameState: GameState, optionClick: (String) -> Unit) {
+private fun OptionsGrid(
+    gameState: GameState,
+    optionClick: (String) -> Unit,
+    gameFailed: () -> Unit,
+) {
+    if (gameState.gameMode is GameMode.SuddenDeath) {
+        LaunchedEffect(key1 = gameState.roundState.misses) {
+            // TODO: I could add some sort of animation that'll cover the entire screen
+            //  before calling gameFailed()... hmmm
+            if (gameState.roundState.misses > 0) gameFailed()
+        }
+    }
+
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
         userScrollEnabled = false,
@@ -347,6 +365,7 @@ private fun EndGameContent(
         )
 
         TableComponent(
+            tableHeaderLeadingIcon = gameMode.icon,
             tableHeaderText = R.string.game_results,
             shouldAnimateHeader = true,
             tableMap = buildMap {
@@ -425,7 +444,7 @@ private fun GiveUpDialog(
                 )
                 Text(
                     modifier = Modifier.padding(horizontal = 24.dp),
-                    text = "Are you sure you want to quit?",
+                    text = stringResource(id = R.string.ongoing_game_dismiss_question),
                     style = Typography.titleLarge,
                     textAlign = TextAlign.Center,
                     fontSize = 28.sp,
@@ -609,6 +628,7 @@ private fun OptionsGridPreview() {
             correctCountryCode = "BR",
         ),
         optionClick = {},
+        gameFailed = {},
     )
 }
 

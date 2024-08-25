@@ -36,6 +36,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
@@ -149,6 +150,7 @@ fun Step(
 
 @Composable
 fun TableHeaderComponent(
+    @DrawableRes tableHeaderLeadingIcon: Int?,
     @StringRes tableHeaderText: Int,
     shouldAnimateHeader: Boolean = false,
 ) {
@@ -176,7 +178,7 @@ fun TableHeaderComponent(
         animateHeader = shouldAnimateHeader
     }
 
-    Text(
+    Row(
         modifier = Modifier
             .fillMaxWidth()
             .height(55.dp)
@@ -189,13 +191,29 @@ fun TableHeaderComponent(
                 width = 2.dp,
                 color = BrunswickGreen,
                 shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
+            ),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center
+    ) {
+        if (tableHeaderLeadingIcon != null) {
+            Image(
+                modifier = Modifier
+                    .padding(end = 10.dp, bottom = 5.dp)
+                    .size(30.dp)
+                    .rotate(-30f),
+                painter = painterResource(id = tableHeaderLeadingIcon),
+                contentDescription = null,
             )
-            .padding(bottom = 16.dp, top = 10.dp),
-        text = stringResource(id = tableHeaderText),
-        fontSize = 24.sp,
-        color = AliceBlue,
-        textAlign = TextAlign.Center,
-    )
+        }
+
+        Text(
+            modifier = Modifier.padding(bottom = 5.dp),
+            text = stringResource(id = tableHeaderText),
+            fontSize = 24.sp,
+            color = AliceBlue,
+            textAlign = TextAlign.Center,
+        )
+    }
 }
 
 // TODO: let time do its thing, maybe it's not worth it to have these models separate just
@@ -205,6 +223,7 @@ data class TableValue(val name: String, @DrawableRes val icon: Int? = null)
 
 @Composable
 fun TableComponent(
+    @DrawableRes tableHeaderLeadingIcon: Int? = null,
     @StringRes tableHeaderText: Int,
     shouldAnimateHeader: Boolean = false,
     tableMap: Map<TableKey, TableValue>,
@@ -214,7 +233,7 @@ fun TableComponent(
             .fillMaxWidth()
             .padding(top = 24.dp),
     ) {
-        TableHeaderComponent(tableHeaderText, shouldAnimateHeader)
+        TableHeaderComponent(tableHeaderLeadingIcon, tableHeaderText, shouldAnimateHeader)
         LazyVerticalGrid(
             modifier = Modifier
                 .fillMaxWidth()
@@ -365,6 +384,7 @@ private fun GameRulesComponentPreview() {
 @Composable
 private fun GameRulesHeaderComponentPreview() {
     TableHeaderComponent(
+        tableHeaderLeadingIcon = R.drawable.casual,
         tableHeaderText = R.string.game_rules,
         shouldAnimateHeader = false,
     )

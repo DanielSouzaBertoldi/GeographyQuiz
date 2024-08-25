@@ -193,10 +193,11 @@ private fun OnGoingGameContent(
                 modifier = Modifier.padding(top = 16.dp),
                 onClick = {
                     loadingFlag = true
-                    if (gameState.roundState.currentRound == gameState.roundState.totalFlags)
+                    if (gameState.roundState.currentRound == gameState.roundState.totalFlags) {
                         onGameEnd(timeElapsed.value)
-                    else
+                    } else {
                         nextRound()
+                    }
                 },
                 buttonColors = ButtonDefaults.buttonColors(
                     containerColor = RichBlack,
@@ -348,28 +349,32 @@ private fun EndGameContent(
         TableComponent(
             tableHeaderText = R.string.game_results,
             shouldAnimateHeader = true,
-            tableMap = mapOf(
-                Pair(
+            tableMap = buildMap {
+                put(
                     TableKey(name = stringResource(id = R.string.ranking)),
-                    TableValue(name = stringResource(id = rank.title))
-                ),
-                Pair(
+                    TableValue(
+                        name = stringResource(id = rank.title)
+                    )
+                )
+                put(
                     TableKey(name = stringResource(R.string.final_score)),
                     TableValue(name = finalScore.toString())
-                ),
-                Pair(
+                )
+                put(
                     TableKey(name = stringResource(R.string.hits_and_misses)),
                     TableValue(name = "${roundState.hits} / ${roundState.misses}")
-                ),
-                Pair(
-                    TableKey(name = stringResource(id = R.string.time_elapsed)),
-                    TableValue(name = duration.inWholeSeconds.seconds.toString()),
-                ),
-                Pair(
+                )
+                if (gameMode is GameMode.TimeAttack) {
+                    put(
+                        TableKey(name = stringResource(id = R.string.time_elapsed)),
+                        TableValue(name = duration.inWholeSeconds.seconds.toString()),
+                    )
+                }
+                put(
                     TableKey(name = stringResource(R.string.accuracy)),
                     TableValue(name = "${"%.2f".format(Locale.ROOT, roundState.accuracy)}%"),
-                ),
-            ),
+                )
+            },
         )
 
         ActionButton(
@@ -436,7 +441,7 @@ private fun GiveUpDialog(
                         onClick = { onConfirm() },
                     ) {
                         Text(
-                            text = "Hell yeah.",
+                            text = stringResource(id = R.string.ongoing_game_dismiss_positive),
                             textAlign = TextAlign.Center,
                             color = RichBlack,
                         )
@@ -448,7 +453,7 @@ private fun GiveUpDialog(
                         onClick = { onDecline() },
                     ) {
                         Text(
-                            text = "Hell no.",
+                            text = stringResource(id = R.string.ongoing_game_dismiss_negative),
                             textAlign = TextAlign.Center,
                         )
                     }
@@ -578,28 +583,28 @@ private fun OptionsGridPreview() {
     OptionsGrid(
         gameState = GameState(
             step = GameStep.CHOOSING_OPTION,
-             availableOptions = listOf(
+            availableOptions = listOf(
                 CountryFlagUi(
                     countryCode = "BR",
                     countryName = "Brazil",
                     flagUrl = "https://flagcdn.com/w320/br.png"
                 ),
-                 CountryFlagUi(
-                     countryCode = "AO",
-                     countryName = "Angola",
-                     flagUrl = "https://flagcdn.com/w320/ao.png"
-                 ),
-                 CountryFlagUi(
-                     countryCode = "ST",
-                     countryName = "São Tomé e Príncipe",
-                     flagUrl = "https://flagcdn.com/w320/st.png"
-                 ),
-                 CountryFlagUi(
-                     countryCode = "PT",
-                     countryName = "Portugal",
-                     flagUrl = "https://flagcdn.com/w320/pt.png"
-                 ),
-             ),
+                CountryFlagUi(
+                    countryCode = "AO",
+                    countryName = "Angola",
+                    flagUrl = "https://flagcdn.com/w320/ao.png"
+                ),
+                CountryFlagUi(
+                    countryCode = "ST",
+                    countryName = "São Tomé e Príncipe",
+                    flagUrl = "https://flagcdn.com/w320/st.png"
+                ),
+                CountryFlagUi(
+                    countryCode = "PT",
+                    countryName = "Portugal",
+                    flagUrl = "https://flagcdn.com/w320/pt.png"
+                ),
+            ),
             score = 40,
             correctCountryCode = "BR",
         ),

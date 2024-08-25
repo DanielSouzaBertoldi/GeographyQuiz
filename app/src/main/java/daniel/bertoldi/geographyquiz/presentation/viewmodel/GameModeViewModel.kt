@@ -37,9 +37,9 @@ class GameModeViewModel @Inject constructor() : ViewModel() {
     private val _screenState: MutableStateFlow<GameModeScreenState> =
         MutableStateFlow(GameModeScreenState.Loading)
     val screenState = _screenState.asStateFlow()
-    var chosenRegion: Region? = null
-    var chosenSubRegion: SubRegion? = null
-    var chosenGameMode: GameMode? = null
+    private var chosenRegion: Region? = null
+    private var chosenSubRegion: SubRegion? = null
+    private var chosenGameMode: GameMode? = null
 
     fun fetchArguments(arguments: Bundle?) {
         val region = arguments?.getString("region").orEmpty()

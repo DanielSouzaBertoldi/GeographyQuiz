@@ -30,16 +30,13 @@ import daniel.bertoldi.geographyquiz.presentation.mapper.CountryModelToCountryFl
 import daniel.bertoldi.geographyquiz.presentation.mapper.CountryModelToCountryFlagUiMapper
 
 @InstallIn(ViewModelComponent::class)
-@Module
+@Module(
+    includes = [
+        MappersModule::class,
+        UseCaseModule::class,
+    ]
+)
 interface MainActivityViewModelModule {
-
-    @Binds
-    fun bindGetCountriesDataUseCase(getCountriesData: GetCountriesData): GetCountriesDataUseCase
-
-    @Binds
-    fun bindGetFlagGameOptionsUseCase(
-        getFlagGameOptions: GetFlagGameOptions
-    ): GetFlagGameOptionsUseCase
 
     @Binds
     fun bindCountryRepository(countriesRepository: CountriesDefaultRepository): CountriesRepository
@@ -55,37 +52,7 @@ interface MainActivityViewModelModule {
     ): CountriesLocalDataSource
 
     @Binds
-    fun bindCountryEntityToModelMapper(
-        countryEntityToModelDefaultMapper: CountryEntityToModelDefaultMapper,
-    ): CountryEntityToModelMapper
-
-    @Binds
-    fun bindBaseCountryDataResponseToModelMapper(
-        countryDataResponseToModelDefaultMapper: BaseCountryDataResponseToModelDefaultMapper,
-    ): BaseCountryDataResponseToModelMapper
-
-    @Binds
-    fun bindCountryModelToEntityMapper(
-        countryModelToEntityDefaultMapper: CountryModelToEntityDefaultMapper,
-    ): CountryModelToEntityMapper
-
-    @Binds
-    fun bindCountryModelToFlagUiMapper(
-        countryModelToCountryFlagUiDefaultMapper: CountryModelToCountryFlagUiDefaultMapper,
-    ): CountryModelToCountryFlagUiMapper
-
-    @Binds
     fun bindCountriesDataStore(
         countriesDefaultDataStore: CountriesDefaultDataStore,
     ): CountriesDataStore
-
-    @Binds
-    fun bindHighScoreModelToEntityMapper(
-        highScoreModelToEntityDefaultMapper: HighScoreModelToEntityDefaultMapper,
-    ): HighScoreModelToEntityMapper
-
-    @Binds
-    fun bindHighScoreEntityToModelMapper(
-        highScoreEntityToModelDefaultMapper: HighScoreEntityToModelDefaultMapper,
-    ): HighScoreEntityToModelMapper
 }

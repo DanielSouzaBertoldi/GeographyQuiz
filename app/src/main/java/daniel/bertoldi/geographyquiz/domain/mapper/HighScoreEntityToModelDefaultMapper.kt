@@ -19,5 +19,4 @@ class HighScoreEntityToModelDefaultMapper @Inject constructor() : HighScoreEntit
             )
         }
     }
-
 }

@@ -5,11 +5,11 @@ import kotlin.time.Duration
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
 
-class DurationToLongConverter {
+class DurationTypeConverter {
 
     @TypeConverter
-    fun fromDuration(value: Duration) = value.inWholeMilliseconds
+    fun fromDuration(value: Duration?) = value?.inWholeMilliseconds
 
     @TypeConverter
-    fun toDuration(value: Long) = value.toDuration(DurationUnit.MILLISECONDS)
+    fun toDuration(value: Long?) = value?.toDuration(DurationUnit.MILLISECONDS)
 }

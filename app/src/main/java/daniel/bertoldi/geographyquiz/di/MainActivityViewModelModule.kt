@@ -16,6 +16,10 @@ import daniel.bertoldi.geographyquiz.domain.mapper.CountryEntityToModelDefaultMa
 import daniel.bertoldi.geographyquiz.domain.mapper.CountryEntityToModelMapper
 import daniel.bertoldi.geographyquiz.domain.mapper.CountryModelToEntityDefaultMapper
 import daniel.bertoldi.geographyquiz.domain.mapper.CountryModelToEntityMapper
+import daniel.bertoldi.geographyquiz.domain.mapper.HighScoreEntityToModelDefaultMapper
+import daniel.bertoldi.geographyquiz.domain.mapper.HighScoreEntityToModelMapper
+import daniel.bertoldi.geographyquiz.domain.mapper.HighScoreModelToEntityDefaultMapper
+import daniel.bertoldi.geographyquiz.domain.mapper.HighScoreModelToEntityMapper
 import daniel.bertoldi.geographyquiz.domain.repository.CountriesDefaultRepository
 import daniel.bertoldi.geographyquiz.domain.repository.CountriesRepository
 import daniel.bertoldi.geographyquiz.domain.usecase.GetCountriesData
@@ -74,4 +78,14 @@ interface MainActivityViewModelModule {
     fun bindCountriesDataStore(
         countriesDefaultDataStore: CountriesDefaultDataStore,
     ): CountriesDataStore
+
+    @Binds
+    fun bindHighScoreModelToEntityMapper(
+        highScoreModelToEntityDefaultMapper: HighScoreModelToEntityDefaultMapper,
+    ): HighScoreModelToEntityMapper
+
+    @Binds
+    fun bindHighScoreEntityToModelMapper(
+        highScoreEntityToModelDefaultMapper: HighScoreEntityToModelDefaultMapper,
+    ): HighScoreEntityToModelMapper
 }

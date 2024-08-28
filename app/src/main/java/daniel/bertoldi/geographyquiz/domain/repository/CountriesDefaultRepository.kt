@@ -17,7 +17,7 @@ class CountriesDefaultRepository @Inject constructor(
     override suspend fun fetchCountries(
         // TODO: pass coroutines scope
     ): Flow<List<CountryModel>> {
-        return if (checkCache()) {
+        return if (cacheIsOld()) {
             val countries = remoteDataSource.fetchCountriesApi()
             localDataSource.saveCountriesInDb(countries)
             flow { emit(countries) } // TODO: dumb stuff
@@ -33,7 +33,7 @@ class CountriesDefaultRepository @Inject constructor(
         return localDataSource.fetchCountriesInSubRegion(region, subRegion)
     }
 
-    private suspend fun checkCache(): Boolean {
+    private suspend fun cacheIsOld(): Boolean {
         return countriesDataStore.checkCacheGreaterThanSevenDays()
     }
 }

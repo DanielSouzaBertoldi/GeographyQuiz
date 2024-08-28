@@ -1,7 +1,7 @@
 package daniel.bertoldi.database.typeconverters
 
 import androidx.room.TypeConverter
-import daniel.bertoldi.database.CarRegulations
+import daniel.bertoldi.database.entities.CarRegulations
 
 private const val DELIMITER = "&"
 private const val STRING_LIST_DELIMITER = ","

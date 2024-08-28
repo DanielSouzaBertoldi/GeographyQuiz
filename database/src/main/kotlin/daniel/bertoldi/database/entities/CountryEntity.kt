@@ -1,4 +1,4 @@
-package daniel.bertoldi.database
+package daniel.bertoldi.database.entities
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

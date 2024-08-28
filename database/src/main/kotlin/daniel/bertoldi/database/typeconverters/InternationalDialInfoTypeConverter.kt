@@ -3,7 +3,7 @@ package daniel.bertoldi.database.typeconverters
 import androidx.room.ProvidedTypeConverter
 import androidx.room.TypeConverter
 import com.squareup.moshi.Moshi
-import daniel.bertoldi.database.InternationalDialInfo
+import daniel.bertoldi.database.entities.InternationalDialInfo
 
 @ProvidedTypeConverter
 class InternationalDialInfoTypeConverter(private val moshi: Moshi) {

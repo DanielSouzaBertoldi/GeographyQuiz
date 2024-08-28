@@ -1,6 +1,6 @@
 package daniel.bertoldi.geographyquiz.datasource
 
-import daniel.bertoldi.database.CountryEntity
+import daniel.bertoldi.database.entities.CountryEntity
 import daniel.bertoldi.database.CountryEntityFactory
 import daniel.bertoldi.geographyquiz.domain.mapper.CountryEntityToModelMapper
 import daniel.bertoldi.geographyquiz.domain.model.CountryModel

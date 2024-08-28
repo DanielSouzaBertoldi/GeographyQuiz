@@ -1,7 +1,7 @@
 package daniel.bertoldi.database.typeconverters
 
 import androidx.room.TypeConverter
-import daniel.bertoldi.database.CountryNames
+import daniel.bertoldi.database.entities.CountryNames
 
 private const val DELIMITER = "|"
 

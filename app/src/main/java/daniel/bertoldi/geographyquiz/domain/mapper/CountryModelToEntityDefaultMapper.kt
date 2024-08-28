@@ -1,9 +1,9 @@
 package daniel.bertoldi.geographyquiz.domain.mapper
 
-import daniel.bertoldi.database.CarRegulations
-import daniel.bertoldi.database.CountryEntity
-import daniel.bertoldi.database.CountryNames
-import daniel.bertoldi.database.InternationalDialInfo
+import daniel.bertoldi.database.entities.CarRegulations
+import daniel.bertoldi.database.entities.CountryEntity
+import daniel.bertoldi.database.entities.CountryNames
+import daniel.bertoldi.database.entities.InternationalDialInfo
 import daniel.bertoldi.geographyquiz.domain.model.CountryModel
 import javax.inject.Inject
 

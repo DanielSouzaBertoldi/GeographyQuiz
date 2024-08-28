@@ -6,6 +6,8 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.squareup.moshi.Moshi
 import daniel.bertoldi.database.CountryEntityFactory.makeInternationalDialResponse
+import daniel.bertoldi.database.dao.CountriesDao
+import daniel.bertoldi.database.entities.CountryEntity
 import daniel.bertoldi.database.typeconverters.InternationalDialInfoTypeConverter
 import daniel.bertoldi.network.InternationalDialResponse
 import daniel.bertoldi.test.utils.randomList
@@ -25,14 +27,14 @@ import kotlin.random.Random
 class CountryDatabaseTest {
     private val moshi: Moshi = mockk()
     private lateinit var countriesDao: CountriesDao
-    private lateinit var database: CountriesDatabase
+    private lateinit var database: GeographyQuizDatabase
 
     @Before
     fun createDb() {
         prepareScenario()
         val context = ApplicationProvider.getApplicationContext<Context>()
         database = Room
-            .inMemoryDatabaseBuilder(context, CountriesDatabase::class.java)
+            .inMemoryDatabaseBuilder(context, GeographyQuizDatabase::class.java)
             .addTypeConverter(InternationalDialInfoTypeConverter(moshi))
             .build()
         countriesDao = database.countriesDao()

@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 2,
-    "identityHash": "6acff099dd72761a75f4b9685b240294",
+    "identityHash": "39e4e0bc7604bd2d1ad8171e62b2887c",
     "entities": [
       {
         "tableName": "countries",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`country_code` TEXT NOT NULL, `name` TEXT NOT NULL, `top_level_domains` TEXT, `independent` INTEGER, `un_member` INTEGER NOT NULL, `international_dial_info` TEXT NOT NULL, `capital` TEXT, `alternative_spellings` TEXT NOT NULL, `region` TEXT NOT NULL, `subRegion` TEXT, `languages` TEXT, `landlocked` INTEGER NOT NULL, `area` REAL NOT NULL, `emoji_flag` TEXT NOT NULL, `population` INTEGER NOT NULL, `car_signs` TEXT, `car_side` TEXT NOT NULL, `timezones` TEXT NOT NULL, `continents` TEXT NOT NULL, `flagPng` TEXT NOT NULL, `coatOfArms` TEXT, `startOfWeek` TEXT NOT NULL, PRIMARY KEY(`country_code`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`country_code` TEXT NOT NULL, `name` TEXT NOT NULL, `top_level_domains` TEXT, `independent` INTEGER, `un_member` INTEGER NOT NULL, `international_dial_info` TEXT NOT NULL, `capital` TEXT, `alternative_spellings` TEXT NOT NULL, `region` TEXT NOT NULL, `subRegion` TEXT, `languages` TEXT, `landlocked` INTEGER NOT NULL, `area` REAL NOT NULL, `emoji_flag` TEXT NOT NULL, `population` INTEGER NOT NULL, `car_regulations` TEXT NOT NULL, `timezones` TEXT NOT NULL, `continents` TEXT NOT NULL, `flagPng` TEXT NOT NULL, `coatOfArms` TEXT, `startOfWeek` TEXT NOT NULL, PRIMARY KEY(`country_code`))",
         "fields": [
           {
             "fieldPath": "countryCode",
@@ -99,14 +99,8 @@
             "notNull": true
           },
           {
-            "fieldPath": "carSigns",
-            "columnName": "car_signs",
-            "affinity": "TEXT",
-            "notNull": false
-          },
-          {
-            "fieldPath": "carSide",
-            "columnName": "car_side",
+            "fieldPath": "carRegulations",
+            "columnName": "car_regulations",
             "affinity": "TEXT",
             "notNull": true
           },
@@ -149,12 +143,68 @@
         },
         "indices": [],
         "foreignKeys": []
+      },
+      {
+        "tableName": "user_high_scores",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `game_mode` TEXT NOT NULL, `score` INTEGER NOT NULL, `accuracy` REAL NOT NULL, `hits` INTEGER NOT NULL, `misses` INTEGER NOT NULL, `date` INTEGER NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "gameMode",
+            "columnName": "game_mode",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "score",
+            "columnName": "score",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "accuracy",
+            "columnName": "accuracy",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "hits",
+            "columnName": "hits",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "misses",
+            "columnName": "misses",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "date",
+            "columnName": "date",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
       }
     ],
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '6acff099dd72761a75f4b9685b240294')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '39e4e0bc7604bd2d1ad8171e62b2887c')"
     ]
   }
 }

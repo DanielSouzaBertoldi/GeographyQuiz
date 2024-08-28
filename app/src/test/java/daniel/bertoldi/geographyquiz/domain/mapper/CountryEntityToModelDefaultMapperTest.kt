@@ -1,11 +1,9 @@
 package daniel.bertoldi.geographyquiz.domain.mapper
 
-import daniel.bertoldi.database.CarRegulations
-import daniel.bertoldi.database.CountryEntity
-import daniel.bertoldi.database.CountryNames
-import daniel.bertoldi.database.InternationalDialInfo
-import daniel.bertoldi.network.InternationalDialResponse
-import daniel.bertoldi.network.NameDataResponse
+import daniel.bertoldi.database.entities.CarRegulations
+import daniel.bertoldi.database.entities.CountryEntity
+import daniel.bertoldi.database.entities.CountryNames
+import daniel.bertoldi.database.entities.InternationalDialInfo
 import daniel.bertoldi.test.utils.DayOfWeek
 import daniel.bertoldi.test.utils.randomBoolean
 import daniel.bertoldi.test.utils.randomEnumValue

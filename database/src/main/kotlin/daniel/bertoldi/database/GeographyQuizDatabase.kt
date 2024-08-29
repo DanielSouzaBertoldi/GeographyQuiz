@@ -9,7 +9,6 @@ import daniel.bertoldi.database.entities.CountryEntity
 import daniel.bertoldi.database.entities.HighScoresEntity
 import daniel.bertoldi.database.typeconverters.CarRegulationsTypeConverter
 import daniel.bertoldi.database.typeconverters.CountryNamesTypeConverter
-import daniel.bertoldi.database.typeconverters.DateTypeConverter
 import daniel.bertoldi.database.typeconverters.DurationTypeConverter
 import daniel.bertoldi.database.typeconverters.InternationalDialInfoTypeConverter
 import daniel.bertoldi.database.typeconverters.ListStringTypeConverter
@@ -29,7 +28,6 @@ import daniel.bertoldi.database.typeconverters.MapStringStringTypeConverter
     CountryNamesTypeConverter::class,
     CarRegulationsTypeConverter::class,
     DurationTypeConverter::class,
-    DateTypeConverter::class,
 )
 abstract class GeographyQuizDatabase : RoomDatabase() {
     abstract fun countriesDao(): CountriesDao

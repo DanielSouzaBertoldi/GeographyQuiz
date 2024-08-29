@@ -34,25 +34,14 @@ import daniel.bertoldi.geographyquiz.presentation.mapper.CountryModelToCountryFl
     includes = [
         MappersModule::class,
         UseCaseModule::class,
+        RepositoriesModule::class,
+        DataSourcesModule::class,
     ]
 )
 interface MainActivityViewModelModule {
 
     @Binds
-    fun bindCountryRepository(countriesRepository: CountriesDefaultRepository): CountriesRepository
-
-    @Binds
-    fun bindCountryRemoteDataSource(
-        countryRemoteDataSource: CountriesDefaultRemoteDataSource,
-    ): CountriesRemoteDataSource
-
-    @Binds
-    fun bindCountryLocalDataSource(
-        countryLocalDataSource: CountriesDefaultLocalDataSource,
-    ): CountriesLocalDataSource
-
-    @Binds
     fun bindCountriesDataStore(
-        countriesDefaultDataStore: CountriesDefaultDataStore,
+        countriesDefaultDataStore: CountriesDefaultDataStore
     ): CountriesDataStore
 }

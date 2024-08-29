@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import daniel.bertoldi.geographyquiz.R
 import daniel.bertoldi.geographyquiz.domain.usecase.GetFlagGameOptionsUseCase
+import daniel.bertoldi.geographyquiz.domain.usecase.SaveUserScoreUseCase
 import daniel.bertoldi.geographyquiz.presentation.model.CountryFlagUi
 import daniel.bertoldi.geographyquiz.presentation.model.GameMode
 import daniel.bertoldi.geographyquiz.presentation.model.GameMode.Companion.toGameMode
@@ -23,6 +24,7 @@ import kotlin.time.Duration.Companion.seconds
 @HiltViewModel
 class FlagGameViewModel @Inject constructor(
     private val getFlagGameOptionsUseCase: GetFlagGameOptionsUseCase,
+    private val saveUserScoreUseCase: SaveUserScoreUseCase,
 ) : ViewModel() {
     private val allAvailableCountries = mutableListOf<CountryFlagUi>()
     private val countriesYetToBeDrawn = mutableListOf<CountryFlagUi>()
@@ -101,6 +103,9 @@ class FlagGameViewModel @Inject constructor(
             step = GameStep.END_GAME,
             duration = duration,
         )
+        viewModelScope.launch {
+            saveUserScoreUseCase(_gameState.value)
+        }
     }
 
     private fun startFlagGame() {

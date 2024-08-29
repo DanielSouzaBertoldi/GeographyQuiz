@@ -1,7 +1,6 @@
 package daniel.bertoldi.geographyquiz.domain.model
 
 import daniel.bertoldi.geographyquiz.presentation.model.GameMode
-import java.util.Date
 import kotlin.time.Duration
 
 data class HighScoreModel(
@@ -11,5 +10,5 @@ data class HighScoreModel(
     val hits: Int,
     val misses: Int,
     val timeElapsed: Duration?,
-    val date: Date,
+    val dateEpoch: Long,
 )

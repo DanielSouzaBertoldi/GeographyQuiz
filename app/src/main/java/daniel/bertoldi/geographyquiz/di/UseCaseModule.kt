@@ -8,6 +8,8 @@ import daniel.bertoldi.geographyquiz.domain.usecase.GetCountriesData
 import daniel.bertoldi.geographyquiz.domain.usecase.GetCountriesDataUseCase
 import daniel.bertoldi.geographyquiz.domain.usecase.GetFlagGameOptions
 import daniel.bertoldi.geographyquiz.domain.usecase.GetFlagGameOptionsUseCase
+import daniel.bertoldi.geographyquiz.domain.usecase.SaveUserScore
+import daniel.bertoldi.geographyquiz.domain.usecase.SaveUserScoreUseCase
 
 @InstallIn(ViewModelComponent::class)
 @Module
@@ -20,4 +22,9 @@ interface UseCaseModule {
     fun bindGetFlagGameOptionsUseCase(
         getFlagGameOptions: GetFlagGameOptions
     ): GetFlagGameOptionsUseCase
+
+    @Binds
+    fun bindSaveUserScoreUseCase(
+        saveUserScore: SaveUserScore
+    ): SaveUserScoreUseCase
 }

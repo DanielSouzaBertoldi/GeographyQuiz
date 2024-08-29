@@ -14,8 +14,8 @@ class HighScoreEntityToModelDefaultMapper @Inject constructor() : HighScoreEntit
                 accuracy = it.accuracy,
                 hits = it.hits,
                 misses = it.misses,
-                timeElapsed = it.timeElapsed,
-                date = it.date,
+                timeElapsed = it.timeElapsedInMillis,
+                dateEpoch = it.dateEpochInMillis,
             )
         }
     }

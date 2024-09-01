@@ -20,6 +20,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
@@ -67,6 +70,7 @@ import daniel.bertoldi.geographyquiz.presentation.ui.theme.LightGray
 import daniel.bertoldi.geographyquiz.presentation.ui.theme.Poppy
 import daniel.bertoldi.geographyquiz.presentation.ui.theme.RichBlack
 import daniel.bertoldi.geographyquiz.presentation.ui.theme.Typography
+import daniel.bertoldi.geographyquiz.presentation.viewmodel.GameRank
 import daniel.bertoldi.geographyquiz.presentation.viewmodel.GameState
 import daniel.bertoldi.geographyquiz.presentation.viewmodel.GameStep
 import daniel.bertoldi.geographyquiz.presentation.viewmodel.RoundState
@@ -337,82 +341,6 @@ private fun OptionSquareButton(
             style = Typography.titleLarge.copy(
                 lineBreak = LineBreak.Heading,
             ),
-        )
-    }
-}
-
-@Composable
-private fun EndGameContent(
-    finalScore: Int,
-    roundState: RoundState,
-    gameMode: GameMode,
-    duration: Duration,
-    playAgain: () -> Unit,
-    retry: () -> Unit,
-) {
-    val rank = roundState.getGameRank()
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        Image(
-            modifier = Modifier
-                .height(170.dp)
-                .padding(bottom = 14.dp),
-            painter = painterResource(id = rank.image),
-            contentDescription = null,
-        )
-
-        TableComponent(
-            tableHeaderLeadingIcon = gameMode.icon,
-            tableHeaderText = R.string.game_results,
-            shouldAnimateHeader = true,
-            tableMap = buildMap {
-                put(
-                    TableKey(name = stringResource(id = R.string.ranking)),
-                    TableValue(
-                        name = stringResource(id = rank.title)
-                    )
-                )
-                put(
-                    TableKey(name = stringResource(R.string.final_score)),
-                    TableValue(name = finalScore.toString())
-                )
-                put(
-                    TableKey(name = stringResource(R.string.hits_and_misses)),
-                    TableValue(name = "${roundState.hits} / ${roundState.misses}")
-                )
-                if (gameMode is GameMode.TimeAttack) {
-                    put(
-                        TableKey(name = stringResource(id = R.string.time_elapsed)),
-                        TableValue(name = duration.inWholeSeconds.seconds.toString()),
-                    )
-                }
-                put(
-                    TableKey(name = stringResource(R.string.accuracy)),
-                    TableValue(name = "${"%.2f".format(Locale.ROOT, roundState.accuracy)}%"),
-                )
-            },
-        )
-
-        ActionButton(
-            modifier = Modifier.padding(top = 60.dp),
-            text = R.string.play_again,
-            action = { playAgain() },
-            textColor = RichBlack,
-            backgroundColor = Celadon,
-            fontWeight = FontWeight.Bold,
-            textSize = 40.sp,
-        )
-        ActionButton(
-            modifier = Modifier.padding(top = 20.dp),
-            text = R.string.retry,
-            action = { retry() },
-            textColor = AliceBlue,
-            backgroundColor = BrunswickGreen,
-            fontWeight = FontWeight.Light,
-            textSize = 32.sp,
         )
     }
 }
@@ -699,24 +627,6 @@ private fun OptionButtonFlagOptionNotClickedStatePreview() {
         ),
         isButtonEnabled = false,
         buttonText = "Central African Republic",
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun EndGameContentPreview() {
-    EndGameContent(
-        finalScore = 200,
-        roundState = RoundState(
-            currentRound = 10,
-            totalFlags = 10,
-            hits = 5,
-            misses = 5,
-        ),
-        gameMode = GameMode.Casual(),
-        duration = Duration.ZERO,
-        playAgain = {},
-        retry = {},
     )
 }
 

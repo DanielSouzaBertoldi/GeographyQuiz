@@ -21,6 +21,7 @@
     <string name="hits_and_misses">Hits / Misses</string>
     <string name="accuracy">Accuracy</string>
     <string name="time_elapsed">Total Time</string>
+    <string name="high_scores">High Scores</string>
     <string name="ongoing_game_dismiss_question">Are you sure you want to quit?</string>
     <string name="ongoing_game_dismiss_positive">Hell yeah</string>
     <string name="ongoing_game_dismiss_negative">Hell no</string>

@@ -223,13 +223,14 @@ data class TableValue(val name: String, @DrawableRes val icon: Int? = null)
 
 @Composable
 fun TableComponent(
+    modifier: Modifier = Modifier,
     @DrawableRes tableHeaderLeadingIcon: Int? = null,
     @StringRes tableHeaderText: Int,
     shouldAnimateHeader: Boolean = false,
     tableMap: Map<TableKey, TableValue>,
 ) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(top = 24.dp),
     ) {

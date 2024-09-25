@@ -89,22 +89,22 @@ fun SelectGameMode(
                 ) {
                     TableComponent(
                         tableHeaderText = R.string.game_rules,
-                        tableMap = mapOf(
-                            Pair(
+                        tableContent = listOf(
+                            TableData(
                                 TableKey(name = stringResource(id = R.string.chosen_region)),
                                 TableValue(
                                     name = stringResource(id = screenState.region.regionString),
                                     icon = screenState.region.regionIcon,
                                 )
                             ),
-                            Pair(
+                            TableData(
                                 TableKey(name = stringResource(id = R.string.chosen_area)),
                                 TableValue(
                                     name = stringResource(screenState.subRegion.subRegionName),
                                     icon = screenState.subRegion.subRegionIcon,
                                 )
                             ),
-                            Pair(
+                            TableData(
                                 TableKey(name = stringResource(id = R.string.chosen_game_mode)),
                                 TableValue(
                                     name = stringResource(screenState.gameMode.title),
@@ -156,15 +156,15 @@ private fun ChooseGameModeComponent(
     Step(stringRes = R.string.choose_game_mode)
     TableComponent(
         tableHeaderText = R.string.game_rules,
-        tableMap = mapOf(
-            Pair(
+        tableContent = listOf(
+            TableData(
                 TableKey(name = stringResource(id = R.string.chosen_region)),
                 TableValue(
                     name = stringResource(region.regionString),
                     icon = region.regionIcon,
                 )
             ),
-            Pair(
+            TableData(
                 TableKey(name = stringResource(id = R.string.chosen_area)),
                 TableValue(
                     name = stringResource(subRegion.subRegionName),

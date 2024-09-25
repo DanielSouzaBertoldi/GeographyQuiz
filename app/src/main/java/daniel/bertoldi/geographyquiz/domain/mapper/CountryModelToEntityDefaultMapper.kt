@@ -26,7 +26,7 @@ class CountryModelToEntityDefaultMapper @Inject constructor() : CountryModelToEn
                 capital = it.capital,
                 altSpellings = it.altSpellings,
                 region = it.region,
-                subRegion = it.subRegion,
+                subRegion = it.subRegion.normalizeSubRegion(),
                 languages = it.languages,
                 landlocked = it.landlocked,
                 area = it.area,
@@ -43,5 +43,10 @@ class CountryModelToEntityDefaultMapper @Inject constructor() : CountryModelToEn
                 startOfWeek = it.startOfWeek.name,
             )
         }
+    }
+
+    private fun String?.normalizeSubRegion() = when {
+        this?.contains("South-Eastern", ignoreCase = true) == true -> "Southeast"
+        else -> this
     }
 }

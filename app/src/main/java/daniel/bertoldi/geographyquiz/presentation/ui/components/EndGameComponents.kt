@@ -4,7 +4,6 @@ import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.animateScrollBy
-import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,7 +21,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -69,7 +67,9 @@ internal fun EndGameContent(
         GameStatsAndHighScoresComponent(gameMode, rank, roundState, finalScore, duration)
 
         ActionButton(
-            modifier = Modifier.padding(top = 60.dp).padding(horizontal = 24.dp),
+            modifier = Modifier
+                .padding(top = 60.dp)
+                .padding(horizontal = 24.dp),
             text = R.string.play_again,
             action = { playAgain() },
             textColor = RichBlack,
@@ -78,7 +78,9 @@ internal fun EndGameContent(
             textSize = 40.sp,
         )
         ActionButton(
-            modifier = Modifier.padding(top = 20.dp).padding(horizontal = 24.dp),
+            modifier = Modifier
+                .padding(top = 20.dp)
+                .padding(horizontal = 24.dp),
             text = R.string.retry,
             action = { retry() },
             textColor = AliceBlue,
@@ -153,30 +155,40 @@ private fun GameStatsComponent(
         tableHeaderLeadingIcon = gameMode.icon,
         tableHeaderText = R.string.game_results,
         shouldAnimateHeader = true,
-        tableMap = buildMap {
-            put(
-                TableKey(name = stringResource(id = R.string.ranking)),
-                TableValue(
-                    name = stringResource(id = gameRank.title)
+        tableContent = buildList {
+            add(
+                TableData(
+                    TableKey(name = stringResource(id = R.string.ranking)),
+                    TableValue(
+                        name = stringResource(id = gameRank.title)
+                    )
                 )
             )
-            put(
-                TableKey(name = stringResource(R.string.final_score)),
-                TableValue(name = finalScore.toString())
+            add(
+                TableData(
+                    TableKey(name = stringResource(R.string.final_score)),
+                    TableValue(name = finalScore.toString())
+                )
             )
-            put(
-                TableKey(name = stringResource(R.string.hits_and_misses)),
-                TableValue(name = "${roundState.hits} / ${roundState.misses}")
+            add(
+                TableData(
+                    TableKey(name = stringResource(R.string.hits_and_misses)),
+                    TableValue(name = "${roundState.hits} / ${roundState.misses}")
+                )
             )
             if (gameMode is GameMode.TimeAttack) {
-                put(
-                    TableKey(name = stringResource(id = R.string.time_elapsed)),
-                    TableValue(name = duration.inWholeSeconds.seconds.toString()),
+                add(
+                    TableData(
+                        TableKey(name = stringResource(id = R.string.time_elapsed)),
+                        TableValue(name = duration.inWholeSeconds.seconds.toString()),
+                    )
                 )
             }
-            put(
-                TableKey(name = stringResource(R.string.accuracy)),
-                TableValue(name = "${"%.2f".format(Locale.ROOT, roundState.accuracy)}%"),
+            add(
+                TableData(
+                    TableKey(name = stringResource(R.string.accuracy)),
+                    TableValue(name = "${"%.2f".format(Locale.ROOT, roundState.accuracy)}%"),
+                )
             )
         },
     )
@@ -189,11 +201,13 @@ private fun HighScoresComponent(
     TableComponent(
         tableHeaderText = R.string.high_scores,
         shouldAnimateHeader = false,
-        tableMap = buildMap {
+        tableContent = buildList {
             highScores.forEach { highScore ->
-                put(
-                    TableKey(name = "Date"),
-                    TableValue(name = highScore)
+                add(
+                    TableData(
+                        key = TableKey(name = "Date"),
+                        value = TableValue(name = highScore),
+                    )
                 )
             }
         },

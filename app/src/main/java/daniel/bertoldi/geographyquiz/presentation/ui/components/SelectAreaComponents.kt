@@ -41,8 +41,8 @@ internal fun ChooseAreaComponent(
             TableComponent(
                 tableHeaderText = R.string.game_rules,
                 shouldAnimateHeader = true,
-                tableMap = mapOf(
-                    Pair(
+                tableContent = listOf(
+                    TableData(
                         TableKey(name = stringResource(id = R.string.chosen_region)),
                         TableValue(
                             name = stringResource(id = screenState.regionData.regionString),

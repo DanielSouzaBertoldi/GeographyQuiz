@@ -218,6 +218,7 @@ fun TableHeaderComponent(
 
 // TODO: let time do its thing, maybe it's not worth it to have these models separate just
 //  for context sake
+data class TableData(val key: TableKey, val value: TableValue)
 data class TableKey(val name: String, @DrawableRes val icon: Int? = null)
 data class TableValue(val name: String, @DrawableRes val icon: Int? = null)
 
@@ -227,7 +228,7 @@ fun TableComponent(
     @DrawableRes tableHeaderLeadingIcon: Int? = null,
     @StringRes tableHeaderText: Int,
     shouldAnimateHeader: Boolean = false,
-    tableMap: Map<TableKey, TableValue>,
+    tableContent: List<TableData>,
 ) {
     Column(
         modifier = modifier
@@ -243,24 +244,28 @@ fun TableComponent(
             columns = GridCells.Fixed(2),
             verticalArrangement = Arrangement.Center,
         ) {
-            for ((idx, entry) in tableMap.entries.withIndex()) {
-                item(entry.key.name) {
+            for ((idx, tableData) in tableContent.withIndex()) {
+                item(
+                    key = "${tableData.key.name}$idx",
+                ) {
                     GameRuleKeyComponent(
-                        keyName = entry.key.name,
+                        keyName = tableData.key.name,
                         cornerShape = RoundedCornerShape(
                             topStart = if (idx == 0) 14.dp else 0.dp,
-                            bottomStart = if (idx == tableMap.size - 1) 14.dp else 0.dp,
+                            bottomStart = if (idx == tableContent.size - 1) 14.dp else 0.dp,
                         )
                     )
                 }
 
-                item(entry.value.name) {
+                item(
+                    key = "${tableData.value.name}$idx",
+                ) {
                     GameRuleValueComponent(
-                        valueName = entry.value.name,
-                        valueIcon = entry.value.icon,
+                        valueName = tableData.value.name,
+                        valueIcon = tableData.value.icon,
                         cornerShape = RoundedCornerShape(
                             topEnd = if (idx == 0) 14.dp else 0.dp,
-                            bottomEnd = if (idx == tableMap.size - 1) 14.dp else 0.dp,
+                            bottomEnd = if (idx == tableContent.size - 1) 14.dp else 0.dp,
                         )
                     )
                 }
@@ -362,15 +367,15 @@ private fun GameRulesComponentPreview() {
     TableComponent(
         tableHeaderText = R.string.game_rules,
         shouldAnimateHeader = false,
-        tableMap = mapOf(
-            Pair(
+        tableContent = listOf(
+            TableData(
                 TableKey(name = stringResource(id = R.string.chosen_region)),
                 TableValue(
                     name = stringResource(id = R.string.americas),
                     icon = R.drawable.americas,
                 )
             ),
-            Pair(
+            TableData(
                 TableKey(name = stringResource(id = R.string.chosen_area)),
                 TableValue(
                     name = stringResource(id = R.string.all),

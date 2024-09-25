@@ -100,6 +100,7 @@ private fun GameStatsAndHighScoresComponent(
     val pagerState = rememberPagerState(pageCount = { 2 })
 
     LaunchedEffect(key1 = Unit) {
+        delay(600)
         pagerState.animateScrollBy(130f)
         delay(400)
         pagerState.animateScrollBy(-130f)
@@ -109,9 +110,11 @@ private fun GameStatsAndHighScoresComponent(
         modifier = Modifier.padding(horizontal = 10.dp),
         state = pagerState,
         pageSpacing = 10.dp,
-    ) {
-        GameStatsComponent(gameMode, gameRank, roundState, finalScore, duration)
-        HighScoresComponent(highScores = listOf("100%", "100%", "100%", "100%"))
+    ) { page ->
+        when (page) {
+            0 -> GameStatsComponent(gameMode, gameRank, roundState, finalScore, duration)
+            else -> HighScoresComponent(highScores = listOf("100%", "100%", "100%", "100%"))
+        }
     }
     Row(
         Modifier
@@ -128,6 +131,7 @@ private fun GameStatsAndHighScoresComponent(
                     true -> {
                         ActivePageIndicator()
                     }
+
                     false -> {
                         InactivePageIndicator()
                     }

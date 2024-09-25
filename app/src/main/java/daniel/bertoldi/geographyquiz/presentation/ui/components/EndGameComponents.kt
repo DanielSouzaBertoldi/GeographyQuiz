@@ -69,7 +69,7 @@ internal fun EndGameContent(
         GameStatsAndHighScoresComponent(gameMode, rank, roundState, finalScore, duration)
 
         ActionButton(
-            modifier = Modifier.padding(top = 60.dp),
+            modifier = Modifier.padding(top = 60.dp).padding(horizontal = 24.dp),
             text = R.string.play_again,
             action = { playAgain() },
             textColor = RichBlack,
@@ -78,7 +78,7 @@ internal fun EndGameContent(
             textSize = 40.sp,
         )
         ActionButton(
-            modifier = Modifier.padding(top = 20.dp),
+            modifier = Modifier.padding(top = 20.dp).padding(horizontal = 24.dp),
             text = R.string.retry,
             action = { retry() },
             textColor = AliceBlue,
@@ -107,13 +107,13 @@ private fun GameStatsAndHighScoresComponent(
     }
 
     HorizontalPager(
-        modifier = Modifier.padding(horizontal = 10.dp),
         state = pagerState,
         pageSpacing = 10.dp,
+        contentPadding = PaddingValues(horizontal = 10.dp),
     ) { page ->
         when (page) {
             0 -> GameStatsComponent(gameMode, gameRank, roundState, finalScore, duration)
-            else -> HighScoresComponent(highScores = listOf("100%", "100%", "100%", "100%"))
+            1 -> HighScoresComponent(highScores = listOf("100%", "100%", "100%", "100%"))
         }
     }
     Row(

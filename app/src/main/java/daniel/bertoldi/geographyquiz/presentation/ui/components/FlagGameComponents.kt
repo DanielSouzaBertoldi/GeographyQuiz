@@ -109,8 +109,7 @@ internal fun FlagGameComponent(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(color = AliceBlue)
-                    .padding(top = 40.dp)
-                    .padding(horizontal = 24.dp),
+                    .padding(top = 40.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 when (currentGameStep) {
@@ -158,64 +157,66 @@ private fun OnGoingGameContent(
         }
     }
 
-    GameInfoComponent(gameState, timeElapsed, loadingFlag)
-    AsyncImage(
-        modifier = Modifier
-            .aspectRatio(2f)
-            .padding(top = 30.dp)
-            .clip(shape = RoundedCornerShape(15.dp)),
-        model = gameState.availableOptions.find { it.countryCode == gameState.correctCountryCode }?.flagUrl,
-        contentDescription = null,
-        onSuccess = { loadingFlag = false },
-        contentScale = if (loadingFlag) ContentScale.Crop else ContentScale.FillBounds,
-        placeholder = painterResource(id = R.drawable.flags_placeholder),
-    )
-    if (loadingFlag) {
-        Text(
-            modifier = Modifier.padding(top = 18.dp, bottom = 30.dp),
-            text = loadingText,
-            fontWeight = FontWeight.Bold,
-            fontSize = 24.sp,
-        )
-        CircularProgressIndicator(
+    Column(modifier = Modifier.padding(horizontal = 24.dp)) {
+        GameInfoComponent(gameState, timeElapsed, loadingFlag)
+        AsyncImage(
             modifier = Modifier
-                .padding(top = 60.dp)
-                .size(64.dp),
-            color = AliceBlue,
-            trackColor = RichBlack,
+                .aspectRatio(2f)
+                .padding(top = 30.dp)
+                .clip(shape = RoundedCornerShape(15.dp)),
+            model = gameState.availableOptions.find { it.countryCode == gameState.correctCountryCode }?.flagUrl,
+            contentDescription = null,
+            onSuccess = { loadingFlag = false },
+            contentScale = if (loadingFlag) ContentScale.Crop else ContentScale.FillBounds,
+            placeholder = painterResource(id = R.drawable.flags_placeholder),
         )
-    } else {
-        Text(
-            modifier = Modifier.padding(top = 18.dp, bottom = 30.dp),
-            text = stringResource(id = R.string.which_country),
-            fontWeight = FontWeight.Bold,
-            fontSize = 24.sp,
-        )
-
-        OptionsGrid(
-            gameState = gameState,
-            optionClick = optionClick,
-            gameFailed = { onGameEnd(timeElapsed.value) }
-        )
-
-        if (gameState.step == GameStep.OPTION_SELECTED) {
-            OptionSquareButton(
-                modifier = Modifier.padding(top = 16.dp),
-                onClick = {
-                    loadingFlag = true
-                    if (gameState.roundState.currentRound == gameState.roundState.totalFlags) {
-                        onGameEnd(timeElapsed.value)
-                    } else {
-                        nextRound()
-                    }
-                },
-                buttonColors = ButtonDefaults.buttonColors(
-                    containerColor = RichBlack,
-                    contentColor = AliceBlue,
-                ),
-                isButtonEnabled = true,
-                buttonText = stringResource(id = R.string.next_flag),
+        if (loadingFlag) {
+            Text(
+                modifier = Modifier.padding(top = 18.dp, bottom = 30.dp),
+                text = loadingText,
+                fontWeight = FontWeight.Bold,
+                fontSize = 24.sp,
             )
+            CircularProgressIndicator(
+                modifier = Modifier
+                    .padding(top = 60.dp)
+                    .size(64.dp),
+                color = AliceBlue,
+                trackColor = RichBlack,
+            )
+        } else {
+            Text(
+                modifier = Modifier.padding(top = 18.dp, bottom = 30.dp),
+                text = stringResource(id = R.string.which_country),
+                fontWeight = FontWeight.Bold,
+                fontSize = 24.sp,
+            )
+
+            OptionsGrid(
+                gameState = gameState,
+                optionClick = optionClick,
+                gameFailed = { onGameEnd(timeElapsed.value) }
+            )
+
+            if (gameState.step == GameStep.OPTION_SELECTED) {
+                OptionSquareButton(
+                    modifier = Modifier.padding(top = 16.dp),
+                    onClick = {
+                        loadingFlag = true
+                        if (gameState.roundState.currentRound == gameState.roundState.totalFlags) {
+                            onGameEnd(timeElapsed.value)
+                        } else {
+                            nextRound()
+                        }
+                    },
+                    buttonColors = ButtonDefaults.buttonColors(
+                        containerColor = RichBlack,
+                        contentColor = AliceBlue,
+                    ),
+                    isButtonEnabled = true,
+                    buttonText = stringResource(id = R.string.next_flag),
+                )
+            }
         }
     }
 }

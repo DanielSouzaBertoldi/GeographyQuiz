@@ -10,4 +10,10 @@ class HighScoreDefaultRepository @Inject constructor(
     override suspend fun saveGameScore(highScoreModel: HighScoreModel) {
         highScoreLocalDataSource.saveGameScore(highScoreModel)
     }
+
+    override suspend fun getHighScoresForGame(
+        region: String,
+        subRegion: String,
+        gameMode: String,
+    ) = highScoreLocalDataSource.getHighScoresForGame(region, subRegion, gameMode)
 }

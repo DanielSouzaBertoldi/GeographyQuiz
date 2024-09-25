@@ -16,4 +16,13 @@ class HighScoreDefaultLocalDataSource @Inject constructor(
         val highScoreEntity = highScoreModelToEntityMapper.mapFrom(highScoreModel)
         highScoresDao.insertHighScore(highScoreEntity)
     }
+
+    override suspend fun getHighScoresForGame(
+        region: String,
+        subRegion: String,
+        gameMode: String,
+    ): List<HighScoreModel> {
+        val topFiveHighScores = highScoresDao.getHighScoresForCurrentGame(region, subRegion, gameMode)
+        return highScoreEntityToModelMapper.mapFrom(topFiveHighScores)
+    }
 }

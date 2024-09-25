@@ -5,6 +5,8 @@ import kotlin.time.Duration
 
 data class HighScoreModel(
     val gameMode: GameMode,
+    val region: String,
+    val subRegion: String,
     val score: Int,
     val accuracy: Float,
     val hits: Int,

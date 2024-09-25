@@ -8,6 +8,8 @@ class HighScoreModelToEntityDefaultMapper @Inject constructor() : HighScoreModel
     override fun mapFrom(highScoreModel: HighScoreModel): HighScoresEntity {
         return HighScoresEntity(
             gameMode = highScoreModel.gameMode.name,
+            region = highScoreModel.region,
+            subRegion = highScoreModel.subRegion,
             score = highScoreModel.score,
             accuracy = highScoreModel.accuracy,
             hits = highScoreModel.hits,

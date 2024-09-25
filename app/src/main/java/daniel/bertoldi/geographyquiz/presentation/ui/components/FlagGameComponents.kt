@@ -119,6 +119,7 @@ internal fun FlagGameComponent(
                             roundState = gameState.roundState,
                             gameMode = gameState.gameMode,
                             duration = gameState.duration,
+                            highScores = gameState.highScores,
                             playAgain = onPlayAgain,
                             retry = onRetry,
                         )

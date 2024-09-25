@@ -28,7 +28,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import daniel.bertoldi.geographyquiz.R
+import daniel.bertoldi.geographyquiz.domain.model.HighScoreModel
 import daniel.bertoldi.geographyquiz.presentation.model.GameMode
+import daniel.bertoldi.geographyquiz.presentation.model.HighScoresUIModel
 import daniel.bertoldi.geographyquiz.presentation.ui.theme.AliceBlue
 import daniel.bertoldi.geographyquiz.presentation.ui.theme.BrunswickGreen
 import daniel.bertoldi.geographyquiz.presentation.ui.theme.Celadon
@@ -38,6 +40,7 @@ import daniel.bertoldi.geographyquiz.presentation.viewmodel.RoundState
 import kotlinx.coroutines.delay
 import java.util.Locale
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.ZERO
 import kotlin.time.Duration.Companion.seconds
 
 @Composable
@@ -46,6 +49,7 @@ internal fun EndGameContent(
     roundState: RoundState,
     gameMode: GameMode,
     duration: Duration,
+    highScores: List<HighScoresUIModel>,
     playAgain: () -> Unit,
     retry: () -> Unit,
 ) {
@@ -64,7 +68,14 @@ internal fun EndGameContent(
             contentDescription = null,
         )
 
-        GameStatsAndHighScoresComponent(gameMode, rank, roundState, finalScore, duration)
+        GameStatsAndHighScoresComponent(
+            gameMode = gameMode,
+            gameRank = rank,
+            roundState = roundState,
+            finalScore = finalScore,
+            duration = duration,
+            highScores = highScores,
+        )
 
         ActionButton(
             modifier = Modifier
@@ -97,7 +108,8 @@ private fun GameStatsAndHighScoresComponent(
     gameRank: GameRank,
     roundState: RoundState,
     finalScore: Int,
-    duration: Duration
+    duration: Duration,
+    highScores: List<HighScoresUIModel>,
 ) {
     val pagerState = rememberPagerState(pageCount = { 2 })
 
@@ -115,7 +127,7 @@ private fun GameStatsAndHighScoresComponent(
     ) { page ->
         when (page) {
             0 -> GameStatsComponent(gameMode, gameRank, roundState, finalScore, duration)
-            1 -> HighScoresComponent(highScores = listOf("100%", "100%", "100%", "100%"))
+            1 -> HighScoresComponent(highScores = highScores)
         }
     }
     Row(
@@ -196,7 +208,7 @@ private fun GameStatsComponent(
 
 @Composable
 private fun HighScoresComponent(
-    highScores: List<String>,
+    highScores: List<HighScoresUIModel>,
 ) {
     TableComponent(
         tableHeaderText = R.string.high_scores,
@@ -205,8 +217,8 @@ private fun HighScoresComponent(
             highScores.forEach { highScore ->
                 add(
                     TableData(
-                        key = TableKey(name = "Date"),
-                        value = TableValue(name = highScore),
+                        key = TableKey(name = highScore.datePlayed),
+                        value = TableValue(name = highScore.score.toString()),
                     )
                 )
             }
@@ -263,6 +275,16 @@ private fun GameStatsAndHighScoresComponentPreview() {
             ),
             finalScore = 200,
             duration = 0.seconds,
+            highScores = listOf(
+                HighScoresUIModel(
+                    score = 100,
+                    accuracy = 100f,
+                    hits = 10,
+                    misses = 0,
+                    timeElapsed = ZERO,
+                    datePlayed = "25/09/2024",
+                )
+            ),
         )
     }
 }
@@ -279,7 +301,17 @@ private fun EndGameContentPreview() {
             misses = 5,
         ),
         gameMode = GameMode.Casual(),
-        duration = Duration.ZERO,
+        duration = ZERO,
+        highScores = listOf(
+            HighScoresUIModel(
+                score = 100,
+                accuracy = 100f,
+                hits = 10,
+                misses = 0,
+                timeElapsed = ZERO,
+                datePlayed = "25/09/2024",
+            )
+        ),
         playAgain = {},
         retry = {},
     )
@@ -306,7 +338,16 @@ private fun GameStatsComponentPreview() {
 @Composable
 private fun HighScoresComponentPreview() {
     HighScoresComponent(
-        highScores = listOf("100%", "90%", "80%", "70%")
+        highScores = listOf(
+            HighScoresUIModel(
+                score = 100,
+                accuracy = 100f,
+                hits = 10,
+                misses = 0,
+                timeElapsed = ZERO,
+                datePlayed = "25/09/2024",
+            )
+        ),
     )
 }
 

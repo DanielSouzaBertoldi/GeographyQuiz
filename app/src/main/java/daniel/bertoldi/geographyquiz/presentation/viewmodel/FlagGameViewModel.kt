@@ -7,11 +7,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import daniel.bertoldi.geographyquiz.R
+import daniel.bertoldi.geographyquiz.domain.model.HighScoreModel
+import daniel.bertoldi.geographyquiz.domain.usecase.FetchUserHighScoresForGameUseCase
 import daniel.bertoldi.geographyquiz.domain.usecase.GetFlagGameOptionsUseCase
 import daniel.bertoldi.geographyquiz.domain.usecase.SaveUserScoreUseCase
 import daniel.bertoldi.geographyquiz.presentation.model.CountryFlagUi
 import daniel.bertoldi.geographyquiz.presentation.model.GameMode
 import daniel.bertoldi.geographyquiz.presentation.model.GameMode.Companion.toGameMode
+import daniel.bertoldi.geographyquiz.presentation.model.HighScoresUIModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -24,7 +27,8 @@ import kotlin.time.Duration.Companion.seconds
 @HiltViewModel
 class FlagGameViewModel @Inject constructor(
     private val getFlagGameOptionsUseCase: GetFlagGameOptionsUseCase,
-    private val saveUserScoreUseCase: SaveUserScoreUseCase,
+    private val saveUserScore: SaveUserScoreUseCase,
+    private val fetchUserHighScoresForGame: FetchUserHighScoresForGameUseCase,
 ) : ViewModel() {
     private val allAvailableCountries = mutableListOf<CountryFlagUi>()
     private val countriesYetToBeDrawn = mutableListOf<CountryFlagUi>()
@@ -99,13 +103,26 @@ class FlagGameViewModel @Inject constructor(
     }
 
     fun endGame(duration: Duration) {
+        val highScoresForGame = mutableListOf<HighScoresUIModel>()
+        viewModelScope.launch {
+            saveUserScore(
+                gameState = _gameState.value,
+                region = chosenRegion,
+                subRegion = chosenSubRegion,
+            )
+            highScoresForGame.addAll(
+                fetchUserHighScoresForGame(
+                    region = chosenRegion,
+                    subRegion = chosenSubRegion,
+                    gameMode = chosenGameMode.name,
+                )
+            )
+        }
         _gameState.value = _gameState.value.copy(
             step = GameStep.END_GAME,
             duration = duration,
+            highScores = highScoresForGame,
         )
-        viewModelScope.launch {
-            saveUserScoreUseCase(_gameState.value)
-        }
     }
 
     private fun startFlagGame() {
@@ -162,6 +179,7 @@ data class GameState(
     val score: Int = 0,
     val duration: Duration = 0.seconds,
     val roundState: RoundState = RoundState(),
+    val highScores: List<HighScoresUIModel> = emptyList(),
 ) {
     fun userHasChosen() = this.step == GameStep.OPTION_SELECTED
     fun isCorrectAnswer(countryCode: String) = correctCountryCode == countryCode

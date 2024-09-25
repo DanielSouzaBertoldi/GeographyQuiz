@@ -17,4 +17,16 @@ interface HighScoresDao {
 
     @Query("SELECT * FROM user_high_scores WHERE game_mode = :gameMode ORDER BY accuracy DESC, time_elapsed DESC LIMIT 10")
     suspend fun getHighScoresForGameMode(gameMode: String): List<HighScoresEntity>
+
+    @Query(
+        "SELECT * " +
+        "FROM user_high_scores " +
+        "WHERE game_mode = :gameMode AND region = :region AND sub_region = :subRegion " +
+        "ORDER BY accuracy DESC, time_elapsed DESC"
+    )
+    suspend fun getHighScoresForCurrentGame(
+        region: String,
+        subRegion: String,
+        gameMode: String,
+    ): List<HighScoresEntity>
 }

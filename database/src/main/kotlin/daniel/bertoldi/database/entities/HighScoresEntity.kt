@@ -9,6 +9,8 @@ import kotlin.time.Duration
 data class HighScoresEntity(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     @ColumnInfo(name = "game_mode") val gameMode: String,
+    val region: String,
+    @ColumnInfo(name = "sub_region") val subRegion: String,
     val score: Int,
     val accuracy: Float,
     val hits: Int,

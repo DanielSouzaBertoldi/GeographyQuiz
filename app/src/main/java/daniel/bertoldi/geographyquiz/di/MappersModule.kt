@@ -16,6 +16,8 @@ import daniel.bertoldi.geographyquiz.domain.mapper.HighScoreModelToEntityDefault
 import daniel.bertoldi.geographyquiz.domain.mapper.HighScoreModelToEntityMapper
 import daniel.bertoldi.geographyquiz.presentation.mapper.CountryModelToCountryFlagUiDefaultMapper
 import daniel.bertoldi.geographyquiz.presentation.mapper.CountryModelToCountryFlagUiMapper
+import daniel.bertoldi.geographyquiz.presentation.mapper.HighScoresModelToUiDefaultMapper
+import daniel.bertoldi.geographyquiz.presentation.mapper.HighScoresModelToUiMapper
 
 @InstallIn(ViewModelComponent::class)
 @Module
@@ -50,4 +52,9 @@ interface MappersModule {
     fun bindHighScoreEntityToModelMapper(
         highScoreEntityToModelDefaultMapper: HighScoreEntityToModelDefaultMapper,
     ): HighScoreEntityToModelMapper
+
+    @Binds
+    fun bindHighScoresModelToUIMapper(
+        highScoresModelToUiMapper: HighScoresModelToUiDefaultMapper,
+    ): HighScoresModelToUiMapper
 }

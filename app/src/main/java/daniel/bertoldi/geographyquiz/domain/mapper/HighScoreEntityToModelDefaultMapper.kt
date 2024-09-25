@@ -10,6 +10,8 @@ class HighScoreEntityToModelDefaultMapper @Inject constructor() : HighScoreEntit
         return highScoresEntities.map {
             HighScoreModel(
                 gameMode = it.gameMode.toGameMode(),
+                region = it.region,
+                subRegion = it.subRegion,
                 score = it.score,
                 accuracy = it.accuracy,
                 hits = it.hits,

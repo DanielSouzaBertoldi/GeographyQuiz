@@ -4,7 +4,6 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -14,15 +13,11 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
@@ -64,18 +59,14 @@ import daniel.bertoldi.geographyquiz.R
 import daniel.bertoldi.geographyquiz.presentation.model.CountryFlagUi
 import daniel.bertoldi.geographyquiz.presentation.model.GameMode
 import daniel.bertoldi.geographyquiz.presentation.ui.theme.AliceBlue
-import daniel.bertoldi.geographyquiz.presentation.ui.theme.BrunswickGreen
 import daniel.bertoldi.geographyquiz.presentation.ui.theme.Celadon
 import daniel.bertoldi.geographyquiz.presentation.ui.theme.LightGray
 import daniel.bertoldi.geographyquiz.presentation.ui.theme.Poppy
 import daniel.bertoldi.geographyquiz.presentation.ui.theme.RichBlack
 import daniel.bertoldi.geographyquiz.presentation.ui.theme.Typography
-import daniel.bertoldi.geographyquiz.presentation.viewmodel.GameRank
 import daniel.bertoldi.geographyquiz.presentation.viewmodel.GameState
 import daniel.bertoldi.geographyquiz.presentation.viewmodel.GameStep
-import daniel.bertoldi.geographyquiz.presentation.viewmodel.RoundState
 import kotlinx.coroutines.delay
-import java.util.Locale
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
@@ -147,77 +138,28 @@ private fun OnGoingGameContent(
     onGameEnd: (Duration) -> Unit,
 ) {
     var loadingFlag by remember { mutableStateOf(gameState.step == GameStep.CHOOSING_OPTION) }
-    var dots by remember { mutableIntStateOf(0) }
-    val loadingText = "Loading${".".repeat(dots)}"
     val timeElapsed = remember { mutableStateOf(0.seconds) }
 
-    LaunchedEffect(key1 = loadingFlag) {
-        while (loadingFlag) {
-            dots = ++dots % 4
-            delay(400)
-        }
-    }
-
-    Column(modifier = Modifier.padding(horizontal = 24.dp)) {
+    Column(
+        modifier = Modifier.padding(horizontal = 24.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
         GameInfoComponent(gameState, timeElapsed, loadingFlag)
         AsyncImage(
             modifier = Modifier
-                .aspectRatio(2f)
                 .padding(top = 30.dp)
                 .clip(shape = RoundedCornerShape(15.dp)),
-            model = gameState.availableOptions.find { it.countryCode == gameState.correctCountryCode }?.flagUrl,
+            model = gameState.availableOptions.find {
+                it.countryCode == gameState.correctCountryCode
+            }?.flagUrl,
             contentDescription = null,
-            onSuccess = { loadingFlag = false },
-            contentScale = if (loadingFlag) ContentScale.Crop else ContentScale.FillBounds,
+            onSuccess = { loadingFlag = true },
+            contentScale = if (loadingFlag) ContentScale.FillWidth else ContentScale.None,
             placeholder = painterResource(id = R.drawable.flags_placeholder),
         )
-        if (loadingFlag) {
-            Text(
-                modifier = Modifier.padding(top = 18.dp, bottom = 30.dp),
-                text = loadingText,
-                fontWeight = FontWeight.Bold,
-                fontSize = 24.sp,
-            )
-            CircularProgressIndicator(
-                modifier = Modifier
-                    .padding(top = 60.dp)
-                    .size(64.dp),
-                color = AliceBlue,
-                trackColor = RichBlack,
-            )
-        } else {
-            Text(
-                modifier = Modifier.padding(top = 18.dp, bottom = 30.dp),
-                text = stringResource(id = R.string.which_country),
-                fontWeight = FontWeight.Bold,
-                fontSize = 24.sp,
-            )
-
-            OptionsGrid(
-                gameState = gameState,
-                optionClick = optionClick,
-                gameFailed = { onGameEnd(timeElapsed.value) }
-            )
-
-            if (gameState.step == GameStep.OPTION_SELECTED) {
-                OptionSquareButton(
-                    modifier = Modifier.padding(top = 16.dp),
-                    onClick = {
-                        loadingFlag = true
-                        if (gameState.roundState.currentRound == gameState.roundState.totalFlags) {
-                            onGameEnd(timeElapsed.value)
-                        } else {
-                            nextRound()
-                        }
-                    },
-                    buttonColors = ButtonDefaults.buttonColors(
-                        containerColor = RichBlack,
-                        contentColor = AliceBlue,
-                    ),
-                    isButtonEnabled = true,
-                    buttonText = stringResource(id = R.string.next_flag),
-                )
-            }
+        when (loadingFlag) {
+            true -> LoadingFlagComponent()
+            false -> FlagLoadedComponents(gameState, timeElapsed, optionClick, onGameEnd, nextRound)
         }
     }
 }
@@ -254,6 +196,72 @@ private fun GameInfoComponent(
                 loadingFlag = loadingFlag,
             )
         }
+    }
+}
+
+@Composable
+private fun LoadingFlagComponent() {
+    var dots by remember { mutableIntStateOf(0) }
+    val loadingText = "Loading${".".repeat(dots)}"
+
+    LaunchedEffect(key1 = Unit) {
+        while (true) {
+            dots = ++dots % 4
+            delay(400)
+        }
+    }
+
+    Text(
+        modifier = Modifier.padding(top = 60.dp, bottom = 30.dp),
+        text = loadingText,
+        fontWeight = FontWeight.Bold,
+        fontSize = 24.sp,
+    )
+    CircularProgressIndicator(
+        modifier = Modifier.size(64.dp),
+        color = AliceBlue,
+        trackColor = RichBlack,
+    )
+}
+
+@Composable
+private fun FlagLoadedComponents(
+    gameState: GameState,
+    timeElapsed: MutableState<Duration>,
+    optionClick: (String) -> Unit,
+    onGameEnd: (Duration) -> Unit,
+    nextRound: () -> Unit,
+) {
+    Text(
+        modifier = Modifier.padding(top = 18.dp, bottom = 30.dp),
+        text = stringResource(id = R.string.which_country),
+        fontWeight = FontWeight.Bold,
+        fontSize = 24.sp,
+    )
+
+    OptionsGrid(
+        gameState = gameState,
+        optionClick = optionClick,
+        gameFailed = { onGameEnd(timeElapsed.value) }
+    )
+
+    if (gameState.step == GameStep.OPTION_SELECTED) {
+        OptionSquareButton(
+            modifier = Modifier.padding(top = 16.dp),
+            onClick = {
+                if (gameState.roundState.currentRound == gameState.roundState.totalFlags) {
+                    onGameEnd(timeElapsed.value)
+                } else {
+                    nextRound()
+                }
+            },
+            buttonColors = ButtonDefaults.buttonColors(
+                containerColor = RichBlack,
+                contentColor = AliceBlue,
+            ),
+            isButtonEnabled = true,
+            buttonText = stringResource(id = R.string.next_flag),
+        )
     }
 }
 

@@ -153,7 +153,7 @@ private fun OnGoingGameContent(
                 it.countryCode == gameState.correctCountryCode
             }?.flagUrl,
             contentDescription = null,
-            onSuccess = { loadingFlag = true },
+            onSuccess = { loadingFlag = false },
             contentScale = if (loadingFlag) ContentScale.FillWidth else ContentScale.None,
             placeholder = painterResource(id = R.drawable.flags_placeholder),
         )

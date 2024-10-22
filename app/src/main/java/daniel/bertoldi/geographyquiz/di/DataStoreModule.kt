@@ -36,6 +36,4 @@ class DataStoreModule {
             produceFile = { appContext.preferencesDataStoreFile(USER_PREFS) }
         )
     }
-
-    // test
 }

@@ -14,7 +14,7 @@ hilt = "2.50"
 ksp = "2.0.0-1.0.22"
 retrofit = "2.11.0"
 moshi = "1.15.1"
-navigation = "2.7.7"
+navigation = "2.8.3"
 hilt-navigation = "1.2.0"
 room = "2.6.1"
 dagger = "2.50"
@@ -26,6 +26,8 @@ lottie = "6.4.0"
 compose-ui = "1.7.0-beta07"
 kotlin-test = "2.0.0"
 turbine = "1.1.0"
+kotlinx-serialization-plugin  = "2.0.21"
+kotlinx-serialization = "1.7.3"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -69,6 +71,7 @@ datastore-prefs = { group = "androidx.datastore", name = "datastore-preferences"
 lottie = { group = "com.airbnb.android", name = "lottie-compose", version.ref = "lottie" }
 kotlin-test = { group = "org.jetbrains.kotlin", name = "kotlin-test", version.ref = "kotlin-test" }
 turbine = { group = "app.cash.turbine", name = "turbine", version.ref = "turbine" }
+kotlinx-serialization = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
@@ -79,3 +82,4 @@ room = { id = "androidx.room", version.ref = "room" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
 jetbrainsKotlinJvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "jetbrainsKotlinJvm" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlinx-serialization-plugin" }

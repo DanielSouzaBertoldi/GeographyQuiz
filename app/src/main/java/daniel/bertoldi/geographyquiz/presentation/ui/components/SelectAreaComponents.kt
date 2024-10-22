@@ -25,8 +25,8 @@ import daniel.bertoldi.geographyquiz.presentation.ui.theme.AliceBlue
 
 @Composable
 internal fun ChooseAreaComponent(
-    nextStep: (String) -> Unit,
     screenState: AreaScreenState,
+    nextStep: (String) -> Unit,
 ) {
     if (screenState is AreaScreenState.Success) {
         Column(

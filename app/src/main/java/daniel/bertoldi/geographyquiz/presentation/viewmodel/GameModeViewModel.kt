@@ -1,6 +1,5 @@
 package daniel.bertoldi.geographyquiz.presentation.viewmodel
 
-import android.os.Bundle
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import daniel.bertoldi.geographyquiz.presentation.model.Region
@@ -8,6 +7,7 @@ import daniel.bertoldi.geographyquiz.presentation.model.SubRegion
 import daniel.bertoldi.geographyquiz.presentation.model.GameMode
 import daniel.bertoldi.geographyquiz.presentation.model.Region.Companion.toRegion
 import daniel.bertoldi.geographyquiz.presentation.model.SubRegion.Companion.toSubRegion
+import daniel.bertoldi.geographyquiz.presentation.navigation.ScreenRoutes
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
@@ -41,13 +41,10 @@ class GameModeViewModel @Inject constructor() : ViewModel() {
     private var chosenSubRegion: SubRegion? = null
     private var chosenGameMode: GameMode? = null
 
-    fun fetchArguments(arguments: Bundle?) {
-        val region = arguments?.getString("region").orEmpty()
-        val subRegion = arguments?.getString("subRegion").orEmpty()
-
+    fun init(gameModeScreenModel: ScreenRoutes.GameModeSelection) {
         _screenState.value = GameModeScreenState.ChoosingGameMode(
-            region = region.toRegion(),
-            subRegion = subRegion.toSubRegion(),
+            region = gameModeScreenModel.region.toRegion(),
+            subRegion = gameModeScreenModel.area.toSubRegion(),
         )
     }
 

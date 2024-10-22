@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.daggerHilt)
     alias(libs.plugins.ksp)
     alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.kotlinx.serialization)
 }
 
 android {
@@ -74,6 +75,7 @@ dependencies {
     implementation(libs.hilt.compose.navigation)
     implementation(libs.datastore.prefs)
     implementation(libs.lottie) // TODO: won't be able to use lottie files unfortunately..
+    implementation(libs.kotlinx.serialization)
 
     // internal modules
     implementation(project(":database"))

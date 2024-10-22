@@ -1,13 +1,11 @@
 package daniel.bertoldi.geographyquiz.presentation.viewmodel
 
-import android.os.Bundle
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import daniel.bertoldi.geographyquiz.R
-import daniel.bertoldi.geographyquiz.domain.model.HighScoreModel
 import daniel.bertoldi.geographyquiz.domain.usecase.FetchUserHighScoresForGameUseCase
 import daniel.bertoldi.geographyquiz.domain.usecase.GetFlagGameOptionsUseCase
 import daniel.bertoldi.geographyquiz.domain.usecase.SaveUserScoreUseCase
@@ -15,6 +13,7 @@ import daniel.bertoldi.geographyquiz.presentation.model.CountryFlagUi
 import daniel.bertoldi.geographyquiz.presentation.model.GameMode
 import daniel.bertoldi.geographyquiz.presentation.model.GameMode.Companion.toGameMode
 import daniel.bertoldi.geographyquiz.presentation.model.HighScoresUIModel
+import daniel.bertoldi.geographyquiz.presentation.navigation.ScreenRoutes
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -39,10 +38,10 @@ class FlagGameViewModel @Inject constructor(
     private lateinit var chosenSubRegion: String
     private lateinit var chosenGameMode: GameMode
 
-    fun init(bundle: Bundle?) {
-        chosenRegion = bundle?.getString("region").orEmpty()
-        chosenSubRegion = bundle?.getString("subregion").orEmpty()
-        chosenGameMode = bundle?.getString("gamemode").orEmpty().toGameMode()
+    fun init(screenModel: ScreenRoutes.FlagGame) {
+        chosenRegion = screenModel.region
+        chosenSubRegion = screenModel.subRegion
+        chosenGameMode = screenModel.gameMode.toGameMode()
 
         startFlagGame()
     }

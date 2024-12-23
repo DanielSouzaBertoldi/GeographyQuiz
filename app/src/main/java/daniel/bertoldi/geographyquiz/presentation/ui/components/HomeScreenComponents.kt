@@ -19,18 +19,21 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil.ImageLoader
 import coil.compose.AsyncImage
 import coil.decode.ImageDecoderDecoder
 import coil.request.ImageRequest
 import daniel.bertoldi.geographyquiz.R
 import daniel.bertoldi.geographyquiz.presentation.ui.theme.AliceBlue
 import daniel.bertoldi.geographyquiz.presentation.ui.theme.BrunswickGreen
+
+const val HOME_SCREEN_TEST_TAG = "HomeScreen"
+const val PLAY_BUTTON_TEST_TAG = "PlayButton"
 
 @Composable
 internal fun LoadingComponent() {
@@ -69,7 +72,8 @@ internal fun HomeComponent(
             modifier = Modifier
                 .padding(top = 102.dp)
                 .height(116.dp)
-                .width(296.dp),
+                .width(296.dp)
+                .testTag(PLAY_BUTTON_TEST_TAG),
             colors = ButtonDefaults.buttonColors(
                 containerColor = BrunswickGreen,
                 contentColor = AliceBlue,

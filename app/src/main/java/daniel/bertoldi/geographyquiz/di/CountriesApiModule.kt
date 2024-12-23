@@ -7,8 +7,8 @@ import dagger.hilt.android.components.ViewModelComponent
 import daniel.bertoldi.geographyquiz.datasource.CountriesApi
 import retrofit2.Retrofit
 
-@InstallIn(ViewModelComponent::class)
 @Module
+@InstallIn(ViewModelComponent::class)
 object CountriesApiModule {
 
     @Provides

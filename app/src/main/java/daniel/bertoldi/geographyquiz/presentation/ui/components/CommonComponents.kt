@@ -39,6 +39,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -59,6 +60,8 @@ import daniel.bertoldi.geographyquiz.presentation.ui.theme.LightGray
 import daniel.bertoldi.geographyquiz.presentation.ui.theme.RichBlack
 import kotlin.math.roundToInt
 
+const val GAME_OPTION_TEST_TAG = "GameOption"
+
 @Composable
 fun GameOptionCard(
     modifier: Modifier = Modifier,
@@ -69,7 +72,7 @@ fun GameOptionCard(
     helpIconAction: () -> Unit = {},
 ) {
     Card(
-        modifier = modifier,
+        modifier = modifier.testTag(GAME_OPTION_TEST_TAG),
         onClick = { nextStep() },
         colors = CardDefaults.cardColors(
             containerColor = LightGray,

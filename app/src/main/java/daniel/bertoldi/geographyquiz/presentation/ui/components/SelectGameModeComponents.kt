@@ -33,6 +33,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -52,6 +53,7 @@ import daniel.bertoldi.geographyquiz.presentation.ui.theme.RichBlack
 import daniel.bertoldi.geographyquiz.presentation.viewmodel.GameModeScreenState
 import kotlinx.coroutines.launch
 
+const val ACTION_BUTTON_TEST_TAG ="ActionButton"
 
 @Composable
 fun SelectGameMode(
@@ -324,7 +326,8 @@ internal fun ActionButton(
             .background(color = backgroundColor)
             .border(width = Dp.Hairline, color = Color.Black, shape = RoundedCornerShape(24.dp))
             .clickable { action() }
-            .padding(vertical = 10.dp),
+            .padding(vertical = 10.dp)
+            .testTag(ACTION_BUTTON_TEST_TAG),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Text(

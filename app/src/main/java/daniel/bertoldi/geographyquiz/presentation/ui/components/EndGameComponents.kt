@@ -21,6 +21,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -136,7 +137,8 @@ private fun GameStatsAndHighScoresComponent(
             .padding(horizontal = 10.dp),
         horizontalArrangement = Arrangement.spacedBy(10.dp)
     ) {
-        repeat(pagerState.pageCount) { iteration ->
+        // Had to avoid using pagerState.pageCount since it breaks instrumented tests :think:
+        repeat(2) { iteration ->
             AnimatedContent(
                 targetState = pagerState.currentPage == iteration,
                 label = "Page Indicator Animation",

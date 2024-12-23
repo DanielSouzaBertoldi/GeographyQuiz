@@ -11,8 +11,8 @@ import daniel.bertoldi.geographyquiz.datasource.CountriesRemoteDataSource
 import daniel.bertoldi.geographyquiz.datasource.HighScoreDefaultLocalDataSource
 import daniel.bertoldi.geographyquiz.datasource.HighScoreLocalDataSource
 
-@InstallIn(ViewModelComponent::class)
 @Module
+@InstallIn(ViewModelComponent::class)
 interface DataSourcesModule {
     @Binds
     fun bindCountryRemoteDataSource(

@@ -18,7 +18,7 @@ android {
         versionCode = 1
         versionName = "1.0"
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = "daniel.bertoldi.geographyquiz.HiltTestRunner"
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -46,6 +46,9 @@ android {
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
+            // had to add these to avoid weird errors with Mockk in instrumented tests
+            excludes += "/META-INF/LICENSE.md"
+            excludes += "/META-INF/LICENSE-notice.md"
         }
     }
 }
@@ -83,6 +86,7 @@ dependencies {
 
     ksp(libs.hilt.compiler)
     ksp(libs.moshi.codegen)
+    kspAndroidTest(libs.hilt.compiler)
 
     testImplementation(libs.junit)
     testImplementation(libs.jupiter.api)
@@ -98,6 +102,12 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
+    androidTestImplementation(libs.compose.navigation.testing)
+    androidTestImplementation(libs.dagger.hilt.testing)
+    androidTestImplementation(libs.kotlin.test)
+    androidTestImplementation(libs.mockk.android)
+    androidTestImplementation(project(":test-utils"))
+
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 }

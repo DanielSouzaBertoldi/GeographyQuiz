@@ -41,6 +41,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -69,6 +70,10 @@ import daniel.bertoldi.geographyquiz.presentation.viewmodel.GameStep
 import kotlinx.coroutines.delay
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
+
+const val DIALOG_CONFIRM_TEST_TAG = "OnConfirm"
+const val COUNTRY_OPTION_TEST_TAG = "CountryOption"
+const val NEXT_FLAG_TEST_TAG = "NextFlag"
 
 @Composable
 internal fun FlagGameComponent(
@@ -247,7 +252,7 @@ private fun FlagLoadedComponents(
 
     if (gameState.step == GameStep.OPTION_SELECTED) {
         OptionSquareButton(
-            modifier = Modifier.padding(top = 16.dp),
+            modifier = Modifier.padding(top = 16.dp).testTag(NEXT_FLAG_TEST_TAG),
             onClick = {
                 if (gameState.roundState.currentRound == gameState.roundState.totalFlags) {
                     onGameEnd(timeElapsed.value)
@@ -336,7 +341,8 @@ private fun OptionSquareButton(
                 width = Dp.Hairline,
                 color = RichBlack,
                 shape = RoundedCornerShape(10.dp),
-            ),
+            )
+            .testTag(COUNTRY_OPTION_TEST_TAG),
         onClick = { onClick() },
         colors = buttonColors,
         enabled = isButtonEnabled,
@@ -394,7 +400,8 @@ private fun GiveUpDialog(
                     TextButton(
                         modifier = Modifier
                             .background(Celadon)
-                            .weight(1f),
+                            .weight(1f)
+                            .testTag(DIALOG_CONFIRM_TEST_TAG),
                         onClick = { onConfirm() },
                     ) {
                         Text(

@@ -5,5 +5,5 @@ import kotlinx.coroutines.flow.Flow
 
 interface CountriesRepository {
     suspend fun fetchCountries(): Flow<List<CountryModel>>
-    suspend fun getCountries(region: String, subRegion: String): Flow<List<CountryModel>>
+    suspend fun getCountriesInSubRegion(region: String, subRegion: String): Flow<List<CountryModel>>
 }

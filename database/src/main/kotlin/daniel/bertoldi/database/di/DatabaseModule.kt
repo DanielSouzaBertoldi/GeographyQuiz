@@ -25,13 +25,14 @@ class DatabaseModule {
     fun provideAppDatabase(
         @ApplicationContext appContext: Context,
         moshi: Moshi
-    ): GeographyQuizDatabase {
-        return Room.databaseBuilder(
+    ) = Room.databaseBuilder(
             context = appContext,
             klass = GeographyQuizDatabase::class.java,
             name = DATABASE_NAME,
-        ).addTypeConverter(InternationalDialInfoTypeConverter(moshi)).build()
-    }
+        )
+        .addTypeConverter(InternationalDialInfoTypeConverter(moshi))
+        .createFromAsset("GeographyQuizPrePopulatedDatabase")
+        .build()
 
     @Provides
     fun provideCountriesDao(appDatabase: GeographyQuizDatabase): CountriesDao {

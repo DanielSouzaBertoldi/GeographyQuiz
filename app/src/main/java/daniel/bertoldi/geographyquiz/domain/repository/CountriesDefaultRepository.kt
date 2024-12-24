@@ -17,23 +17,33 @@ class CountriesDefaultRepository @Inject constructor(
     override suspend fun fetchCountries(
         // TODO: pass coroutines scope
     ): Flow<List<CountryModel>> {
-        return if (cacheIsOld()) {
-            val countries = remoteDataSource.fetchCountriesApi()
-            localDataSource.saveCountriesInDb(countries)
-            flow { emit(countries) } // TODO: dumb stuff
+        return if (shouldFetchFromRemote()) {
+            fetchCountriesFromRemote()
         } else {
-            localDataSource.fetchCountriesDb()
+            fetchCountriesFromLocal()
         }
     }
 
-    override suspend fun getCountries(
+    override suspend fun getCountriesInSubRegion(
         region: String,
         subRegion: String,
-    ): Flow<List<CountryModel>> {
-        return localDataSource.fetchCountriesInSubRegion(region, subRegion)
+    ) = localDataSource.fetchCountriesInSubRegion(region, subRegion)
+
+    private suspend fun fetchCountriesFromRemote(): Flow<List<CountryModel>> {
+        val countries = remoteDataSource.fetchCountriesApi()
+
+        return if (countries.isNotEmpty()) {
+            localDataSource.saveCountriesInDb(countries)
+            flow { emit(countries) } // TODO: maybe it isn't worth it to have this flow as Flow.
+        } else {
+            // Since we prepopulate the database, if the request fails
+            //  for any reason, we can always use what's in the database.
+            fetchCountriesFromLocal()
+        }
     }
 
-    private suspend fun cacheIsOld(): Boolean {
-        return countriesDataStore.checkCacheGreaterThanSevenDays()
-    }
+    private suspend fun fetchCountriesFromLocal()  = localDataSource.fetchCountriesDb()
+
+    private suspend fun shouldFetchFromRemote() =
+        !countriesDataStore.didInitialFetch() || countriesDataStore.checkCacheGreaterThanSevenDays()
 }

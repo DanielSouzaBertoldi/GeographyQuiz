@@ -28,71 +28,104 @@ class CountriesDefaultRepositoryTest {
     )
 
     @Test
-    fun getCountries_withCacheGreaterThanSevenDays_assertCountriesFromRemoteReturned() = runTest {
-        val remoteResult = CountryModelFactory.makeList()
+    fun getCountries_withInitialFetchFalse_verifyFetchFromRemote() = runTest {
+        prepareScenario(didInitialFetch = false)
 
-        prepareScenario(
-            remoteDataSourceResult = remoteResult,
-            localDataSourceResult = CountryModelFactory.makeList(),
-            isCacheGreaterThanSevenDays = true,
-        )
+        repository.fetchCountries()
 
-        val actual = repository.fetchCountries()
-
-        Assertions.assertEquals(remoteResult, actual)
+        coVerify(exactly = 1) { remoteDataSource.fetchCountriesApi() }
     }
 
     @Test
-    fun getCountries_withCacheGreaterThanSevenDays_verifyResultSavedInDb() = runTest {
-        val remoteResult = CountryModelFactory.makeList()
+    fun getCountries_withInitialFetchFalse_verifySaveDataToDbNotCalled() = runTest {
+        prepareScenario(didInitialFetch = false)
 
+        repository.fetchCountries()
+
+        coVerify(exactly = 0) { localDataSource.saveCountriesInDb(any()) }
+    }
+
+    @Test
+    fun getCountries_withInitialFetchTrueAndCacheGreaterThanSevenDays_assertCountriesFromRemote() =
+        runTest {
+            val remoteResult = CountryModelFactory.makeList()
+
+            prepareScenario(
+                remoteDataSourceResult = remoteResult,
+                localDataSourceResult = CountryModelFactory.makeList(),
+                isCacheGreaterThanSevenDays = true,
+                didInitialFetch = true,
+            )
+
+            val actual = repository.fetchCountries()
+
+            Assertions.assertEquals(remoteResult, actual)
+        }
+
+    @Test
+    fun getCountries_withInitialFetchAndCacheGreaterThanSevenDays_verifyResultSavedInDb() =
+        runTest {
+            val remoteResult = CountryModelFactory.makeList()
+
+            prepareScenario(
+                remoteDataSourceResult = remoteResult,
+                isCacheGreaterThanSevenDays = true,
+                didInitialFetch = true,
+            )
+
+            repository.fetchCountries()
+
+            coVerify(exactly = 1) {
+                localDataSource.saveCountriesInDb(remoteResult)
+            }
+        }
+
+    @Test
+    fun getCountries_withInitialFetchAndCacheNotGreaterThanSevenDays_assertCountriesFromLocal() =
+        runTest {
+            val localResult = CountryModelFactory.makeList()
+
+            prepareScenario(
+                remoteDataSourceResult = CountryModelFactory.makeList(),
+                localDataSourceResult = localResult,
+                isCacheGreaterThanSevenDays = false,
+                didInitialFetch = true,
+            )
+
+            val actual = repository.fetchCountries()
+
+            Assertions.assertEquals(localResult, actual)
+        }
+
+    @Test
+    fun getCountries_withRemoteResultEmpty_verifyCountriesFromDbCalled() = runTest {
         prepareScenario(
-            remoteDataSourceResult = remoteResult,
-            isCacheGreaterThanSevenDays = true,
+            remoteDataSourceResult = emptyList(),
+            didInitialFetch = true,
         )
 
         repository.fetchCountries()
 
-        coVerify(exactly = 1) {
-            localDataSource.saveCountriesInDb(remoteResult)
-        }
+        coVerify(exactly = 1) { localDataSource.fetchCountriesDb() }
     }
 
     @Test
-    fun getCountries_withCacheNotGreaterThanSevenDays_assertCountriesFromLocalReturned() = runTest {
-        val localResult = CountryModelFactory.makeList()
-
+    fun getCountries_withRemoteResultNotEmpty_verifyCountriesFromDbNotCalled() = runTest {
         prepareScenario(
             remoteDataSourceResult = CountryModelFactory.makeList(),
-            localDataSourceResult = localResult,
-            isCacheGreaterThanSevenDays = false,
-        )
-
-        val actual = repository.fetchCountries()
-
-        Assertions.assertEquals(localResult, actual)
-    }
-
-    @Test
-    fun getCountries_withCacheNotGreaterThanSevenDays_verifyFetchFromDb() = runTest {
-        val localResult = CountryModelFactory.makeList()
-
-        prepareScenario(
-            localDataSourceResult = localResult,
-            isCacheGreaterThanSevenDays = false,
+            didInitialFetch = true,
         )
 
         repository.fetchCountries()
 
-        coVerify(exactly = 1) {
-            localDataSource.fetchCountriesDb()
-        }
+        coVerify(exactly = 0) { localDataSource.fetchCountriesDb() }
     }
 
     private fun prepareScenario(
         remoteDataSourceResult: List<CountryModel> = CountryModelFactory.makeList(),
         localDataSourceResult: List<CountryModel> = CountryModelFactory.makeList(),
         isCacheGreaterThanSevenDays: Boolean = randomBoolean(),
+        didInitialFetch: Boolean = randomBoolean(),
     ) {
         coEvery { remoteDataSource.fetchCountriesApi() } returns remoteDataSourceResult
         coEvery { localDataSource.fetchCountriesDb() } returns flow {
@@ -101,6 +134,7 @@ class CountriesDefaultRepositoryTest {
         coEvery {
             countriesDataStore.checkCacheGreaterThanSevenDays()
         } returns isCacheGreaterThanSevenDays
+        coEvery { countriesDataStore.didInitialFetch() } returns didInitialFetch
         coEvery { localDataSource.saveCountriesInDb(any()) } just runs
     }
 }

@@ -25,7 +25,7 @@ class MainActivityViewModel @Inject constructor(
     val mainScreenState: StateFlow<MainScreenState> = _mainScreenState.asStateFlow()
 
     init {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
             // TODO: how to fetch possible error scenarios?
             getCountriesData().collect {
                 if (it.isNotEmpty()) {

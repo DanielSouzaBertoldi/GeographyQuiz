@@ -34,11 +34,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "17"
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.13"
@@ -94,7 +94,9 @@ dependencies {
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.kotlin.test)
     testImplementation(libs.turbine) // TODO: remove this guy if I can't use it.
-    testImplementation(project(":test-utils"))
+    testImplementation(projects.testUtils)
+    testImplementation(testFixtures(projects.database))
+    testImplementation(testFixtures(projects.network))
     testRuntimeOnly(libs.jupiter.engine)
     testRuntimeOnly(libs.jupiter.vintage)
 
@@ -106,7 +108,7 @@ dependencies {
     androidTestImplementation(libs.dagger.hilt.testing)
     androidTestImplementation(libs.kotlin.test)
     androidTestImplementation(libs.mockk.android)
-    androidTestImplementation(project(":test-utils"))
+    androidTestImplementation(projects.testUtils)
 
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)

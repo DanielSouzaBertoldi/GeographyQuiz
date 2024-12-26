@@ -4,17 +4,19 @@
     <selectionStates>
       <SelectionState runConfigName="app">
         <option name="selectionMode" value="DROPDOWN" />
+        <DropdownSelection timestamp="2024-12-23T08:34:19.630294Z">
+          <Target type="DEFAULT_BOOT">
+            <handle>
+              <DeviceId pluginId="LocalEmulator" identifier="path=/Users/daniel.bertoldi/.android/avd/Pixel_9_Pro_XL_API_35_Android_15_.avd" />
+            </handle>
+          </Target>
+        </DropdownSelection>
+        <DialogSelection />
       </SelectionState>
-      <SelectionState runConfigName="NavigationHostTest">
+      <SelectionState runConfigName="CountryDatabaseTest">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="geographyQuizNavHost_verifyStartDestination()">
-        <option name="selectionMode" value="DROPDOWN" />
-      </SelectionState>
-      <SelectionState runConfigName="geographyQuizNavHost_clickNavigateToRegion_navigateToRegionSelection()">
-        <option name="selectionMode" value="DROPDOWN" />
-      </SelectionState>
-      <SelectionState runConfigName="geographyQuizNavHost_clickNavigateToArea_navigateToAreaSelection()">
+      <SelectionState runConfigName="onInsertCountries_assertAllDataCorrect()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
     </selectionStates>

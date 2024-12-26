@@ -1,23 +1,13 @@
-package daniel.bertoldi.geographyquiz.factory
+package daniel.bertoldi.network
 
-import daniel.bertoldi.geographyquiz.presentation.model.Region
 import daniel.bertoldi.test.utils.DayOfWeek
 import daniel.bertoldi.test.utils.randomBoolean
 import daniel.bertoldi.test.utils.randomEnumValue
 import daniel.bertoldi.test.utils.randomList
 import daniel.bertoldi.test.utils.randomString
 import daniel.bertoldi.test.utils.randomUrl
-import daniel.bertoldi.network.BaseCountryDataResponse
-import daniel.bertoldi.network.CarResponse
-import daniel.bertoldi.network.CoatOfArmsResponse
-import daniel.bertoldi.network.FlagsResponse
-import daniel.bertoldi.network.InternationalDialResponse
-import daniel.bertoldi.network.NameDataResponse
-import daniel.bertoldi.network.SupportedLanguagesResponse
 import kotlin.random.Random
 
-// TODO: this is duplicated. Move to a common shared module that both
-//  :androidTest and :test can refecene it.
 object BaseCountryDataResponseFactory {
 
     fun make(
@@ -39,7 +29,7 @@ object BaseCountryDataResponseFactory {
         population: Int = Random.nextInt(),
         car: CarResponse = makeCarResponse(),
         timezones: List<String> = randomList(),
-        continents: List<String> = Region.entries.map { it.simpleName },
+        continents: List<String> = randomList(),
         flags: FlagsResponse = makeFlagsResponse(),
         coatOfArms: CoatOfArmsResponse = makeCoatOfArmsResponse(),
         startOfWeek: String = randomEnumValue<DayOfWeek>().name,

@@ -11,6 +11,7 @@ import io.mockk.coVerify
 import io.mockk.just
 import io.mockk.mockk
 import io.mockk.runs
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions
@@ -37,8 +38,17 @@ class CountriesDefaultRepositoryTest {
     }
 
     @Test
-    fun getCountries_withInitialFetchFalse_verifySaveDataToDbNotCalled() = runTest {
+    fun getCountries_withInitialFetchFalse_verifySaveDataToDbCalled() = runTest {
         prepareScenario(didInitialFetch = false)
+
+        repository.fetchCountries()
+
+        coVerify(exactly = 1) { localDataSource.saveCountriesInDb(any()) }
+    }
+
+    @Test
+    fun getCountries_withInitialFetchTrue_verifySaveDataToDbCalled() = runTest {
+        prepareScenario(didInitialFetch = true, isCacheGreaterThanSevenDays = false)
 
         repository.fetchCountries()
 
@@ -57,7 +67,7 @@ class CountriesDefaultRepositoryTest {
                 didInitialFetch = true,
             )
 
-            val actual = repository.fetchCountries()
+            val actual = repository.fetchCountries().first()
 
             Assertions.assertEquals(remoteResult, actual)
         }
@@ -92,7 +102,7 @@ class CountriesDefaultRepositoryTest {
                 didInitialFetch = true,
             )
 
-            val actual = repository.fetchCountries()
+            val actual = repository.fetchCountries().first()
 
             Assertions.assertEquals(localResult, actual)
         }
@@ -113,7 +123,7 @@ class CountriesDefaultRepositoryTest {
     fun getCountries_withRemoteResultNotEmpty_verifyCountriesFromDbNotCalled() = runTest {
         prepareScenario(
             remoteDataSourceResult = CountryModelFactory.makeList(),
-            didInitialFetch = true,
+            didInitialFetch = false,
         )
 
         repository.fetchCountries()

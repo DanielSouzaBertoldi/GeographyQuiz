@@ -5,15 +5,16 @@ import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.squareup.moshi.Moshi
-import daniel.bertoldi.database.CountryEntityFactory.makeInternationalDialResponse
 import daniel.bertoldi.database.dao.CountriesDao
 import daniel.bertoldi.database.entities.CountryEntity
+import daniel.bertoldi.database.entities.InternationalDialInfo
 import daniel.bertoldi.database.typeconverters.InternationalDialInfoTypeConverter
-import daniel.bertoldi.network.InternationalDialResponse
 import daniel.bertoldi.test.utils.randomList
 import daniel.bertoldi.test.utils.randomString
 import io.mockk.every
 import io.mockk.mockk
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Assert
 import org.junit.Before
@@ -47,26 +48,25 @@ class CountryDatabaseTest {
     }
 
     @Test
-    @Throws(Exception::class)
-    fun onInsertCountries_assertAllDataCorrect() {
-        val internationalDialResponse = makeInternationalDialResponse(
+    fun onInsertCountries_assertAllDataCorrect() = runTest {
+        val internationalDialInfo = CountryEntityFactory.makeInternationalDialInfo(
             root = randomString(),
             suffixes = randomList<String>()
         )
         val country = CountryEntityFactory.make(
             languages = null,
-            idd = internationalDialResponse,
+            idd = internationalDialInfo,
         )
-        prepareScenario(fromJsonMock = internationalDialResponse)
+        prepareScenario(fromJsonMock = internationalDialInfo)
 
         countriesDao.insertCountries(listOf(country))
         val fetchCountry = countriesDao.getAllCountries().first()
-        Assert.assertEquals(country.toString(), fetchCountry.toString())
+        Assert.assertEquals(country.toString(), fetchCountry.first().toString())
     }
 
     @Test
     @Throws(Exception::class)
-    fun onInsertCountries_assertCorrectNumberOfCountriesInserted() {
+    fun onInsertCountries_assertCorrectNumberOfCountriesInserted() = runTest {
         val randomNumberOfCountries = Random.nextInt(from = 2, until = 5)
         val listOfCountries = mutableListOf<CountryEntity>().apply {
             repeat(randomNumberOfCountries) {
@@ -74,23 +74,23 @@ class CountryDatabaseTest {
             }
         }
         countriesDao.insertCountries(listOfCountries)
-        val countriesCount = countriesDao.fetchCountriesCount()
-        Assert.assertEquals(randomNumberOfCountries, countriesCount)
+        val countriesCount = countriesDao.fetchCountriesCount().first()
+        Assert.assertEquals(randomNumberOfCountries.toString(), countriesCount.toString())
     }
 
     @Test
     @Throws(Exception::class)
-    fun onInsertCountryWithSameCountryCode_assertSecondCountryIgnored() {
+    fun onInsertCountryWithSameCountryCode_assertSecondCountryIgnored() = runTest {
         val firstCountry = CountryEntityFactory.make(countryCode = "COUNTRY_CODE")
         val secondCountry = CountryEntityFactory.make(countryCode = "COUNTRY_CODE")
         countriesDao.insertCountries(listOf(firstCountry, secondCountry))
-        val countriesCount = countriesDao.fetchCountriesCount()
+        val countriesCount = countriesDao.fetchCountriesCount().first()
         Assert.assertEquals(1, countriesCount)
     }
 
     @Test
     @Throws(Exception::class)
-    fun onFetchCountriesInContinent_assertCorrectListOfCountriesInSpecifiedContinent() {
+    fun onFetchCountriesInContinent_assertCorrectListOfCountriesInSpecifiedContinent() = runTest {
         val listOfCountries = mutableListOf<CountryEntity>().apply {
             add(CountryEntityFactory.make(continents = listOf("Americas")))
             add(CountryEntityFactory.make(continents = listOf("Africa")))
@@ -101,13 +101,13 @@ class CountryDatabaseTest {
             add(CountryEntityFactory.make(continents = listOf("Africa", "Europe")))
         }
         countriesDao.insertCountries(listOfCountries)
-        val countriesInAfrica = countriesDao.fetchCountriesInContinent("Africa")
+        val countriesInAfrica = countriesDao.fetchCountriesInContinent("Africa").first()
         Assert.assertEquals(3, countriesInAfrica.size)
     }
 
     @Test
     @Throws(Exception::class)
-    fun onFetchCountriesInContinent_withInvalidContinent_assertNoCountriesReturned() {
+    fun onFetchCountriesInContinent_withInvalidContinent_assertNoCountriesReturned() = runTest {
         val listOfCountries = mutableListOf<CountryEntity>().apply {
             add(
                 CountryEntityFactory.make(
@@ -116,13 +116,13 @@ class CountryDatabaseTest {
             )
         }
         countriesDao.insertCountries(listOfCountries)
-        val countries = countriesDao.fetchCountriesInContinent("No Continent")
+        val countries = countriesDao.fetchCountriesInContinent("No Continent").first()
         Assert.assertEquals(0, countries.size)
     }
 
     @Test
     @Throws(Exception::class)
-    fun onDeleteCountry_assertCorrectNumberOfCountriesInDatabase() {
+    fun onDeleteCountry_assertCorrectNumberOfCountriesInDatabase() = runTest {
         val countryToBeDeleted = CountryEntityFactory.make()
         val listOfCountries = listOf(
             CountryEntityFactory.make(),
@@ -132,19 +132,19 @@ class CountryDatabaseTest {
         )
         countriesDao.insertCountries(listOfCountries)
         countriesDao.deleteCountry(countryToBeDeleted)
-        val remainingCountries = countriesDao.getAllCountries()
+        val remainingCountries = countriesDao.getAllCountries().first()
         Assert.assertEquals(3, remainingCountries.size)
     }
 
     private fun prepareScenario(
         toJsonMock: String = randomString(),
-        fromJsonMock: InternationalDialResponse = makeInternationalDialResponse(),
+        fromJsonMock: InternationalDialInfo = CountryEntityFactory.makeInternationalDialInfo(),
     ) {
         every {
-            moshi.adapter(InternationalDialResponse::class.java).toJson(any())
+            moshi.adapter(InternationalDialInfo::class.java).toJson(any())
         } returns toJsonMock
         every {
-            moshi.adapter(InternationalDialResponse::class.java).fromJson(toJsonMock)
+            moshi.adapter(InternationalDialInfo::class.java).fromJson(toJsonMock)
         } returns fromJsonMock
     }
 }

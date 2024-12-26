@@ -1,8 +1,9 @@
 package daniel.bertoldi.database
 
+import daniel.bertoldi.database.entities.CarRegulations
 import daniel.bertoldi.database.entities.CountryEntity
-import daniel.bertoldi.network.InternationalDialResponse
-import daniel.bertoldi.network.NameDataResponse
+import daniel.bertoldi.database.entities.CountryNames
+import daniel.bertoldi.database.entities.InternationalDialInfo
 import daniel.bertoldi.test.utils.DayOfWeek
 import daniel.bertoldi.test.utils.randomBoolean
 import daniel.bertoldi.test.utils.randomEnumValue
@@ -14,14 +15,13 @@ import daniel.bertoldi.test.utils.randomUUID
 import daniel.bertoldi.test.utils.randomUrl
 
 object CountryEntityFactory {
-
     fun make(
         countryCode: String = randomUUID(),
-        name: NameDataResponse = makeNameDataResponse(),
+        name: CountryNames = makeCountryNames(),
         tld: List<String>? = randomList(),
         independent: Boolean = randomBoolean(),
         unMember: Boolean = randomBoolean(),
-        idd: InternationalDialResponse = makeInternationalDialResponse(),
+        idd: InternationalDialInfo = makeInternationalDialInfo(),
         capital: List<String>? = randomList(),
         altSpellings: List<String> = emptyList(),
         region: String = randomString(),
@@ -31,8 +31,7 @@ object CountryEntityFactory {
         area: Float = randomFloat(),
         emojiFlag: String = randomUrl(),
         population: Int = randomInt(),
-        carSigns: List<String>? = randomList(),
-        carSide: String = randomString(),
+        carRegulations: CarRegulations = makeCarRegulations(),
         timezones: List<String> = randomList(),
         continents: List<String> = randomList(),
         flagPng: String = randomUrl(),
@@ -54,8 +53,7 @@ object CountryEntityFactory {
         area = area,
         emojiFlag = emojiFlag,
         population = population,
-        carSigns = carSigns,
-        carSide = carSide,
+        carRegulations = carRegulations,
         timezones = timezones,
         continents = continents,
         flagPng = flagPng,
@@ -63,20 +61,27 @@ object CountryEntityFactory {
         startOfWeek = startOfWeek
     )
 
-    // TODO: this shouldn't be referencing a model in the network module.
-    fun makeNameDataResponse(
+    fun makeCountryNames(
         common: String = randomString(),
         official: String = randomString(),
-    ) = NameDataResponse(
+    ) = CountryNames(
         common = common,
         official = official,
     )
 
-    fun makeInternationalDialResponse(
+    fun makeInternationalDialInfo(
         root: String? = randomString(),
         suffixes: List<String>? = randomList()
-    ) = InternationalDialResponse(
+    ) = InternationalDialInfo(
         root = root,
         suffixes = suffixes,
+    )
+
+    fun makeCarRegulations(
+        carSigns: List<String> = randomList<String>(),
+        carSide: String = randomString(),
+    ) = CarRegulations(
+        carSigns = carSigns,
+        carSide = carSide,
     )
 }

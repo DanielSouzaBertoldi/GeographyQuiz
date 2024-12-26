@@ -19,9 +19,7 @@ object CountryModelFactory {
     fun makeList(
         numberOfItems: Int = randomInt(),
     ) = mutableListOf<CountryModel>().apply {
-        repeat(numberOfItems) {
-            make()
-        }
+        repeat(numberOfItems) { add(make()) }
     }
 
     fun make(

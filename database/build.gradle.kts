@@ -33,16 +33,20 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "17"
     }
 
     room {
         schemaDirectory("$projectDir/schemas")
+    }
+
+    testFixtures {
+        enable = true
     }
 }
 
@@ -62,10 +66,14 @@ dependencies {
     testImplementation(libs.junit)
     testImplementation(libs.jupiter.api)
     testImplementation(libs.room.testing)
-    testImplementation(project(":test-utils"))
+    testImplementation(projects.testUtils)
     androidTestImplementation(libs.mockk.android)
     androidTestImplementation(libs.mockk.agent)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-    androidTestImplementation(project(":test-utils"))
+    androidTestImplementation(libs.kotlinx.coroutines.test)
+    androidTestImplementation(projects.testUtils)
+    androidTestImplementation(testFixtures(projects.database))
+
+    testFixturesImplementation(projects.testUtils)
 }

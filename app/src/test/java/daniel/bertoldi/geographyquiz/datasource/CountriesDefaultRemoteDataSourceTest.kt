@@ -3,15 +3,14 @@ package daniel.bertoldi.geographyquiz.datasource
 import daniel.bertoldi.geographyquiz.datastore.CountriesDataStore
 import daniel.bertoldi.geographyquiz.domain.mapper.BaseCountryDataResponseToModelMapper
 import daniel.bertoldi.geographyquiz.domain.model.CountryModel
-import daniel.bertoldi.geographyquiz.factory.BaseCountryDataResponseFactory
 import daniel.bertoldi.geographyquiz.factory.CountryModelFactory
 import daniel.bertoldi.network.BaseCountryDataResponse
+import daniel.bertoldi.network.BaseCountryDataResponseFactory
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.just
 import io.mockk.mockk
 import io.mockk.runs
-import io.mockk.verify
 import kotlinx.coroutines.test.runTest
 import okhttp3.ResponseBody.Companion.toResponseBody
 import org.junit.jupiter.api.Assertions

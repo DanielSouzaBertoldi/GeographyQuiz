@@ -1,16 +1,18 @@
 package daniel.bertoldi.geographyquiz.datasource
 
-import daniel.bertoldi.database.entities.CountryEntity
 import daniel.bertoldi.database.CountryEntityFactory
+import daniel.bertoldi.database.dao.CountriesDao
+import daniel.bertoldi.database.entities.CountryEntity
 import daniel.bertoldi.geographyquiz.domain.mapper.CountryEntityToModelMapper
-import daniel.bertoldi.geographyquiz.domain.model.CountryModel
 import daniel.bertoldi.geographyquiz.domain.mapper.CountryModelToEntityMapper
+import daniel.bertoldi.geographyquiz.domain.model.CountryModel
 import daniel.bertoldi.geographyquiz.factory.CountryModelFactory
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.just
 import io.mockk.mockk
 import io.mockk.runs
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions
@@ -18,11 +20,11 @@ import org.junit.jupiter.api.Test
 
 class CountriesDefaultLocalDataSourceTest {
 
-    private val databaseStuff: CountriesDatabaseStuff = mockk()
+    private val countriesDao: CountriesDao = mockk()
     private val entityToModelMapper: CountryEntityToModelMapper = mockk()
     private val modelToEntityMapper: CountryModelToEntityMapper = mockk()
     private val dataSource = CountriesDefaultLocalDataSource(
-        countriesDatabase = databaseStuff,
+        countriesDao = countriesDao,
         entityToModelMapper = entityToModelMapper,
         modelToEntityMapper = modelToEntityMapper,
     )
@@ -35,13 +37,13 @@ class CountriesDefaultLocalDataSourceTest {
             CountryModelFactory.make(),
         )
         prepareScenario(
-            databaseCountries = listOf(daniel.bertoldi.database.CountryEntityFactory.make()),
+            databaseCountries = listOf(CountryEntityFactory.make()),
             entityToModelResult = countries,
         )
 
         val actual = dataSource.fetchCountriesDb()
 
-        Assertions.assertEquals(countries, actual)
+        Assertions.assertEquals(countries, actual.first())
     }
 
     @Test
@@ -53,15 +55,15 @@ class CountriesDefaultLocalDataSourceTest {
 
         val actual = dataSource.fetchCountriesDb()
 
-        Assertions.assertEquals(emptyList<CountryModel>(), actual)
+        Assertions.assertEquals(emptyList<CountryModel>(), actual.first())
     }
 
     @Test
     fun saveCountriesInDb_withCountriesList_verifyCorrectCountriesSaved() = runTest {
         val countriesEntities = listOf(
-            daniel.bertoldi.database.CountryEntityFactory.make(),
-            daniel.bertoldi.database.CountryEntityFactory.make(),
-            daniel.bertoldi.database.CountryEntityFactory.make(),
+            CountryEntityFactory.make(),
+            CountryEntityFactory.make(),
+            CountryEntityFactory.make(),
         )
 
         prepareScenario(
@@ -71,37 +73,34 @@ class CountriesDefaultLocalDataSourceTest {
         dataSource.saveCountriesInDb(listOf(CountryModelFactory.make()))
 
         coVerify(exactly = 1) {
-            databaseStuff.saveCountries(countriesEntities)
+            countriesDao.insertCountries(countriesEntities)
         }
     }
 
     @Test
     fun saveCountriesInDb_withEmptyCountriesList_verifyEmptyCountriesSaved() = runTest {
-        prepareScenario(
-            modelToEntitiesResult = emptyList(),
-        )
+        prepareScenario(modelToEntitiesResult = emptyList())
 
         dataSource.saveCountriesInDb(listOf(CountryModelFactory.make()))
 
         coVerify(exactly = 1) {
-            databaseStuff.saveCountries(emptyList())
+            countriesDao.insertCountries(emptyList())
         }
     }
 
     private fun prepareScenario(
-        databaseCountries: List<CountryEntity> = listOf(daniel.bertoldi.database.CountryEntityFactory.make()),
+        databaseCountries: List<CountryEntity> = listOf(CountryEntityFactory.make()),
         entityToModelResult: List<CountryModel> = listOf(CountryModelFactory.make()),
-        modelToEntitiesResult: List<CountryEntity> = listOf(daniel.bertoldi.database.CountryEntityFactory.make())
+        modelToEntitiesResult: List<CountryEntity> = listOf(CountryEntityFactory.make())
     ) {
         // TODO: is this ok?
         val fakeFlow = flow {
             emit(databaseCountries)
         }
 
-        coEvery { databaseStuff.getAllCountries() } returns fakeFlow
+        coEvery { countriesDao.getAllCountries() } returns fakeFlow
         coEvery { entityToModelMapper.mapFrom(any()) } returns entityToModelResult
         coEvery { modelToEntityMapper.mapFrom(any()) } returns modelToEntitiesResult
-
-        coEvery { databaseStuff.saveCountries(any()) } just runs
+        coEvery { countriesDao.insertCountries(any()) } just runs
     }
 }

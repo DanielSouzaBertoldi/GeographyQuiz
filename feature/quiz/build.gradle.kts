@@ -52,7 +52,7 @@ tasks.withType<Test> {
 }
 
 dependencies {
-    // external modules
+    // External dependencies
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -73,29 +73,30 @@ dependencies {
     implementation(libs.kotlinx.serialization)
     implementation(libs.gemini.generative.ai)
 
-    // internal modules
+    // Project dependencies
     implementation(projects.network)
 
     ksp(libs.hilt.compiler)
     ksp(libs.moshi.codegen)
     kspAndroidTest(libs.hilt.compiler)
 
+    testRuntimeOnly(libs.jupiter.engine)
+    testRuntimeOnly(libs.jupiter.vintage)
+
     testImplementation(libs.junit)
     testImplementation(libs.jupiter.api)
     testImplementation(libs.mockk)
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.kotlin.test)
-    testImplementation(projects.testUtils)
-    testRuntimeOnly(libs.jupiter.engine)
-    testRuntimeOnly(libs.jupiter.vintage)
+    testImplementation(projects.utilities.testUtils)
 
+    androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-    androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
     androidTestImplementation(libs.kotlin.test)
     androidTestImplementation(libs.mockk.android)
-    androidTestImplementation(projects.testUtils)
+    androidTestImplementation(projects.utilities.testUtils)
 
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)

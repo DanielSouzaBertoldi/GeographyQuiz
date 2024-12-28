@@ -3,17 +3,9 @@ package daniel.bertoldi.geographyquiz.domain.mapper
 import daniel.bertoldi.database.CountryEntityFactory
 import daniel.bertoldi.database.entities.CarRegulations
 import daniel.bertoldi.database.entities.CountryEntity
-import daniel.bertoldi.database.entities.CountryNames
-import daniel.bertoldi.database.entities.InternationalDialInfo
-import daniel.bertoldi.test.utils.DayOfWeek
-import daniel.bertoldi.test.utils.randomBoolean
-import daniel.bertoldi.test.utils.randomEnumValue
-import daniel.bertoldi.test.utils.randomFloat
-import daniel.bertoldi.test.utils.randomInt
-import daniel.bertoldi.test.utils.randomList
-import daniel.bertoldi.test.utils.randomString
-import daniel.bertoldi.test.utils.randomUUID
-import daniel.bertoldi.test.utils.randomUrl
+import daniel.bertoldi.utilities.test.utils.randomInt
+import daniel.bertoldi.utilities.test.utils.randomList
+import daniel.bertoldi.utilities.test.utils.randomString
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 

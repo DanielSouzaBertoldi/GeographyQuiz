@@ -30,8 +30,8 @@ import coil.decode.ImageDecoderDecoder
 import coil.request.ImageRequest
 import daniel.bertoldi.geographyquiz.R
 import daniel.bertoldi.quiz.R as QuizR
-import daniel.bertoldi.geographyquiz.presentation.ui.theme.AliceBlue
-import daniel.bertoldi.geographyquiz.presentation.ui.theme.BrunswickGreen
+import daniel.bertoldi.utilities.design.tokens.AliceBlue
+import daniel.bertoldi.utilities.design.tokens.BrunswickGreen
 
 const val HOME_SCREEN_TEST_TAG = "HomeScreen"
 const val PLAY_BUTTON_TEST_TAG = "PlayButton"

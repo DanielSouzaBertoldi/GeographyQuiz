@@ -25,5 +25,6 @@ rootProject.name = "GeographyQuiz"
 include(":app")
 include(":database")
 include(":network")
-include(":test-utils")
 include(":feature:quiz")
+include(":utilities:design-tokens")
+include(":utilities:test-utils")

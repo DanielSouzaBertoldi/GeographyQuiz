@@ -58,7 +58,7 @@ tasks.withType<Test> {
 }
 
 dependencies {
-    // external modules
+    // External dependencies
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -80,27 +80,33 @@ dependencies {
     implementation(libs.lottie) // TODO: won't be able to use lottie files unfortunately..
     implementation(libs.kotlinx.serialization)
 
-    // internal modules
+    // Project dependencies
     implementation(projects.database)
     implementation(projects.network)
     implementation(projects.feature.quiz)
+    implementation(projects.utilities.designTokens)
 
     ksp(libs.hilt.compiler)
     ksp(libs.moshi.codegen)
     kspAndroidTest(libs.hilt.compiler)
 
+    testRuntimeOnly(libs.jupiter.engine)
+    testRuntimeOnly(libs.jupiter.vintage)
+
+    // External dependencies
     testImplementation(libs.junit)
     testImplementation(libs.jupiter.api)
     testImplementation(libs.mockk)
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.kotlin.test)
     testImplementation(libs.turbine) // TODO: remove this guy if I can't use it.
-    testImplementation(projects.testUtils)
+
+    // Project dependencies
+    testImplementation(projects.utilities.testUtils)
     testImplementation(testFixtures(projects.database))
     testImplementation(testFixtures(projects.network))
-    testRuntimeOnly(libs.jupiter.engine)
-    testRuntimeOnly(libs.jupiter.vintage)
 
+    // External dependencies
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -109,7 +115,9 @@ dependencies {
     androidTestImplementation(libs.dagger.hilt.testing)
     androidTestImplementation(libs.kotlin.test)
     androidTestImplementation(libs.mockk.android)
-    androidTestImplementation(projects.testUtils)
+
+    // Project dependencies
+    androidTestImplementation(projects.utilities.testUtils)
     androidTestImplementation(testFixtures(projects.network))
 
     debugImplementation(libs.androidx.ui.tooling)

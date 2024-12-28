@@ -1,9 +1,8 @@
 package daniel.bertoldi.geographyquiz.factory
 
 import daniel.bertoldi.geographyquiz.presentation.model.CountryFlagUi
-import daniel.bertoldi.test.utils.randomInt
-import daniel.bertoldi.test.utils.randomString
-import daniel.bertoldi.test.utils.randomUrl
+import daniel.bertoldi.utilities.test.utils.randomString
+import daniel.bertoldi.utilities.test.utils.randomUrl
 
 object CountryUiModelFactory {
 

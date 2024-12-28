@@ -1,4 +1,4 @@
-package daniel.bertoldi.geographyquiz.presentation.ui.theme
+package daniel.bertoldi.utilities.design.tokens
 
 import androidx.compose.ui.graphics.Color
 

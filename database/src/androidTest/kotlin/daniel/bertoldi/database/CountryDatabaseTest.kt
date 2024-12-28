@@ -9,8 +9,8 @@ import daniel.bertoldi.database.dao.CountriesDao
 import daniel.bertoldi.database.entities.CountryEntity
 import daniel.bertoldi.database.entities.InternationalDialInfo
 import daniel.bertoldi.database.typeconverters.InternationalDialInfoTypeConverter
-import daniel.bertoldi.test.utils.randomList
-import daniel.bertoldi.test.utils.randomString
+import daniel.bertoldi.utilities.test.utils.randomList
+import daniel.bertoldi.utilities.test.utils.randomString
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.first

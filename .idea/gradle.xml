@@ -15,7 +15,9 @@
             <option value="$PROJECT_DIR$/feature" />
             <option value="$PROJECT_DIR$/feature/quiz" />
             <option value="$PROJECT_DIR$/network" />
-            <option value="$PROJECT_DIR$/test-utils" />
+            <option value="$PROJECT_DIR$/utilities" />
+            <option value="$PROJECT_DIR$/utilities/design-tokens" />
+            <option value="$PROJECT_DIR$/utilities/test-utils" />
           </set>
         </option>
         <option name="resolveExternalAnnotations" value="false" />

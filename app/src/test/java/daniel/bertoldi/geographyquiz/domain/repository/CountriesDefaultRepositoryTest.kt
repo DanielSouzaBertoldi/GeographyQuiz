@@ -5,7 +5,7 @@ import daniel.bertoldi.geographyquiz.datasource.CountriesRemoteDataSource
 import daniel.bertoldi.geographyquiz.datastore.CountriesDataStore
 import daniel.bertoldi.geographyquiz.domain.model.CountryModel
 import daniel.bertoldi.geographyquiz.factory.CountryModelFactory
-import daniel.bertoldi.test.utils.randomBoolean
+import daniel.bertoldi.utilities.test.utils.randomBoolean
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.just

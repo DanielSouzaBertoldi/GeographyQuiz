@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.dp
 import daniel.bertoldi.geographyquiz.R
 import daniel.bertoldi.geographyquiz.presentation.model.Region
 import daniel.bertoldi.geographyquiz.presentation.viewmodel.AreaScreenState
-import daniel.bertoldi.geographyquiz.presentation.ui.theme.AliceBlue
+import daniel.bertoldi.utilities.design.tokens.AliceBlue
 
 @Composable
 internal fun ChooseAreaComponent(

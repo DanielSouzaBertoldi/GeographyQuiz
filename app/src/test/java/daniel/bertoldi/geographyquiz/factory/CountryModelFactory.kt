@@ -5,14 +5,14 @@ import daniel.bertoldi.geographyquiz.domain.model.CountryCarInfoModel
 import daniel.bertoldi.geographyquiz.domain.model.CountryModel
 import daniel.bertoldi.geographyquiz.domain.model.CountryNameModel
 import daniel.bertoldi.geographyquiz.domain.model.DayOfWeek
-import daniel.bertoldi.test.utils.randomBoolean
-import daniel.bertoldi.test.utils.randomEnumValue
-import daniel.bertoldi.test.utils.randomFloat
-import daniel.bertoldi.test.utils.randomInt
-import daniel.bertoldi.test.utils.randomList
-import daniel.bertoldi.test.utils.randomString
-import daniel.bertoldi.test.utils.randomUUID
-import daniel.bertoldi.test.utils.randomUrl
+import daniel.bertoldi.utilities.test.utils.randomBoolean
+import daniel.bertoldi.utilities.test.utils.randomEnumValue
+import daniel.bertoldi.utilities.test.utils.randomFloat
+import daniel.bertoldi.utilities.test.utils.randomInt
+import daniel.bertoldi.utilities.test.utils.randomList
+import daniel.bertoldi.utilities.test.utils.randomString
+import daniel.bertoldi.utilities.test.utils.randomUUID
+import daniel.bertoldi.utilities.test.utils.randomUrl
 
 object CountryModelFactory {
 

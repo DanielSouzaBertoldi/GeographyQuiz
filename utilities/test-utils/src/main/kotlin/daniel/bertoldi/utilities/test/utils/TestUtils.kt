@@ -1,4 +1,4 @@
-package daniel.bertoldi.test.utils
+package daniel.bertoldi.utilities.test.utils
 
 import java.lang.IllegalArgumentException
 import java.util.UUID

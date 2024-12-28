@@ -1,11 +1,11 @@
 package daniel.bertoldi.network
 
-import daniel.bertoldi.test.utils.DayOfWeek
-import daniel.bertoldi.test.utils.randomBoolean
-import daniel.bertoldi.test.utils.randomEnumValue
-import daniel.bertoldi.test.utils.randomList
-import daniel.bertoldi.test.utils.randomString
-import daniel.bertoldi.test.utils.randomUrl
+import daniel.bertoldi.utilities.test.utils.DayOfWeek
+import daniel.bertoldi.utilities.test.utils.randomBoolean
+import daniel.bertoldi.utilities.test.utils.randomEnumValue
+import daniel.bertoldi.utilities.test.utils.randomList
+import daniel.bertoldi.utilities.test.utils.randomString
+import daniel.bertoldi.utilities.test.utils.randomUrl
 import kotlin.random.Random
 
 object BaseCountryDataResponseFactory {

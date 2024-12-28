@@ -5,8 +5,8 @@ import daniel.bertoldi.geographyquiz.domain.usecase.GetFlagGameOptionsUseCase
 import daniel.bertoldi.geographyquiz.domain.usecase.SaveUserScoreUseCase
 import daniel.bertoldi.geographyquiz.factory.CountryUiModelFactory
 import daniel.bertoldi.geographyquiz.presentation.navigation.ScreenRoutes
-import daniel.bertoldi.test.utils.randomInt
-import daniel.bertoldi.test.utils.randomString
+import daniel.bertoldi.utilities.test.utils.randomInt
+import daniel.bertoldi.utilities.test.utils.randomString
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every

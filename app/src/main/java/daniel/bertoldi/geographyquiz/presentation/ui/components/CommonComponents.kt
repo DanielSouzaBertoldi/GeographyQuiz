@@ -51,13 +51,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import daniel.bertoldi.geographyquiz.presentation.model.Region
 import daniel.bertoldi.geographyquiz.R
-import daniel.bertoldi.geographyquiz.presentation.ui.theme.AliceBlue
-import daniel.bertoldi.geographyquiz.presentation.ui.theme.BrunswickGreen
-import daniel.bertoldi.geographyquiz.presentation.ui.theme.CambridgeBlue
-import daniel.bertoldi.geographyquiz.presentation.ui.theme.Celadon
-import daniel.bertoldi.geographyquiz.presentation.ui.theme.Gray
-import daniel.bertoldi.geographyquiz.presentation.ui.theme.LightGray
-import daniel.bertoldi.geographyquiz.presentation.ui.theme.RichBlack
+import daniel.bertoldi.utilities.design.tokens.AliceBlue
+import daniel.bertoldi.utilities.design.tokens.BrunswickGreen
+import daniel.bertoldi.utilities.design.tokens.CambridgeBlue
+import daniel.bertoldi.utilities.design.tokens.Celadon
+import daniel.bertoldi.utilities.design.tokens.Gray
+import daniel.bertoldi.utilities.design.tokens.LightGray
+import daniel.bertoldi.utilities.design.tokens.RichBlack
 import kotlin.math.roundToInt
 
 const val GAME_OPTION_TEST_TAG = "GameOption"

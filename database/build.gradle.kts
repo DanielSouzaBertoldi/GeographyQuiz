@@ -66,14 +66,18 @@ dependencies {
     testImplementation(libs.junit)
     testImplementation(libs.jupiter.api)
     testImplementation(libs.room.testing)
-    testImplementation(projects.testUtils)
+    testImplementation(projects.utilities.testUtils)
+
+    // External dependencies
     androidTestImplementation(libs.mockk.android)
     androidTestImplementation(libs.mockk.agent)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.kotlinx.coroutines.test)
-    androidTestImplementation(projects.testUtils)
+
+    // Project dependencies
+    androidTestImplementation(projects.utilities.testUtils)
     androidTestImplementation(testFixtures(projects.database))
 
-    testFixturesImplementation(projects.testUtils)
+    testFixturesImplementation(projects.utilities.testUtils)
 }

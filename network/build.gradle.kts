@@ -29,7 +29,7 @@ dependencies {
     implementation(libs.moshi.kotlin)
     implementation(libs.hilt.core)
 
-    testFixturesImplementation(projects.testUtils)
+    testFixturesImplementation(projects.utilities.testUtils)
 
     ksp(libs.hilt.compiler)
     ksp(libs.moshi.codegen)

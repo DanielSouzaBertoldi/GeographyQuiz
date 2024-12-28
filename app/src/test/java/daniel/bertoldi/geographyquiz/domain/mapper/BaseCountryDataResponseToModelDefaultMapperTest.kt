@@ -2,7 +2,7 @@ package daniel.bertoldi.geographyquiz.domain.mapper
 
 import daniel.bertoldi.network.BaseCountryDataResponse
 import daniel.bertoldi.network.BaseCountryDataResponseFactory
-import daniel.bertoldi.test.utils.randomInt
+import daniel.bertoldi.utilities.test.utils.randomInt
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 

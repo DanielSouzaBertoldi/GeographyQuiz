@@ -46,10 +46,10 @@ import daniel.bertoldi.geographyquiz.R
 import daniel.bertoldi.geographyquiz.presentation.model.GameMode
 import daniel.bertoldi.geographyquiz.presentation.model.Region
 import daniel.bertoldi.geographyquiz.presentation.model.SubRegion
-import daniel.bertoldi.geographyquiz.presentation.ui.theme.AliceBlue
-import daniel.bertoldi.geographyquiz.presentation.ui.theme.BrunswickGreen
-import daniel.bertoldi.geographyquiz.presentation.ui.theme.Celadon
-import daniel.bertoldi.geographyquiz.presentation.ui.theme.RichBlack
+import daniel.bertoldi.utilities.design.tokens.AliceBlue
+import daniel.bertoldi.utilities.design.tokens.BrunswickGreen
+import daniel.bertoldi.utilities.design.tokens.Celadon
+import daniel.bertoldi.utilities.design.tokens.RichBlack
 import daniel.bertoldi.geographyquiz.presentation.viewmodel.GameModeScreenState
 import kotlinx.coroutines.launch
 

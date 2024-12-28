@@ -10,7 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
 import daniel.bertoldi.geographyquiz.presentation.navigation.GeographyQuizNavHost
-import daniel.bertoldi.geographyquiz.presentation.ui.theme.GeographyQuizTheme
+import daniel.bertoldi.utilities.design.tokens.GeographyQuizTheme
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {

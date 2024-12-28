@@ -1,55 +1,44 @@
 plugins {
-    alias(libs.plugins.androidApplication)
+    alias(libs.plugins.androidLibrary)
     alias(libs.plugins.jetbrainsKotlinAndroid)
     alias(libs.plugins.daggerHilt)
     alias(libs.plugins.ksp)
     alias(libs.plugins.compose.compiler)
-    alias(libs.plugins.kotlinx.serialization)
+    alias(libs.plugins.secretsGradlePlugin)
 }
 
 android {
-    namespace = "daniel.bertoldi.geographyquiz"
+    namespace = "daniel.bertoldi.quiz"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "daniel.bertoldi.geographyquiz"
         minSdk = 30
-        targetSdk = 34
-        versionCode = 1
-        versionName = "1.0"
 
-        testInstrumentationRunner = "daniel.bertoldi.geographyquiz.HiltTestRunner"
-        vectorDrawables {
-            useSupportLibrary = true
-        }
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
         release {
-            isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
         }
     }
+
+    packaging {
+        resources {
+            excludes += "/META-INF/*"
+        }
+    }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
+
     kotlinOptions {
         jvmTarget = "17"
-    }
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.13"
-    }
-    packaging {
-        resources {
-            excludes += "/META-INF/{AL2.0,LGPL2.1}"
-            // had to add these to avoid weird errors with Mockk in instrumented tests
-            excludes += "/META-INF/LICENSE.md"
-            excludes += "/META-INF/LICENSE-notice.md"
-        }
     }
 }
 
@@ -76,14 +65,10 @@ dependencies {
     implementation(libs.moshi.kotlin)
     implementation(libs.compose.navigation)
     implementation(libs.hilt.compose.navigation)
-    implementation(libs.datastore.prefs)
-    implementation(libs.lottie) // TODO: won't be able to use lottie files unfortunately..
-    implementation(libs.kotlinx.serialization)
 
     // internal modules
     implementation(projects.database)
     implementation(projects.network)
-    implementation(projects.feature.quiz)
 
     ksp(libs.hilt.compiler)
     ksp(libs.moshi.codegen)
@@ -94,23 +79,17 @@ dependencies {
     testImplementation(libs.mockk)
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.kotlin.test)
-    testImplementation(libs.turbine) // TODO: remove this guy if I can't use it.
     testImplementation(projects.testUtils)
-    testImplementation(testFixtures(projects.database))
-    testImplementation(testFixtures(projects.network))
     testRuntimeOnly(libs.jupiter.engine)
     testRuntimeOnly(libs.jupiter.vintage)
 
-    androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
-    androidTestImplementation(libs.compose.navigation.testing)
-    androidTestImplementation(libs.dagger.hilt.testing)
     androidTestImplementation(libs.kotlin.test)
     androidTestImplementation(libs.mockk.android)
     androidTestImplementation(projects.testUtils)
-    androidTestImplementation(testFixtures(projects.network))
 
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)

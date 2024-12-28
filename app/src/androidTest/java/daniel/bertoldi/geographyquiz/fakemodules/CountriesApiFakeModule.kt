@@ -25,33 +25,33 @@ class FakeCountriesApi : CountriesApi {
     override suspend fun getCountries(): Response<List<BaseCountryDataResponse>> {
         return Response.success(
             listOf(
-                daniel.bertoldi.network.BaseCountryDataResponseFactory.make(
+                BaseCountryDataResponseFactory.make(
                     region = "Africa",
-                    flags = daniel.bertoldi.network.BaseCountryDataResponseFactory.makeFlagsResponse(
+                    flags = BaseCountryDataResponseFactory.makeFlagsResponse(
                         png = "https://flagcdn.com/w320/sl.png",
                     ),
                 ),
-                daniel.bertoldi.network.BaseCountryDataResponseFactory.make(
+                BaseCountryDataResponseFactory.make(
                     region = "Africa",
-                    flags = daniel.bertoldi.network.BaseCountryDataResponseFactory.makeFlagsResponse(
+                    flags = BaseCountryDataResponseFactory.makeFlagsResponse(
                         png = "https://flagcdn.com/w320/sl.png",
                     ),
                 ),
-                daniel.bertoldi.network.BaseCountryDataResponseFactory.make(
+                BaseCountryDataResponseFactory.make(
                     region = "Africa",
-                    flags = daniel.bertoldi.network.BaseCountryDataResponseFactory.makeFlagsResponse(
+                    flags = BaseCountryDataResponseFactory.makeFlagsResponse(
                         png = "https://flagcdn.com/w320/sl.png",
                     ),
                 ),
-                daniel.bertoldi.network.BaseCountryDataResponseFactory.make(
+                BaseCountryDataResponseFactory.make(
                     region = "Africa",
-                    flags = daniel.bertoldi.network.BaseCountryDataResponseFactory.makeFlagsResponse(
+                    flags = BaseCountryDataResponseFactory.makeFlagsResponse(
                         png = "https://flagcdn.com/w320/sl.png",
                     ),
                 ),
-                daniel.bertoldi.network.BaseCountryDataResponseFactory.make(
+                BaseCountryDataResponseFactory.make(
                     region = "Africa",
-                    flags = daniel.bertoldi.network.BaseCountryDataResponseFactory.makeFlagsResponse(
+                    flags = BaseCountryDataResponseFactory.makeFlagsResponse(
                         png = "https://flagcdn.com/w320/sl.png",
                     ),
                 ),

@@ -31,7 +31,7 @@ class DatabaseModule {
             name = DATABASE_NAME,
         )
         .addTypeConverter(InternationalDialInfoTypeConverter(moshi))
-        .createFromAsset("GeographyQuizPrePopulatedDatabase")
+        .createFromAsset("GeographyQuizPrePopulatedDatabase.db")
         .build()
 
     @Provides

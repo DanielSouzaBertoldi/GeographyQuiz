@@ -29,6 +29,7 @@ import coil.compose.AsyncImage
 import coil.decode.ImageDecoderDecoder
 import coil.request.ImageRequest
 import daniel.bertoldi.geographyquiz.R
+import daniel.bertoldi.quiz.R as QuizR
 import daniel.bertoldi.geographyquiz.presentation.ui.theme.AliceBlue
 import daniel.bertoldi.geographyquiz.presentation.ui.theme.BrunswickGreen
 
@@ -52,6 +53,7 @@ internal fun LoadingComponent() {
 @Composable
 internal fun HomeComponent(
     navigateToGameScreen: () -> Unit,
+    navigateToQuiz: () -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -86,6 +88,23 @@ internal fun HomeComponent(
                 fontSize = 64.sp,
             )
         }
+        Button(
+            modifier = Modifier
+                .padding(top = 10.dp)
+                .height(116.dp)
+                .width(296.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = BrunswickGreen,
+                contentColor = AliceBlue,
+            ),
+            onClick = { navigateToQuiz() },
+            shape = RoundedCornerShape(24.dp),
+        ) {
+            Text(
+                text = stringResource(id = QuizR.string.go_to_quiz),
+                fontSize = 32.sp,
+            )
+        }
     }
 }
 
@@ -107,7 +126,7 @@ private fun LoadingComponentPreview() {
 @Preview(showBackground = true)
 @Composable
 private fun BeginGameComponentPreview() {
-    HomeComponent(navigateToGameScreen = {})
+    HomeComponent(navigateToGameScreen = {}, navigateToQuiz = {})
 }
 
 @Preview(showBackground = true)

@@ -29,6 +29,7 @@ turbine = "1.1.0"
 kotlinx-serialization-plugin  = "2.0.21"
 kotlinx-serialization = "1.7.3"
 secrets-gradle-plugin = "2.0.1"
+gemeni-ai = "0.9.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -75,6 +76,7 @@ kotlin-test = { group = "org.jetbrains.kotlin", name = "kotlin-test", version.re
 turbine = { group = "app.cash.turbine", name = "turbine", version.ref = "turbine" }
 kotlinx-serialization = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
 compose-navigation-testing = { group = "androidx.navigation", name = "navigation-testing", version.ref = "navigation" }
+gemini-generative-ai = { group = "com.google.ai.client.generativeai", name = "generativeai", version.ref = "gemeni-ai" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

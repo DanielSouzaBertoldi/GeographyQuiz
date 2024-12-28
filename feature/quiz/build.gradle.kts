@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.secretsGradlePlugin)
+    alias(libs.plugins.kotlinx.serialization)
 }
 
 android {
@@ -40,6 +41,10 @@ android {
     kotlinOptions {
         jvmTarget = "17"
     }
+
+    buildFeatures {
+        buildConfig = true
+    }
 }
 
 tasks.withType<Test> {
@@ -65,9 +70,10 @@ dependencies {
     implementation(libs.moshi.kotlin)
     implementation(libs.compose.navigation)
     implementation(libs.hilt.compose.navigation)
+    implementation(libs.kotlinx.serialization)
+    implementation(libs.gemini.generative.ai)
 
     // internal modules
-    implementation(projects.database)
     implementation(projects.network)
 
     ksp(libs.hilt.compiler)

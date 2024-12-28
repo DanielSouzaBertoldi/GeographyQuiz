@@ -26,6 +26,7 @@ import daniel.bertoldi.geographyquiz.presentation.viewmodel.MainActivityViewMode
 import daniel.bertoldi.geographyquiz.presentation.viewmodel.MainScreenState
 
 fun NavGraphBuilder.flagGameDestinations(
+    onNavigateToQuizGame: () -> Unit,
     onNavigateToRegionSelection: () -> Unit,
     onNavigateToAreaSelection: (region: String) -> Unit,
     onNavigateToGameModeSelection: (region: String, area: String) -> Unit,
@@ -42,6 +43,7 @@ fun NavGraphBuilder.flagGameDestinations(
                 is MainScreenState.Loading -> LoadingComponent()
                 is MainScreenState.Success -> HomeComponent(
                     navigateToGameScreen = { onNavigateToRegionSelection() },
+                    navigateToQuiz = { onNavigateToQuizGame() }
                 )
 
                 is MainScreenState.Failed -> ErrorComponent()

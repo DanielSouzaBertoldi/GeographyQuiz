@@ -3,6 +3,8 @@ package daniel.bertoldi.geographyquiz.presentation.navigation
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
+import daniel.bertoldi.quiz.presentation.navigateToQuizGame
+import daniel.bertoldi.quiz.presentation.quizDestinations
 
 @Composable
 fun GeographyQuizNavHost(
@@ -13,6 +15,9 @@ fun GeographyQuizNavHost(
         startDestination = ScreenRoutes.Home,
     ) {
         flagGameDestinations(
+            onNavigateToQuizGame = {
+                navigationController.navigateToQuizGame()
+            },
             onNavigateToRegionSelection = {
                 navigationController.navigateToRegionSelection()
             },
@@ -37,5 +42,6 @@ fun GeographyQuizNavHost(
                 navigationController.popBackStackToRegionSelection()
             }
         )
+        quizDestinations()
     }
 }
